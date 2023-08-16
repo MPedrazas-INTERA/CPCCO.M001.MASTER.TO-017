@@ -1,0 +1,4 @@
+name: py2
+channels:
+  - defaults
+prefix: C:\Users\mpedrazas\Miniconda3\envs\py2

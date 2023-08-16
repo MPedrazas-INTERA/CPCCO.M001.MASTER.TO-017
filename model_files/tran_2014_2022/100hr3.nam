@@ -1,0 +1,15 @@
+LIST  0  100hr3.out
+BTN   0  100hr3.btn MUTDRY
+ADV   0  100hr3.adv
+SSM   0  100hr3_uppermost_activecells.ssm
+GCG   0  100hr3.gcg
+FTL   0  ../flow_2014_2021/100hr3.ftl
+DATA  81  ./InitialPlume/InitialConc_cutoff_10_L1.dat
+DATA  83  ./InitialPlume/InitialConc_cutoff_10_L2.dat
+DATA  85  ./InitialPlume/InitialConc_cutoff_10_L3.dat
+DATA  87  ./InitialPlume/InitialConc_cutoff_10_L4.dat
+DATA  89  ./InitialPlume/InitialConc_L5.dat
+DATA  91  ./InitialPlume/InitialConc_L6.dat
+DATA  93  ./InitialPlume/InitialConc_L7.dat
+DATA  95  ./InitialPlume/InitialConc_L8.dat
+DATA  97  ./InitialPlume/InitialConc_L9.dat

@@ -1,0 +1,3 @@
+Sarah Wigginton (from INTERA) generated the isopach map for the RUM Layer thicknesses as a .dat fromat (output from Kingdom software).
+.dat file was then converted into a raster using  Point to Raster (Conversion) tool from ArcMap (requires Spatial Analyst tool).
+Raster was clipped based on spatial view extent using Data Management Rools > Raster > Raster Processing > Clip based on polygon shapefile extent.

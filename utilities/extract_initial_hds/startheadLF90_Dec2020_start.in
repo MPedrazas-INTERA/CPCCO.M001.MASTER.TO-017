@@ -1,0 +1,8 @@
+HEAD FILE PROCESSOR
+ disfile       ../100hr3.dis
+ headfile      ../100hr3.hds
+ stressperiod  108
+ timestep      1
+ outfile       100hr3init.hds
+ fformat       binary
+ sngldble      double
