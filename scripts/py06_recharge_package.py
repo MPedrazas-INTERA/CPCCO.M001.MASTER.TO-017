@@ -191,7 +191,7 @@ def col2array(array1d, nr, nc):
 
 def extend_recharge_package(mydf, ref_path, nr, nc, start_year):
     """
-    This script generates the recharge addendum. Do not use as is, paste to original recharge pacakge you plan on extending.
+    This script generates the recharge addendum. Do not use as is, paste to original recharge package you plan on extending.
     :param mydf: dataframe that will actually be appended (only those SPs + start, end dates)
     :param ref_path: path to refs generated from RET shapefiles for recharge
     :param nr: model number of rows
@@ -231,12 +231,14 @@ def extend_recharge_package(mydf, ref_path, nr, nc, start_year):
                         fid.write("\n")
             print(f"Wrote array for year {year}")
     fid.close()
+    print("Done :)")
+    return None
 
 if __name__ == "__main__":
 
     cwd = os.getcwd()
-    # outputDir = os.path.join(os.path.dirname(cwd), 'model_packages', 'hist_2014_2021', 'rch', 'output')
-    outputDir = os.path.join(os.path.dirname(cwd), 'model_packages', 'pred_2023_2125', 'rch', 'output')
+    outputDir = os.path.join(os.path.dirname(cwd), 'model_packages', 'hist_2014_2023', 'rch', 'output')
+    # outputDir = os.path.join(os.path.dirname(cwd), 'model_packages', 'pred_2023_2125', 'rch', 'output')
     if not os.path.exists(outputDir):
         os.makedirs(outputDir)
 
@@ -244,8 +246,8 @@ if __name__ == "__main__":
     rch_ws = os.path.dirname(outputDir)
     ref_path = os.path.join(rch_ws, 'RETtoREFs')
 
-    ## If you'd like to write a recharge file using REFs (from scratch):
-    write_rch_pckg = True
+    ## [1] If you'd like to write a recharge file using REFs (from scratch):
+    write_rch_pckg = False
     if write_rch_pckg:
         ofile = os.path.join(outputDir, f'100hr3_2023to2125.rch')
         inputDir = os.path.join(cwd, "input")
@@ -253,29 +255,30 @@ if __name__ == "__main__":
         dates_df = pd.read_csv(os.path.join(inputDir, "sp_2023to2125.csv"))
         writeRch(ref_path, dates_df, ofile, years, nr, nc)
 
-    ### If you'd like to append/extend a recharge package
-    ##Define dates you wish to append to recharge package:
-    append = False
+    ### [2]  Convert RET shapefiles to REF files:
+    convertRETtoREF = True
+    if convertRETtoREF:
+        years = [2023]
+        nr, nc = 433, 875  # number of modelgrid rows and columns
+        rch_ws = os.path.dirname(outputDir)
+        genREFs(rch_ws, years, nr, nc)
+
+    ### [3] Define dates you wish to append to recharge package:
+    append = True
     if append:
-        df = pd.read_csv("input/sp_2014_2022.csv")
+        df = pd.read_csv("input/sp_2014_2023.csv")
         df.dropna(inplace=True)
         df.SPstart = pd.to_datetime(df.SPstart); df.SPend = pd.to_datetime(df.SPend)
         df.sp = df.sp.astype(int)
-        mydf = df.loc[df.sp > 84] #Appending to existing recharge package, extending from Dic 2020 to Dic 2022.
+        mydf = df.loc[df.sp > 108] #Appending to existing recharge package, extending from Dec 2022 (sp 108) to Jul 2023 (sp 115)
         start_year = 2014
-        ofile = os.path.join(rch_ws, "output", "2021to2022.rch")
+        ofile = os.path.join(rch_ws, "output", "2022toJul2023.rch")
         extend_recharge_package(mydf, ref_path, nr, nc, start_year)
 
-    ### Load model in flopy, convert recharge to shapefiles:
+    ### [4]  QA/QC: Load model in flopy, convert recharge to shapefiles:
     # gridShpDir = os.path.join(os.path.dirname(cwd), 'gis', 'shp', 'grid_with_centroids')
     # exe = os.path.join(os.path.dirname(cwd), "executables", "windows", "mf2k-mst-chprc08dpv.exe")
     # ws = os.path.join(os.path.dirname(cwd), "model_files", "flow_2014_2020")
     # model_name = "DHmodel_2014to2020.nam"
     # annualRecharge2shapefiles(ws, model_name, exe, gridShpDir, outputDir)
-
-    ### Convert RET shapefiles to REF files:
-    # years = [2021, 2022]
-    # nr, nc = 433, 875  # number of modelgrid rows and columns
-    # rch_ws = os.path.dirname(outputDir)
-    # genREFs(rch_ws, years, nr, nc)
 

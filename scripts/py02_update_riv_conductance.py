@@ -4,7 +4,7 @@ import os
 '''
 hpham@intera.com, 02/14/2023, 100-HR-3 modeling
 - Read in riv text file (exported from GWV)
-- Search and replace conductanc values
+- Search and replace conductance values
 - Export to riv text file to be imported into GWV
 
 '''
