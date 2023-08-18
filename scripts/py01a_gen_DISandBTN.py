@@ -14,12 +14,19 @@ def gen_DIS(outputdir, df, run):
     ofile = os.path.join(outputdir, f"dis_{run}.txt")
     fid = open(ofile, 'w')
     for i in range(df.shape[0]):
-        if df["spLen"].loc[i] <= 31: #monthly SPs
-            fid.write(f'  {int(df["spLen"].loc[i])}.000000  1  1.000000  TR\n') #PERLEN, NSTP, TSMULT
-        elif df["spLen"].loc[i] > 31: #yearly SPs
-            fid.write(f'  {int(df["spLen"].loc[i])}.00000  1  1.000000  TR\n')
+        if (i == 0) and run == "2014_2023": #first SP should be steady-state, only calib model?
+            if (df["spLen"].loc[i] <= 31):
+                fid.write(f'  {int(df["spLen"].loc[i])}.000000  1  1.000000  SS\n')
+            elif df["spLen"].loc[i] > 31:  # yearly SPs
+                fid.write(f'  {int(df["spLen"].loc[i])}.00000  1  1.000000  SS\n')
+        else:
+            if df["spLen"].loc[i] <= 31: #monthly SPs
+                fid.write(f'  {int(df["spLen"].loc[i])}.000000  1  1.000000  TR\n') #PERLEN, NSTP, TSMULT
+            elif df["spLen"].loc[i] > 31: #yearly SPs
+                fid.write(f'  {int(df["spLen"].loc[i])}.00000  1  1.000000  TR\n')
     fid.close()
     print(f"Saved {ofile}")
+    print(f"Note: The first SP is steady-state, not transient")
     return None
 
 def gen_BTN(outputdir, df, run):
@@ -27,24 +34,10 @@ def gen_BTN(outputdir, df, run):
     fid = open(ofile, 'w')
     for i in range(df.shape[0]):
         if df["spLen"].loc[i] <= 31: #monthly SPs
-            fid.write(f"  {int(df.spLen.loc[i])}.00000         1  1.000000  TR           {df.SPstart.loc[i].month}/{df.SPstart.loc[i].day}/{df.SPstart.loc[i].year}\n")
+            fid.write(f"  {int(df.spLen.loc[i])}.00000         1  1.000000  TR           {df.start_date.loc[i].month}/{df.start_date.loc[i].day}/{df.start_date.loc[i].year}\n")
             fid.write("1.0000e-01       500 1.300e+00 1.000e+02\n") #0.1 day time steps
         elif df["spLen"].loc[i] > 31: #yearly SPs
-            fid.write(f"  {int(df.spLen.loc[i])}.0000         1  1.000000  TR           {df.SPstart.loc[i].month}/{df.SPstart.loc[i].month}/{df.SPstart.loc[i].year}\n")
-            fid.write("5.0000e+00       500 1.300e+00 1.000e+02\n") #5 day time steps
-    fid.close()
-    print(f"Saved {ofile}")
-    return None
-
-def gen_BTN2(outputdir, df, run):
-    ofile = os.path.join(outputdir, f"btn_{run}.txt")
-    fid = open(ofile, 'w')
-    for i in range(df.shape[0]):
-        if df["cdays"].loc[i] <= 31: #monthly SPs
-            fid.write(f"  {int(df['cdays'].loc[i])}.00000         1  1.000000  TR           {df['start_date'].loc[i].month}/{df['start_date'].loc[i].day}/{df['start_date'].loc[i].year}\n")
-            fid.write("1.0000e-01       500 1.300e+00 1.000e+02\n") #0.1 day time steps
-        elif df["cdays"].loc[i] > 31: #yearly SPs
-            fid.write(f"  {int(df['cdays'].loc[i])}.0000         1  1.000000  TR           {df['start_date'].loc[i].month}/{df['start_date'].loc[i].month}/{df['start_date'].loc[i].year}\n")
+            fid.write(f"  {int(df.spLen.loc[i])}.0000         1  1.000000  TR           {df.start_date.loc[i].month}/{df.start_date.loc[i].month}/{df.start_date.loc[i].year}\n")
             fid.write("5.0000e+00       500 1.300e+00 1.000e+02\n") #5 day time steps
     fid.close()
     print(f"Saved {ofile}")
@@ -86,7 +79,6 @@ def gen_BTN_NPRS(outputdir, df, run):
         print(f"Your NPRS number to put in the BTN is {NPRS}")
     return None
 
-
 def gen_BTN_NPRS2(outputdir, df, run): # for 2023_2125 BTN file
     #NPRS < 0, simulation results will be printed or saved whenever the number of transport steps is an even multiple of NPRS.
     #NPRS > 0, simulation results will be printed to the standard output text file or saved to the UCN at times as specified
@@ -125,23 +117,16 @@ def gen_BTN_NPRS2(outputdir, df, run): # for 2023_2125 BTN file
 
 if __name__ == "__main__":
     cwd = os.getcwd()
-    # cwd = S:\PSC\CHPRC.C003.HANOFF\Rel.126\predictive_flow_model\scripts\
 
-    # inputdir = os.path.join(os.path.dirname(cwd), "input", "flow2014_2020")
-    #df = pd.read_excel(os.path.join(os.path.dirname(cwd), "input", "times_2021_2125.xlsx"), engine = 'openpyxl')
-    df = pd.read_csv(os.path.join(cwd, "input", "sp_2023to2125.csv"))
-    df['start_date']=pd.to_datetime(df['start_date'])
-    df['end_date']=pd.to_datetime(df['end_date'])
+    df = pd.read_csv(os.path.join(cwd, "input", "sp_2014_2023.csv"))
+    df['start_date']=pd.to_datetime(df['SPstart'])
+    df['end_date']=pd.to_datetime(df['SPend'])
 
     outputdir = os.path.join(cwd, "output")
 
-    runList = ['2023_2125']
+    runList = ['2014_2023']
     for run in runList:
         print(run)
-        # gen_DIS(outputdir, df, run)
-        #gen_BTN(outputdir, df, run) # MP, for NFA 2021_2125
-        gen_BTN_NPRS2(outputdir, df, run) # HP, for BTN 2023_2125
-        gen_BTN2(outputdir, df, run) # HP, for pred 2023_2125
-        
-
-
+        gen_DIS(outputdir, df, run)
+        gen_BTN(outputdir, df, run) # MP, for calib 2014_2023
+        # gen_BTN_NPRS2(outputdir, df, run) # HP, for BTN 2023_2125  ###not recommended because UCN needs to have data for every SP.
