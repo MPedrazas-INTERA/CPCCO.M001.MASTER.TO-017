@@ -1,6 +1,6 @@
 nwell            162                        ! number of entries in the wellrate input file
 namfile          100hr3.nam                 !MODFLOW name file
-headfile         100hr3init.hds             ! Specified initial heads
+headfile         DHmodel_2014to2020init.hds             ! Specified initial heads
 xoff             571750                     ! model X offset
 yoff             150500                     ! model Y offset
 rotation         0.0                        ! model rotation
