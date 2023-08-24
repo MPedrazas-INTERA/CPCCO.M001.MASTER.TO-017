@@ -8,6 +8,7 @@
 *.ddn
 *.tar
 *.gz
+*.gwv
 b2
 b3
 b3r
@@ -21,4 +22,5 @@ scripts/output/boundary_conditions/
 scripts/del_download_river_stage/
 sico/
 layer_top_bot_ele*
-odel_packages/hist_2014_2023/riv/RiverCSV/*.csv
+model_packages/hist_2014_2023/riv/RiverCSV/*.csv
+model_packages/hist_2014_2023/riv/archive
