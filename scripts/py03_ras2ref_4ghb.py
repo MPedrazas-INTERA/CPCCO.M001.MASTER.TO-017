@@ -158,46 +158,61 @@ if __name__ == "__main__":
 
     dfghb_final.to_csv(f'../model_packages/hist_2014_2023/ghb/GHB_2014_toJul2023_all.csv', index=False)
     dfghb_final2 = dfghb_final[dfghb_final['check']=='good']
-    dfghb_final2.to_csv(f'../model_packages/hist_2014_2023/ghb/GHB_2014_toJul2023_good.csv', index=False)
+    dfghb_final2["SP"] = dfghb_final2["SP"] - 96 #Make stress periods start at SP 1, instead of 97.
+    dfghb_final2.to_csv(f'../model_packages/hist_2014_2023/ghb/GHB_2014_toJul2023_good_V2.csv', index=False)
 
-    # flopy to update GHB =====================================================
-    # load a MODLOW flow model -------------------------------------------
-    opt_update_ghb = True
-    if opt_update_ghb:
-        stress_period_data = {}
+    ### Instead of loading to GWV to generate GHB, you can generate GHB here:
+    gen_ghb_package = True
+    dfghb_final2 = pd.read_csv(f'../model_packages/hist_2014_2023/ghb/GHB_2014_toJul2023_good_V2.csv') ###2014-2023 dataset
+    # dfghb_final2 = pd.read_csv(f'../model_packages/hist_2014_2023/ghb/GH_2014_2022_good_check.csv') ###2014-2022 dataset (QC/QA)
+    if gen_ghb_package:
+        # template = "         1       433       685 115.59502 800.00000         0" #got this from old GHB
+        fout = open(os.path.join(wdir, "100hr3_2023_MP_v4.ghb"), 'w')
+        fout.write("# MODFLOW2000 General Head Boundary Package\n")
+        fout.write("PARAMETER  0  0\n")
+        fout.write("      7333         0\n") #MAXIMUM NUMBER OF GHB CELLS FOR ANY GIVEN SP
+        tmp = [] #only used once to find maximum number of ghb cells for any given SP
         for sp in dfghb_final2.SP.unique():
+            print(sp)
+            mydf = dfghb_final2.loc[dfghb_final2.SP == sp]
+            tmp.append(len(mydf))
+            fout.write(f"{len(mydf) :>10}{0 :>10}                      Stress Period {sp}\n")
+            for idx in range(len(mydf)):
+                #dfghb_final2.cond.unique() cond ranges from 65 to 500 to 1885, sig figs will differ
+                if (mydf.cond.iloc[idx] < 10000) and (mydf.cond.iloc[idx] > 1000):
+                #formatting :>10 means right aligned in the ten spaces allocated
+                    fout.write(f"""{mydf.layer.iloc[idx] :>10}{mydf.row.iloc[idx] :>10}{mydf.column.iloc[idx] :>10} {(mydf["head"].iloc[idx]).round(5):.5f} {mydf["cond"].iloc[idx]:.4f}\n""")#         0  \n""")
+                elif (mydf.cond.iloc[idx] < 1000) and (mydf.cond.iloc[idx] > 100):
+                    fout.write(f"""{mydf.layer.iloc[idx] :>10}{mydf.row.iloc[idx] :>10}{mydf.column.iloc[idx] :>10} {mydf["head"].iloc[idx].round(5):.5f} {mydf["cond"].iloc[idx]:.5f}\n""")#         0  \n""")
+                elif (mydf.cond.iloc[idx] < 100) and (mydf.cond.iloc[idx] > 10):
+                    fout.write(f"""{mydf.layer.iloc[idx] :>10}{mydf.row.iloc[idx] :>10}{mydf.column.iloc[idx] :>10} {mydf["head"].iloc[idx].round(5):.5f} {mydf["cond"].iloc[idx]:.6f}\n""")#         0  \n""")
+                else:
+                    print("ERROR. You did not accoutn for conductances <10 or >10,000")
+        fout.close()
+        print(f"Generated GHB Package, your maximum number of GHB cells for any given SP is {max(tmp)}")
+
+    # flopy to update GHB (WARNING: Not used because sig figs and spacing don't match old GHB)=====================================================
+    # load a MODLOW flow model -------------------------------------------
+    opt_update_ghb = False
+    if opt_update_ghb: #(WARNING: Not used because sig figs and spacing don't match old GHB)
+        stress_period_data = {}
+        for sp in dfghb_final2.SP.unique()[:5]:
             if sp in stress_period_data.keys():
-                print(f" {sp-96} already contains ghb data")
+                print(f" {sp} already contains ghb data")
             else:
-                print(f" adding ghb data for sp {sp-96}")
+                print(f" adding ghb data for sp {sp}")
                 mydf = dfghb_final2.loc[dfghb_final2.SP == sp]
                 myLst = []
                 for idx in range(len(mydf)):
-                    myLst.append([mydf.layer.iloc[idx],mydf.row.iloc[idx],mydf.column.iloc[idx],mydf["head"].iloc[idx],mydf.cond.iloc[idx]])
-                    stress_period_data.update({sp-97: myLst}) ###FloPy is ZERO-BASED index
+                    myLst.append([
+                        mydf.layer.iloc[idx],
+                        mydf.row.iloc[idx],
+                        mydf.column.iloc[idx],
+                        "{:.5f}".format(mydf["head"].iloc[idx]),
+                        "{:.5f}".format(mydf["cond"].iloc[idx])
+                    ])
+                    stress_period_data.update({sp - 1: myLst})  ###FloPy is ZERO-BASED index
 
-    ghb = flopy.modflow.ModflowGhb(ml, stress_period_data=stress_period_data)
-    ghb.write_file(check=True)
-    ### Reference: https://flopy.readthedocs.io/en/3.3.2/source/flopy.modflow.mfghb.html
-
-    ####IGNORE####--------------------------------------------------------------------------------
-    # stress_period_data = ml.ghb.stress_period_data.data
-    # ghb = ml.ghb.stress_period_data.get_dataframe()
-    # ghb_period = {}
-    # # Need to re-do 2020 later.
-    # for per in [1]: # number of stress periods
-    #     ghb_period_array = []
-    #     for k,i,j,stage,cond in zip(ghb.k,ghb.i,ghb.j,ghb[f'bhead{per-1}'],ghb[f'cond{per-1}']):
-    #         ghb_period_array.append([k, i, j, stage, cond])
-    #     ghb_period[per] = ghb_period_array
-    #
-    # x = np.array(ghb_period_array, dtype=[('k', '<i4'), ('i', '<i4'), ('j', '<i4'), ('bhead', '<f4'), ('cond', '<f4')])
-    #
-    # stress_period_data[83]
-    # stress_period_data = {85-1: ghb_period_array}
-    # ghb = flopy.modflow.ModflowGhb(ml, stress_period_data=stress_period_data)
-
-    #gdf.columns
-    #ghb_hed.plot()
-    # Reference/Source
-    # https://github.com/rosskush/spatialpy/blob/main/spatialpy/utils/extraction.py
+        ghb = flopy.modflow.ModflowGhb(ml, stress_period_data=stress_period_data, filenames="100hr3_draft.ghb")
+        ghb.write_file(check=True)
+        ### Reference: https://flopy.readthedocs.io/en/3.3.2/source/flopy.modflow.mfghb.html

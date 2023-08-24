@@ -17,8 +17,8 @@ continuing_source_modeling/scenarios
 model_files/flow_2023_2125/100hr3_2023to2125.rch
 scripts/output/boundary_conditions/
 /model_packages/pred_2023_2125/rch/output/100hr3_2023to2125.rch
-/model_packages/hist_2014_2023/ghb/*
 /mruns
 scripts/del_download_river_stage/
 sico/
 layer_top_bot_ele*
+odel_packages/hist_2014_2023/riv/RiverCSV/*.csv
