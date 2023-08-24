@@ -2,9 +2,9 @@ LIST 7 100hr3.lst
 BAS6  1 100hr3.bas
 DIS  29 100hr3.dis
 LPF 11 100hr3.lpf
-MNW2 155 100hr3.mnw2
-GHB 17 100hr3.ghb
-RIV 14 100hr3.riv
+#MNW2 155 100hr3.mnw2
+#GHB 17 100hr3.ghb
+#RIV 14 100hr3.riv
 RCH 18 100hr3.rch
 OC  22 100hr3.oc
 ORT 19 100hr3.ort
