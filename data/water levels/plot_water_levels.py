@@ -66,7 +66,7 @@ def generate_plots(dict, col):
         # ax.set_ylim(113.5,118)
         plt.xticks(rotation = 45)
         fig.tight_layout()
-        plt.savefig(os.path.join(cwd, 'plots', f'{k}.png'))
+        # plt.savefig(os.path.join(cwd, 'plots', f'{k}.png'))
 
     return None
 

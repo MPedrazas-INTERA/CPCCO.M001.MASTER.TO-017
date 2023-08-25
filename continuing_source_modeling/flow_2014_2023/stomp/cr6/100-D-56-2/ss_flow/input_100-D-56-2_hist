@@ -1,0 +1,130 @@
+~Simulation Title Card
+1,
+Waste Site 100-D-156:2 pipeline Cr6,
+H Rashid,
+Intera Inc.,
+October 20 2021,
+10:00 AM PST,
+2,
+Derivation of a characteristic breakthrough curve for waste sites in 100-HR-3 Groundwater OU with STOMP Version 4.0.
+The breakthrough curve will be used to develop a continuing source (SSM package) for MT3D.
+~Solution Control Card
+Normal,
+Water,,
+1,
+0.,yr,2014.,yr,1.0e-09,yr,1.0,yr,1.25,8,1.e-6,
+500000,
+0,
+
+### Representative soil column 2 (developed by Terry Tolan) provided HSU thickness 
+### as BGS. Therefore, these values were converted to elevation above NAVD88 datum
+### Average disk Z of wells D5-97, D5-146, D5-122, D5-102, D5-99, D5-144, D5-119, D5-103
+### is about 143.5 m.
+### 23.5 m Hanford and 10.1 m Ringold E
+### The vadose zone thickness in the representative columns does not include the excavation.
+### Excavation should be considered if there is significant reduction in vadose
+### zone thickness.  
+~Grid Card
+cartesian,
+1,1,         119,
+# X Direction, nodes
+0.0,m,10.0,m,
+# Y Direction (Not Used)
+0.,m,10.0,m,
+# Z Direction nodes run for 100-HR-3
+#Need a better estimate from model output
+#Water Table Elevation = 118.75 average WT (Min WT = 118.11 m and Max WT = 119.55 m)
+#bottom node center = 113.875 m
+113.75,m,         119@0.25,m,
+########################
+~Rock/Soil Zonation Card
+#
+3,
+RS,1,1,1,1,1,        20,
+RE,1,1,1,1,        21,        25,
+HF,1,1,1,1,        26,        119,
+########################
+~Mechanical Properties Card
+#Soil name,particle density,units,total porosity,diffusive porosity (theta S),specific storativity - default = 1E-07*diff porosity,
+#units - default = 1/m, tortuosity function,
+#BF,2.68,g/cm^3,0.276,0.262,Pore Compressibility,1e-7,1/Pa,,,Millington and Quirk, # ECF-200MW1-10-0080 Table 6
+HF,2.68,g/cm^3,0.114,0.114,Pore Compressibility,1e-7,1/Pa,,,Millington and Quirk, # density ECF-200MW1-10-0080 Table 6; porosity from average of samples 2-1318, and 3-1702 in table 6 (ECF-HANFORD-11-0063),
+RE,2.68,g/cm^3,0.178,0.178,Pore Compressibility,1e-7,1/Pa,,,Millington and Quirk, # density ECF-200MW1-10-0080 Table 6; porosity from average of samples 2-1307, and 2-1308 in table 6 (ECF-HANFORD-11-0063),
+RS,2.68,g/cm^3,0.178,0.178,Pore Compressibility,1e-7,1/Pa,,,Millington and Quirk, # density ECF-200MW1-10-0080 Table 6; porosity from average of samples 2-1307, and 2-1308 in table 6 (ECF-HANFORD-11-0063),,
+#
+
+~Hydraulic Properties Card
+#Soil name, x-direction hydraulic conductivity, units, y-direction hydraulic conductivity (not used),
+#units, z-direction hydraulic conductivity, units,
+#BF,5.98E-04,hc:cm/s,,,5.98E-04,hc:cm/s, # ECF-Hanford-11-0063-r6 Table 7
+HF,4.66E-03,hc:cm/s,,,4.66E-04,hc:cm/s, # ECF-Hanford-11-0063-r6 Table 7
+RE,9.48E-04,hc:cm/s,,,9.48E-05,hc:cm/s, # ECF-Hanford-11-0063-r6 Table 7
+RS,2.59E-02,hc:cm/s,,,2.59E-03,hc:cm/s, # ECF-Hanford-11-0063-r6 Table 7
+#
+
+~Saturation Function Card
+#Soil name, moisture retention function, vG alpha, units, vG n, residual saturation, vG m - default = 1 - 1/n
+#BF,Nonhysteretic van Genuchten,0.019, 1/cm,1.4,0.103,, # # ECF-Hanford-11-0063-r6 Table 7 (ECF-HANFORD-15-0129 documented wrong Sr value)
+HF,Nonhysteretic van Genuchten,0.029, 1/cm,1.378,0.0474,, # Table 7 in ECF-HANFORD-11-0063, Sr calculated from average theta-r (0.0108,0) and average porosity 0.114
+RE,Nonhysteretic van Genuchten,0.013, 1/cm,1.538,0.0834,, # Table 7 in ECF-HANFORD-11-0063, Sr calculated from average theta-r (0.0089, 0.0208) and average porosity 0.178
+RS,Nonhysteretic van Genuchten,0.013, 1/cm,1.538,0.0834,, # Table 7 in ECF-HANFORD-11-0063, Sr calculated from average theta-r (0.0089, 0.0208) and average porosity 0.178
+
+~Aqueous Relative Permeability Card
+#BF,Mualem,,
+HF,Mualem,,
+RE,Mualem,,
+RS,Mualem,,
+#
+~Initial Conditions Card
+Aqueous Pressure,Gas Pressure,
+2,
+#
+Aqueous Pressure,      1.4906840E+05,Pa,,,,,-9793.52,1/m,1,1,1,1,1,        20,
+Aqueous Pressure,86656.7554,Pa,,,,,-100.,1/m,1,1,1,1,        21,         121,
+#
+
+~Boundary Conditions Card
+3,
+#
+# 1 Recharge corresponding Excavated Hanford Formation
+top,neumann,
+1,1,1,1,         119,         119,2,
+0.,yr, -4.6000000E+01,mm/yr,
+10000.0,yr, -4.6000000E+01,mm/yr,
+# Hydraulic gradient =  1.1E-3 m/m.
+# With 10 m horizontal span of a grid, the head drop from the edge to middle points of
+# the grid is 10m*0.0011 m/m = 0.011m
+# The pressure drop is 0.011m * 9793.52Pa/m = 107.73 Pa. Thus, the
+west,hydraulic gradient,
+1,1,1,1,1,        20,1,
+0.,yr,           147232.125,Pa,
+east,hydraulic gradient,
+1,1,1,1,1,        20,1,
+0.,yr,           147517.116432,Pa,
+
+~Output Control Card
+1,
+1,1,        25,
+#
+1,1,yr,m,6,6,9,
+8,
+aqueous saturation,,
+aqueous matric potential,m,
+aqueous moisture content,,
+xnc aqueous vol,mm/yr,
+znc aqueous vol,mm/yr,
+aqueous courant number,,
+total water mass,,
+water mass source int,,
+#
+1,
+2010.,yr,,
+8,
+aqueous saturation,,
+aqueous matric potential,m,
+aqueous moisture content,,
+xnc aqueous vol,mm/yr,
+znc aqueous vol,mm/yr,
+aqueous courant number,,
+total water mass,,
+water mass source int,,
