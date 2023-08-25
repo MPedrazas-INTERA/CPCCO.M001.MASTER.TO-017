@@ -3,7 +3,6 @@
 *.cbb
 *.ftl
 *.riv
-*.ghb
 *.swp
 *.ddn
 *.tar
@@ -24,3 +23,4 @@ sico/
 layer_top_bot_ele*
 model_packages/hist_2014_2023/riv/RiverCSV/*.csv
 model_packages/hist_2014_2023/riv/archive
+executables/linux/*
