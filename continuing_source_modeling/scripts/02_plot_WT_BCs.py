@@ -26,11 +26,11 @@ plt.rcParams['legend.fontsize'] = 15
 
 
 ## user define model scenario
-case = 'sce9a_rr3_to2125'
+case = 'flow_2014_2023'
 
 cwd = os.getcwd()
-ws = os.path.join(os.path.dirname(cwd), 'scenarios', case, '2035_2125', 'bc_mod2obs')
-odir = os.path.join(cwd, 'output', 'WT_BC_plots', case, '2035_2125')
+ws = os.path.join(os.path.dirname(cwd), case, 'bc_mod2obs')
+odir = os.path.join(cwd, 'output', 'WT_BC_plots', case)
 if not os.path.exists(odir):
     os.makedirs(odir)
 

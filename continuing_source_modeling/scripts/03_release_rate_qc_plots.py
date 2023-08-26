@@ -16,11 +16,11 @@ matplotlib.use('Qt5Agg')
 
 
 ##user define case##
-case = 'sce3a_to2125_rr3_test'
+case = 'flow_2014_2023'
 
 cwd = os.getcwd()
-ws = os.path.join(os.path.dirname(cwd), 'scenarios', case, 'ssm', 'cr6')
-outputDir = os.path.join(os.path.dirname(cwd), 'scenarios', case, 'plots')
+ws = os.path.join(os.path.dirname(cwd), case, 'ssm', 'cr6')
+outputDir = os.path.join(os.path.dirname(cwd), case, 'plots')
 if not os.path.exists(outputDir):
     os.makedirs(outputDir)
 
@@ -62,7 +62,7 @@ def read_ssm_resampled():
 
 def read_wt_data(rrs2, sps):
 
-    wtpath = os.path.join(os.path.dirname(cwd), 'scenarios', case, 'bc_mod2obs')
+    wtpath = os.path.join(os.path.dirname(cwd), case, 'bc_mod2obs')
     wt_files = glob.glob(os.path.join(wtpath, 'make*.csv'))
     wts = {}
     #re.split('[\\\\_.]', k)[-2]
@@ -109,9 +109,9 @@ def plot_release_rates(rrs2, wts):
 
     x = pd.to_datetime(wts['100-D-100']['Date']) ##snag date column from any of the wts dataframes as x axis
 
-    if year == '2022':
+    if year == '2023':
         xmin = pd.to_datetime('01-01-2014')
-        xmax = pd.to_datetime('01-01-2023')
+        xmax = pd.to_datetime('08-01-2023')
     elif year == '2032':
         xmin = pd.to_datetime('01-01-2023')
         xmax = pd.to_datetime('01-01-2033')
@@ -125,17 +125,20 @@ def plot_release_rates(rrs2, wts):
             fig, ax = plt.subplots(figsize = (10,6))
             # ax.set_title(f'Cr(VI) at {bore}')
             ax.set_title(f'Cr(VI) at {title_dict[bore]}')
-            ax.plot(x, rrs2[bore]['rr'], color = 'xkcd:crimson', label  = 'Release Rate')
+            # ax.plot(x, rrs2[bore]['rr'], color = 'xkcd:crimson', label  = 'Release Rate')
+            ax.plot(rrs2[bore]['sp'], rrs2[bore]['rr'], color='xkcd:crimson', label='Release Rate')
             # ax.plot(rrs2[bore], rrs2[bore]['rr'], color='red', label='Release Rate')
             ax.grid(True)
             ax.set_xlabel('Year')
             ax.set_ylim(0, rrs2[bore]['rr'].max()*1.3)      ##axis limits a function of individual RR curves
-            ax.set_xlim(xmin,xmax)
+            # ax.set_xlim(xmin,xmax)
             ax.set_ylabel('Release Rate (kg/year)')
 
             ax2 = ax.twinx()
-            ax2.plot(x, rrs2[bore]['Head'], label = 'Water Table')
-            ax2.plot(x, mean, '--', color='purple', linewidth=2, label = 'Average Water Table')
+            # ax2.plot(x, rrs2[bore]['Head'], label = 'Water Table')
+            # ax2.plot(x, mean, '--', color='purple', linewidth=2, label = 'Average Water Table')
+            ax2.plot(rrs2[bore]['sp'], rrs2[bore]['Head'], label = 'Water Table')
+            ax2.plot(rrs2[bore]['sp'], mean, '--', color='purple', linewidth=2, label = 'Average Water Table')
             ax2.set_ylabel('Water Table Elevation (m)')
             ax2.set_ylim(rrs2[bore]['Head'].min()*0.98, rrs2[bore]['Head'].max()*1.01) ##axis limits function of specific WT location
 
@@ -153,7 +156,7 @@ def plot_release_rates(rrs2, wts):
 
             plt.tight_layout()
             # plt.show()
-            plt.savefig(os.path.join(outputDir, f'{bore}_2023_2125.png'))
+            plt.savefig(os.path.join(outputDir, f'{bore}_2014_2023.png'))
 
     return None
 
@@ -162,9 +165,9 @@ if __name__ == '__main__':
     ## 108 stress periods in the 2014-2022 calibration model.
     ## 120 stress periods in the 2023 - 2032 predictive end-of-pumping model
     ## 598 stress periods in the 2023 - 2125 predictive end-of-simulation model
-    year = '2125'
-    if year == '2022':
-        sps = range(1, 109)
+    year = '2023'
+    if year == '2023':
+        sps = range(1, 114)
     elif year == '2032':
         sps = range(1,121)
     elif year == '2125':

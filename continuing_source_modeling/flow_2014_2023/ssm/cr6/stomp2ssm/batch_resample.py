@@ -97,7 +97,7 @@ if __name__=="__main__":
     mappath = os.path.join(basepath, "site2zone.csv")
     """ the path to the file that relates site names to zones """
 
-    ssm_file = os.path.join(basepath, "100HR3_2014_2022_transport_stomp2ssm.ssm")
+    ssm_file = os.path.join(basepath, "100HR3_2014_2023_transport_stomp2ssm.ssm")
     """ the path to the SSM file """
     value_flag = 15
     """ added to the end of each node in the SSM file"""
@@ -109,8 +109,8 @@ if __name__=="__main__":
     
     target_surf_file = "gw_conc_1-24.dat"
     """ the name of the saturation files (they are all assumed to have the same name)"""
-    if os.path.isfile('../times_2014-2022_decimal.csv'):
-        sp_file = "times_2014-2022_decimal.csv"
+    if os.path.isfile('../times_2014_2023_decimal.csv'):
+        sp_file = "times_2014_2023_decimal.csv"
     else:
         print('warning:wrong csv file')    
         sp_file = "stress_periods_decimal_only2016.csv"

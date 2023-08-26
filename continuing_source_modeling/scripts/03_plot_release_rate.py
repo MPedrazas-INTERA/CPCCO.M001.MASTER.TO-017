@@ -15,11 +15,11 @@ matplotlib.use('Qt5Agg')
 
 
 ##user define case##
-case =  'sce2_to2125_rr5'
+case =  'flow_2014_2023'
 
 cwd = os.getcwd()
-ws = os.path.join(os.path.dirname(cwd), 'scenarios', case, 'ssm', 'cr6')
-outputDir = os.path.join(os.path.dirname(cwd),'scenarios', case, 'plots')
+ws = os.path.join(os.path.dirname(cwd), case, 'ssm', 'cr6')
+outputDir = os.path.join(os.path.dirname(cwd),case, 'plots')
 if not os.path.exists(outputDir):
     os.makedirs(outputDir)
 

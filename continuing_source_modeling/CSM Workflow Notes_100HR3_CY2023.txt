@@ -59,7 +59,7 @@ STEP 2: RUN STOMP. For details into program function visit https://stomp-usergui
 2.2 When .tpl file is set up, run script 01_flow_to_stomp.py is run in order to populate input file "input_cycle2" 
 	with east and west hydraulic gradient boundary conditions. Detailed instructions on this script are provided within the script
 
-2.3 Once input_cycle2 is generated, copy stomp directory and all subdirectories to linux cluster
+((2.3 Once input_cycle2 is generated, copy stomp directory and all subdirectories to linux cluster))
 
 2.4 Run run_transient.sh (./run_transient.sh or bash run_transient.sh) shell script, which runs stomp for all subdirectories simultaneously
 

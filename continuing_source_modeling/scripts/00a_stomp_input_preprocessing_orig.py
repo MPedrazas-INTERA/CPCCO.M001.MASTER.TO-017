@@ -81,7 +81,7 @@ def edit_tpl_file():
                 # if lines[i].startswith('2023.0,yr,-46.00000000,mm/yr,,,,,,,,,,,\n'):
                 #     lines[i] = '2024.0,yr,-46.00000000,mm/yr,,,,,,,,,,,\n'
 
-            ## shave off conditions that are no longer needed/outside of simulation period
+            ## shave off conditions that are no longer needed/outside of simulation period. Can be a list of strings.
             strings_to_remove = ['2012.100000,yr,']
             lines = [line for line in lines if not any(string in line for string in strings_to_remove)]
 
@@ -89,7 +89,7 @@ def edit_tpl_file():
             string_to_find = '2022.000000,yr,'
             index = next((i for i, line in enumerate(lines) if string_to_find in line), None)
             if index is not None:
-                new_line = '\n2023.581000,yr,\n'
+                new_line = '2023.581000,yr,\n'
                 lines.insert(index + 1, new_line)
 
             ## --- extra snippets -- ##
@@ -119,8 +119,7 @@ if __name__ == "__main__":
 
     # copy_restart_file()
 
-    # copy_tpl_file()
-
+    copy_tpl_file()
     edit_tpl_file()
 
 
