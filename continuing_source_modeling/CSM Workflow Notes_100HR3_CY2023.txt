@@ -1,0 +1,103 @@
+STOMP to SSM Workflow - UPDATED AS OF AUGUST 2023
+R.Weatherl
+
+
+NOTE:: ON WINDOWS, NEW CSM CASE DIRECTORIES CAN BE MADE AUTOMATICALLY BY USING COMMAND xcopy "source" "destination" /t /e (see https://www.winhelponline.com/blog/how-to-copy-folder-structure-without-copying-files)
+	This avoids having to manually re-create the many subdirectories needed for the workflow to function (though some files will need to be copied after this). Remove /t if we want to copy files over as well (xcopy "source" "destination" /e).
+
+STEP 0: PREP FILES:
+- Need a date/time/SPs file with decimal dates. R script "Time_conversion.R" will take input file with dates to convert to decimal. Make sure the input file has date AND time for better precision (e.g. 1/1/2023 00:00 and 1/31/2023 23:59)
+- Baseline 2014 steady-state STOMP run restart files are used as initial conditions for (transient) stomp calibration runs. 
+	- Original baseline restart files are located in S:\PSC\CHPRC.C003.HANOFF\Rel.112\transport calibration\model_files\continuing_source_modeling\stomp\cr6\xxx\ss_flow (where xxx represents individual bore names). As long as our calibration model starts in 2014 and no other changes are made in the stomp model, these do not change and should always be copied from source for consistency.
+	- To copy these automatically from original location to new destination (on windows) in the right bore locations, use bash script located at \GitHub\100HR3-Rebound\continuing_source_modeling\flow_2014_2023\stomp\cr6 --  "cp_ss_restart_files.sh".
+- Copy template files for each bore location from the most recent corresponding run (either calibration or predictive)
+	- use bash script at \GitHub\100HR3-Rebound\continuing_source_modeling\flow_2014_2023\stomp\cr6 "cp_tpl_base_files.sh" for automatic file copying.
+
+- .hds output from flow model run used
+
+STEP 1: RUN MOD2OBS ON BORE/SOIL CORE LOCATIONS
+
+1.2 On Windows: a "dummy" mod2obs input file is created using the script 01a_gen_stomp_mod2obs_input.py (in CSM contained scripts directory)
+	- determines W- and E- faces of each source zone, writes out "Bore_coordinates.csv" input file
+		note: "Bore_coordinates.csv" was generated for previous versions of 100HR, so will not change assuming the same sources
+		note: for STOMP application, only layer 1 is considered
+	- creates dummy output file "Bore_Sample_File_in_model_xxx.csv", where xxx defines run type (calibration, predictive, etc)
+		In this file, heads are set to -9999. This file will only change if we want to consider different stress periods or bore locations.
+	-UPDATE 2023: this can now be run directly on cluster. Always check that inputs/outputs are in UNIX format 
+
+1.3 If step 1.2 is run on Windows, input files uploaded to cluster
+
+1.4 MOD2OBS is run on flow model results (see batch file for command) -- double check inputs and paths in mod2obs_d_cell.in
+	-in .in file: make sure that the .hds file used and the saving location for output are consistent
+
+((1.5 Resulting .dat file is moved to windows into BC_mod2obs subdirectory for csm scenario of interest)) now runs on cluster
+
+1.6 .dat file is manipulated to be STOMP-input friendly in the script 01b_split_mod2obs_results.py (in CSM contained scripts directory)
+	- For FY 2023: calibration first sp is set to 2014-01-01 and last sp is set to 2023-01-01; predictive first sp is 2023-01-01, last sp is 01-01-2026
+	- Resulting .dat file is split into separate files for each soil core used in STOMP. All written into BC_mod2obs subdir.
+	- Average water table is also calculated for each soil core 
+1.6.1 Update "STOMP_column_list.csv" average WT with output from script 01b_split_mod2obs_results.py
+
+1.7 R script make_BC.R is run to generate boundary condition .csv files for each soil core
+
+
+STEP 2: RUN STOMP. For details into program function visit https://stomp-userguide.pnnl.gov/index.html
+
+2.1 input_cycle2.tpl is the template file used to set up the STOMP input file. It is separated into "cards" that are marked
+	by ~ symbols.
+	Generally only the boundary conditions card will change. 
+	- The number directly below "~Boundary Conditions Card" corresponds to the number of BCs that will be defined (currently 3 - 
+	  recharge, east gradient, west gradient). BE SURE that the last number in the row directly above the start of the east AND west gradient timeseries
+	  equals the length of the timeseries for each boundary condition.
+	- if years of model run are changed (i.e. for a 2021 - 2032 case), the Solution Control Card, Boundary Conditions Card, and Output Control Card
+	  will need to be changed to reflect change in years
+		-when number of years are changed, the number directly above the list of years should change to reflect length of list
+	- All steady state and initial conditions are set from previous calibration runs (./ss_flow/restart for calib case, ./calib_restart/restart for predictive case).
+	- ~Output Control Card can be used to define how often to save results for checking, etc.
+2.1.1 Script "00a_stomp_input_preprocessing_orig.py" can be used (or be inspiration) to change all .tpl files at once for a given scenario
+
+2.2 When .tpl file is set up, run script 01_flow_to_stomp.py is run in order to populate input file "input_cycle2" 
+	with east and west hydraulic gradient boundary conditions. Detailed instructions on this script are provided within the script
+
+((2.3 Once input_cycle2 is generated, copy stomp directory and all subdirectories to linux cluster))
+
+2.4 Run run_transient.sh (./run_transient.sh or bash run_transient.sh) shell script, which runs stomp for all subdirectories simultaneously
+
+2.5 Run steps 2.1 - 2.5 for calibration model. To copy calibration restart files (initial conditions) into different scenarios,
+	run script "00_copy_restart_file.py". This copies each restart file to its corresponding "calib_restart" directory. 
+
+2.6 Repeat steps 2.1 - 2.5 for every new scenario considered.
+
+Note May 2023: An assumption is made that steady-state conditions for 100-H-46 and 100-H-SEB are equivalent. This was checked and assumed true --> 
+	    See file S:\PSC\CHPRC.C003.HANOFF\Rel.112\transport calibration\model_files\continuing_source_modeling\stomp\cr6\stratigraphy_summary.xlxs for justification
+	    So --> 100-H-46 and -46_exv use same input card as 100-H-SEB.
+
+
+STEP 3: GENERATE SSM PACKAGE
+
+3.1 In ssm directory, subdirectories for different areas of each site must be created (see note above to speed this up). 
+	  Different areas account for strong and weak areas of the source zone.
+	- source zones and their strengths are defined in the files "cr6_source_zones.dat" and "site2zone.csv". 
+
+3.2 Run script 02_cp_dat_to_ssm.py on linux (python 02_cp_dat_to_ssm.py) to copy STOMP output .dat files into each corresponding subdirectory. 
+	  More details on file structure given in script.
+	- POTENTIAL/COMMON ISSUES: double check "folder" variable location. Also double check that the correct files
+	  are being isolated. Currently this is done with the line "if file.startswith("make_BC_")" on line 72. Minor adjustments may be needed depending on
+	  user directory structure.
+
+3.3 run "batch_resample.py" located in ssm/cr6/stomp2ssm on linux (command "python batch_resample.py"). This uses the .dat files 
+	to create the .ssm file and additional outputs used for post-processing. batch_resample.py also needs SSM header,
+	unit conversion multiplier, SSM file name, and SP length file. See script for user inputs needed.
+
+3.4 run script "02_get_uppermost_activecells_flow.py" in main scripts folder, OR on linux to get the ssm file with xxxx_activLays.ssm. This file changes the layers
+	from 1 (original setting) to the uppermost active layer (where we find the water table) for transport run. See .sh file on linux for instructions on
+	running on linux.
+
+
+STEP 4: VISUALIZING CONTINUING SOURCE RELEASE RATE TS -- GOOD FOR QC
+
+4.0 Create 'plots' directory
+
+4.1 Script 02_plot_WT_BCs will plot water tables on east and west side of each bore.
+
+4.2 Script 03_plot_release_rate.py plots the simulated release rate from ssm for each bore, combined with water table information.
