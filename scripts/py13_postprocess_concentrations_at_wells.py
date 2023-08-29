@@ -15,6 +15,8 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 
 
+## Read in observation data
+## TODO: resample to average value per SP + integrate calibration data
 def read_chemdata(chemfile):
 
     chemdata_raw = pd.read_excel(chemfile)
@@ -27,6 +29,7 @@ def read_chemdata(chemfile):
 
     return chemdata, crvi
 
+## read in UCN file, extract results at wells
 def process_ucn_file(ucnfile, all_lays = False):
 
     precis = 'double'
@@ -51,13 +54,12 @@ def process_ucn_file(ucnfile, all_lays = False):
 
     return data, df_conc
 
-def plot_concentrations(nlay, df_conc, crvi):
+def plot_concentrations(df_conc, crvi):
 
     times['SPstart'] = pd.to_datetime(times['SPstart'])
 
     for well in df_conc['NAME'].unique():
         fig,ax = plt.subplots()
-        # for lay in range(1, nlay+1):
         for lay in [1,2,3,4]:
             # print(lay)
             ucn_toplot = df_conc[df_conc['NAME'] == well][df_conc['Layer'] == lay]
@@ -68,7 +70,7 @@ def plot_concentrations(nlay, df_conc, crvi):
         plt.grid(True)
         plt.title(f'{well}')
 
-        plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f'{well}_2014_2023_draft.png'))
+        # plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f'{well}_2014_2023_draft.png'))
 
     return None
 
@@ -89,4 +91,4 @@ if __name__ == "__main__":
     data, df_conc = process_ucn_file(ucnfile)
     ntimes, nlay, nr, nc = data.shape
 
-    plot_concentrations(nlay, df_conc, crvi)
+    plot_concentrations(df_conc, crvi)
