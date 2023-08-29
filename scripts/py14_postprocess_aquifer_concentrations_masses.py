@@ -68,11 +68,11 @@ if __name__ == "__main__":
 
     thickness, sat_thickness = get_layer_thickness()
 
-    # for case in cases:
-    #     ucnfile = os.path.join(os.path.dirname(cwd), 'mruns', case, 'tran_2023to2125', 'MT3D001.UCN')
-    #     ######Snapshot: Calculate Average Aq Concentration per Area in 100HR3:
-    #     for area in areas:
-    #         get_ave_concentration(ucnfile, area, case)
+    for case in cases:
+        ucnfile = os.path.join(os.path.dirname(cwd), 'mruns', case, 'tran_2023to2125', 'MT3D001.UCN')
+        ######Snapshot: Calculate Average Aq Concentration per Area in 100HR3:
+        for area in areas:
+            get_ave_concentration(ucnfile, area, case)
 
 
     ## to do: use model layer thickness and cell dimensions + porosity to calculate cell
