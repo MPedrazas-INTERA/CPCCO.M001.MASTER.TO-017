@@ -17,16 +17,17 @@ def read_model_grid():
     print('reading grid file')
     grid = gpd.read_file(os.path.join(root, 'gis', 'shp', 'grid_with_centroids.shp'))
     print('finished reading grid file')
+
     return grid
 
 def get_wells_ij():
+
     print("Getting row and column info for each well")
 
     coordscsv = os.path.join(root, 'data', 'water_levels',
                              "qryWellHWIS.txt")  # dataframe with coords for monitoring wells
 
     coords = pd.read_csv(coordscsv, delimiter="|")
-    well_list = pd.read_csv(os.path.join(cwd, 'output', 'well_info', 'monitoring_well_list.csv'))
     wells = coords.loc[coords.NAME.isin(well_list.NAME)]
 
 
@@ -38,7 +39,30 @@ def get_wells_ij():
                                  crs = mycrs)
 
     gridwells = gpd.sjoin(grid, wells_gdf, how='right')
-    df = gridwells.loc[:,['NAME', 'I', 'J', 'XCOORDS', 'YCOORDS', 'ZCOORDS', 'geometry']]
+
+    df = pd.merge(gridwells, screens, left_on = 'NAME', right_on = 'WELL_NAME')
+    df['Ztop'] = df['ZCOORDS'] - df['STD_SCREEN_DEPTH_TOP_M']
+    df['Zbot'] = df['ZCOORDS'] - df['STD_SCREEN_DEPTH_BOTTOM_M']
+
+    dfz = gpd.read_file(os.path.join(root,"gis", "shp", "botm_elev", "botm_elev.shp"))
+    dfz.drop('node', axis=1, inplace=True)
+    # filter out to only well locations
+    dfmerge = pd.merge(df, dfz, how='left', left_on=['I', 'J'], right_on=['row', 'column'])
+
+    df2 = dfmerge.loc[:,['NAME', 'I', 'J', 'XCOORDS', 'YCOORDS', 'ZCOORDS', 'Ztop', 'Zbot', 'geometry_x',
+                         'botm_1', 'botm_2', 'botm_3', 'botm_4', 'botm_5', 'botm_6', 'botm_7', 'botm_8', 'botm_9']]
+
+    # Iterate through each row
+    for index, row in df2.iterrows():
+        well_screen_depth = row['Zbot']
+
+        # Iterate through geological layer depths and find the first layer
+        # where well screen depth is greater than or equal to the layer depth
+        for layer_number in range(1, len(row)):
+            if well_screen_depth >= row[f'Layer{layer_number}Depth']:
+                df.at[index, 'LayerName'] = f'Layer{layer_number}'
+                break
+
 
     #print('finished joining geodataframes')
 
@@ -256,11 +280,14 @@ if __name__ == "__main__":
     root = os.path.dirname(cwd)
     grid = read_model_grid()
 
-
     output_dir = os.path.join(root, "scripts", "output", "well_info")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    well_list = pd.read_csv(os.path.join(cwd, 'output', 'well_info', 'monitoring_well_list.csv'))
+    screens = pd.read_excel(os.path.join(root, 'data', 'well_info', 'Well Screen8-29-2023version-3.3.xlsx'),
+                            usecols = ['WELL_NAME', 'STD_SCREEN_DEPTH_TOP_M', 'STD_SCREEN_DEPTH_BOTTOM_M'])
+    screens.drop_duplicates('WELL_NAME', keep = 'first', inplace=True)
 
 
 
