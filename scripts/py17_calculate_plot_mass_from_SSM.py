@@ -86,14 +86,14 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
     finalDF2["Mass (ug)"] = finalDF2.Val * finalDF2.cdays  # mass rate (ug/day) * time (days) = mass (ug)
     finalDF2["Mass (ug/month)"] = finalDF2["Mass (ug)"].copy()
     finalDF2["Mass (ug/month)"].loc[finalDF2.cdays > 31] = finalDF2["Mass (ug)"]/12 #is cdays > 31, it means it's yearly, so divide by 12
-    finalDF2.to_csv(os.path.join(outputDir, "paper_trail_v02.csv"), index=False)
+    finalDF2.to_csv(os.path.join(outputDir, "paper_trail.csv"), index=False)
 
     ##########[Step 1] Calculate total amount of mass per SP for every group of source zone areas -  5 groups defined in dictioinary grpDict and wastesiteDict
     finalDF3 = pd.pivot_table(finalDF2, index=["Group", "SP", "tte"], values=["Mass (ug/month)"],
                               aggfunc=np.sum)
     finalDF3.reset_index(inplace=True)
     finalDF3["WasteSite"] = finalDF3["Group"].map(wastesiteDict)
-    finalDF3.to_csv(os.path.join(outputDir, "mass_calculated_fromSSM_v02.csv"), index=False)
+    finalDF3.to_csv(os.path.join(outputDir, "mass_calculated_fromSSM.csv"), index=False)
 
 
     ##########[Step 2] Calculate total yearly mass release for 100-H and 100-D Areas:
@@ -105,23 +105,23 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
 
     ### added by Robin to calculate total mass released for specific time slices ###
     #####
-    t = finalDF2[finalDF2['SP'].isin(list(range(0, 217)))]
-    fdf5 = pd.pivot_table(t, index=["Group"], values=["Mass (ug)"],
-                              aggfunc=np.sum)
-    fdf5["Total Mass (ug)"] = fdf5["Mass (ug)"].copy() #rename after pivot
-    fdf5.reset_index(inplace=True)
-    fdf5["WasteSite"] = fdf5["Group"].map(wastesiteDict)
-
-    t2 = finalDF2[finalDF2['SP'].isin(list(range(216, 599)))]
-    fdf6 = pd.pivot_table(t2, index=["Group"], values=["Mass (ug)"],
-                              aggfunc=np.sum)
-    fdf6["Total Mass (ug)"] = fdf6["Mass (ug)"].copy() #rename after pivot
-    fdf6.reset_index(inplace=True)
-    fdf6["WasteSite"] = fdf6["Group"].map(wastesiteDict)
-
-    one = finalDF4.iloc[0:2, 2].sum()/1E9
-    two = fdf5.iloc[0:2, 2].sum()/1E9
-    three = fdf6.iloc[0:2, 2].sum() / 1E9
+    # t = finalDF2[finalDF2['SP'].isin(list(range(0, 217)))]
+    # fdf5 = pd.pivot_table(t, index=["Group"], values=["Mass (ug)"],
+    #                           aggfunc=np.sum)
+    # fdf5["Total Mass (ug)"] = fdf5["Mass (ug)"].copy() #rename after pivot
+    # fdf5.reset_index(inplace=True)
+    # fdf5["WasteSite"] = fdf5["Group"].map(wastesiteDict)
+    #
+    # t2 = finalDF2[finalDF2['SP'].isin(list(range(216, 599)))]
+    # fdf6 = pd.pivot_table(t2, index=["Group"], values=["Mass (ug)"],
+    #                           aggfunc=np.sum)
+    # fdf6["Total Mass (ug)"] = fdf6["Mass (ug)"].copy() #rename after pivot
+    # fdf6.reset_index(inplace=True)
+    # fdf6["WasteSite"] = fdf6["Group"].map(wastesiteDict)
+    #
+    # one = finalDF4.iloc[0:2, 2].sum()/1E9
+    # two = fdf5.iloc[0:2, 2].sum()/1E9
+    # three = fdf6.iloc[0:2, 2].sum() / 1E9
     ######
 
     # if case.startswith('transport_NFA'):
@@ -130,6 +130,9 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
     # elif case == 'transport_RPO_2032_wSSM':
     elif year == 2032:
         years = 12
+    elif year == 2023: ## for rebound study, plot through end of july
+        years = 9 + 7/12
+
 
     totalyearlymass100D, totalyearlymass100H = 0,0
     totalmass100D, totalmass100H = 0,0
@@ -143,7 +146,7 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
             totalmass100H += (finalDF4["Total Mass (ug)"].loc[idx])
             print("100-H", finalDF4["Total Mass (ug)"].loc[idx])
 
-    finalDF4.to_csv(os.path.join(outputDir, "total_annual_mass_calculated_fromSSM_v02.csv"), index=False)
+    finalDF4.to_csv(os.path.join(outputDir, "total_annual_mass_calculated_fromSSM.csv"), index=False)
 
 ##########[Step 3] Plotting results:
     plot = True
@@ -177,10 +180,10 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
         # Customize grid
         ax.grid(which='major', linestyle='-', linewidth='0.1', color='red', zorder=1)
         ax.grid(which='minor', linestyle=':',linewidth='0.1', color='black', zorder=2)
-        ax.set_xlabel("Time (Years) Since 01/01/2023", fontsize=12)
+        ax.set_xlabel("Time (Years) Since 01/01/2014", fontsize=12)
         ax.set_ylabel("Mass Release from Continuing Source (kg/month)", fontsize=12)
-        ax.set_ylim([0, 0.1])
-        ax.set_xlim([13, 102])
+        # ax.set_ylim([0, 0.1])
+        # ax.set_xlim([13, 102])
         ax.minorticks_on()
         ax.tick_params(which='minor', direction='out')
         if secondary_axis:
@@ -202,7 +205,7 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
             pass
         # plt.title('Mass calculated from SSM')
         # plt.show()
-        fname = os.path.join(outputDir, f"mass_calculated_fromSSM_{times}_sce9a_v02.png")
+        fname = os.path.join(outputDir, f"mass_calculated_fromSSM_{times}.png")
         fig.savefig(fname, dpi=800, transparent=False, bbox_inches='tight') #,transparent = True) #facecolor=fig.get_facecolor())
         # plt.close(fig)
     return None
@@ -269,24 +272,26 @@ if __name__ == "__main__":
                      5: '107-H Retention Basin', 4: '183-H Solar Evaporation Basins'}
     grpDict = {3: 1, 4: 1, 14: 1, 19: 2, 6: 2, 18: 2, 9: 3, 10: 4, 13: 5, 25: 5, 12: 5}
 
-    year = 2125
+    year = 2023
 
     #model attributes
     if year == 2032:
         nr, nc, nlay, nsp = 433, 875, 9, 144
     elif year == 2125:
         nr, nc, nlay, nsp = 433, 875, 9, 598
+    elif year == 2023:
+        nr, nc, nlay, nsp = 433, 875, 9, 115
 
-    sce = 'sce9a_rr3_to2125'
+    sce = 'flow_2014_2023'
     # sce = sys.argv[1]
-    times = '2023to2125'
+    times = '2014_2023'
 
     # directories
     cwd = os.getcwd()
     inputDir = os.path.join(cwd, "input")
 
-    ssmDir = os.path.join("..", 'model_packages', 'pred_2023_2125', f'ssm_{sce}')
-    ssmFile = "100HR3_2023_2125_transport_stomp2ssm_reduced.ssm"
+    ssmDir = os.path.join("..", 'model_packages', 'hist_2014_2023', 'ssm')
+    ssmFile = "100HR3_2014_2023_transport_stomp2ssm.ssm"
 
     # outputDir = os.path.join(os.path.dirname(cwd), 'output', 'mass_calc_ssm', f"{case}")
     outputDir = os.path.join(ssmDir,"mass_fromSSM")
@@ -298,7 +303,7 @@ if __name__ == "__main__":
     ##Plot mass releases from output CSV of previous function.
     # cases = ['sce4b_rr1_to2125', 'sce11b_rr1_to2125', 'sce11b_rr2_to2125', 'sce11b_rr3_to2125'] #chemical treatment comparison
     # cases = ['sce9a_rr1_to2125', 'sce9a_rr2_to2125', 'sce9a_rr3_to2125', 'sce9a_rr4_to2125'] #super scenario comparison
-    cases = ['sce2a_rr1_to2125', 'sce4a_rr6_to2125']
+    # cases = ['sce2a_rr1_to2125', 'sce4a_rr6_to2125']
 
     # nameDict = {'sce4b_rr1_to2125':"0% CT",
     #              'sce11b_rr1_to2125':"30% CT",
@@ -311,13 +316,13 @@ if __name__ == "__main__":
     #             'sce10a_rr1_to2125': "SF"
     #             }
 
-    nameDict = {'sce2a_rr1_to2125': 'Alternative 1',
-                'sce4a_rr6_to2125':'Alternative 2'}
-
-    ## Neutral directory for comparison cases:
-    outputDir = os.path.join('output', 'mass_calc_ssm_comparison')
-    if not os.path.isdir(outputDir):
-        os.makedirs(outputDir)
+    # nameDict = {'sce2a_rr1_to2125': 'Alternative 1',
+    #             'sce4a_rr6_to2125':'Alternative 2'}
+    #
+    # ## Neutral directory for comparison cases:
+    # outputDir = os.path.join('output', 'mass_calc_ssm_comparison')
+    # if not os.path.isdir(outputDir):
+    #     os.makedirs(outputDir)
   #  plot_mass_compareCases(cases)
 
 

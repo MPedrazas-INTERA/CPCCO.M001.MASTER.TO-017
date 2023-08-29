@@ -1,6 +1,5 @@
 """
-This script generates starting particle files for modpath6.
-It places particles in the model layer corresponding to the largest screen fraction for the well (mnw2) :)
+This script creates a DB of well info including geographic coordinates AND model coordinates
 
 """
 
