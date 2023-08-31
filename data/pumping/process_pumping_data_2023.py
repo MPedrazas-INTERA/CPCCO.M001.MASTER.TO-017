@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Qt5Agg')
 
-gpm2m3d = 5.451 # Convert from gpm to m3/d
+gpm2m3d = (24*60)/1*231*(25.4/1000/1)**3 #
 
 cwd = os.getcwd()
 wdir = os.path.dirname(cwd)
@@ -99,7 +99,7 @@ wrates_d.drop(missing.index, inplace=True)
 wrates_d.replace(np.nan, 0, inplace=True)
 
 ## write wellrates output for allocateqwell
-# wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_2023', 'mnw2', 'wellratesdxhx_cy2014_jul2023.csv'))
+wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_2023', 'mnw2', 'wellratesdxhx_cy2014_jul2023_v02.csv'))
 
 
 
