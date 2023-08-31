@@ -27,7 +27,10 @@ def read_chemdata(chemfile):
 
     crvi = chemdata[chemdata['STD_CON_LONG_NAME'] == 'Hexavalent Chromium']
 
-    return chemdata, crvi
+    flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR']
+    crvi_filt = crvi[~crvi['REVIEW_QUALIFIER'].isin(flags)]
+
+    return chemdata, crvi_filt
 
 ## read in UCN file, extract results at wells
 def process_ucn_file(ucnfile, all_lays = False):
@@ -86,9 +89,9 @@ if __name__ == "__main__":
 
     ucnfile = os.path.join(os.path.dirname(cwd), 'mruns', 'calib_2014_2023', 'tran_2014_2023', 'MT3D001.UCN')
 
-    chemdata, crvi = read_chemdata(chemfile)
+    chemdata, crvi_filt = read_chemdata(chemfile)
 
     data, df_conc = process_ucn_file(ucnfile)
     ntimes, nlay, nr, nc = data.shape
 
-    plot_concentrations(df_conc, crvi)
+    plot_concentrations(df_conc, crvi_filt)
