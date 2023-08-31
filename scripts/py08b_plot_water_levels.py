@@ -122,6 +122,7 @@ def get_wells_ij(dict1, dict2, dict3, coordscsv):
     # df2csv.to_csv(os.path.join("output", "water_level_plots", "monitoring_wells_coords_ij.csv"), index=False)  # export CSV
     return df
 
+## TODO: unbreak it...
 def generate_plots(dict1, dict2, dict3):
 
     for mydict in [dict1, dict2, dict3]:
@@ -143,21 +144,21 @@ def generate_plots(dict1, dict2, dict3):
             print(k)
             toplot = mydict[k]#.resample('D').mean()
             fig, ax = plt.subplots(figsize=(8, 5))
-        if mydict == dict3:  ## dict3 are manual measurements -- scatter plot best
+        # if mydict == dict3:  ## dict3 are manual measurements -- scatter plot best
+        #     ax.scatter(toplot.index, toplot.loc[:,col], label = f"Observed", c = "r", edgecolor="darkred", s=4)
+        #     ax.plot(toplot.index, toplot.loc[:, col], c="r", ls="--")
+        #     df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == k)]
+        #     dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit = "days")
+        #     ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
+        # else:
+        try:
             ax.scatter(toplot.index, toplot.loc[:,col], label = f"Observed", c = "r", edgecolor="darkred", s=4)
-            ax.plot(toplot.index, toplot.loc[:, col], c="r", ls="--")
+            ax.plot(toplot.index, toplot.loc[:,col], c = "r", ls="--")
             df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == k)]
-            dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit = "days")
+            dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit="days")
             ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
-        else:
-            try:
-                ax.scatter(toplot.index, toplot.loc[:,col], label = f"Observed", c = "r", edgecolor="darkred", s=4)
-                ax.plot(toplot.index, toplot.loc[:,col], c = "r", ls="--")
-                df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == k)]
-                dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit="days")
-                ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
-            except:
-                print('could not plot')
+        except:
+            print('could not plot')
                 # ax.scatter(toplot.index, toplot.loc[:, col2], label = f"Observed", c = "r", edgecolor="darkred", s=4)
                 # ax.plot(toplot.index, toplot.loc[:,col], c = "r", ls="--")
                 # df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == k)]
@@ -193,7 +194,8 @@ if __name__ == "__main__":
     coordscsv = os.path.join(os.path.dirname(cwd), 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
     mywells = get_wells_ij(dict1, dict2, dict3, coordscsv)
 
-    hds_file = r"C:\100HR3-Rebound\mruns\calib_2014_2023\flow_2014_2023\100hr3.hds"
+    # hds_file = r"C:\100HR3-Rebound\mruns\calib_2014_2023\flow_2014_2023\100hr3.hds"
+    hds_file = os.path.join(os.path.dirname(cwd), 'mruns', 'calib_2014_2023', 'flow_2014_2023', '100hr3.hds')
     myHds = read_head(hds_file, mywells)
 
     generate_plots(dict1, dict2, dict3) ## provide column label to be plotted
