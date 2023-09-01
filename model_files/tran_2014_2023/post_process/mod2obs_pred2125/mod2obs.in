@@ -1,0 +1,13 @@
+model.spc
+Bore_coordinates.csv
+Bore_coordinates.csv
+Bore_Sample_File_in_model.csv
+../MT3D001.UCN
+t
+1.000e+25
+d
+01/01/2021
+00:00:00
+9
+5
+bore_sample_output.dat
