@@ -16,7 +16,7 @@ matplotlib.use('Qt5Agg')
 
 
 ## Read in observation data
-## TODO: resample to average value per SP + integrate calibration data
+## TODO: resample to average value per SP(?) + integrate calibration data
 def read_chemdata(chemfile):
 
     chemdata_raw = pd.read_excel(chemfile)
