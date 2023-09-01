@@ -37,4 +37,22 @@ start = pd.Timestamp('2014-01-01 00:00:00')
 df['Decimal'] = (df['SAMP_DATE_TIME'] - start).dt.total_seconds()/(24*60*60)
 
 output = df[['NAME', 'Decimal', 'XCOORDS', 'YCOORDS', 'MidScrElev(m)', 'STD_VALUE_RPTD']]
-output.to_csv(os.path.join(ws, 'model_files', 'tran_2014_2023', 'post_process', 'ConcTarg', 'mwell_concentrations_crvi.csv'))
+# output.to_csv(os.path.join(ws, 'model_files', 'tran_2014_2023', 'post_process', 'ConcTarg', 'mwell_concentrations_crvi.csv'))
+
+ofile = os.path.join(ws, 'model_files', 'tran_2014_2023', 'post_process', 'ConcTarg', '100hr3_conc_crvi_v2.in')
+with open(ofile, 'w') as fid:
+    fid.write(f'#Headtarg.exe input file\n')
+    fid.write(f'NTARG	{df.shape[0]}\n')
+    fid.write(f'DISFILE	..\..\..\..\..\model_files\\flow_2014_2023\\100hr3.dis\n')
+    fid.write(f'XOFF	571750\n')
+    fid.write(f'YOFF	154830\n')
+    fid.write(f'ROTATION	0\n')
+    fid.write(f'CONCFILE	..\..\MT3D001.UCN\n')
+    fid.write(f'CUTOFF	0.000000001\n')
+    fid.write(f'LOGLIN	lin\n')
+    fid.write(f'#End In\n')
+    fid.write(f'# NAME	Decimal	XCOORDS	YCOORDS	MidScrElev(m)	STD_VALUE_RPTD\n')
+    fid.close()
+
+    ## mode 'a' appends to end of an existing file
+    output.to_csv(ofile, mode='a', header=False, index=False, sep='\t')

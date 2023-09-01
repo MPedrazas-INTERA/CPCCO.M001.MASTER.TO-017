@@ -1,9 +1,9 @@
 """
 script to:
 
-1. copy restart file from calibration case to scenario case into zones of interest directories (generally only run once unless calib. model changes)
-2. copy .tpl files from calibration case or baseline predictive case into zones of interest directories
-3. edit .tpl file for updated predictive case and any subsequent needed updates.
+1. copy final restart file from calibration case (or base case) to scenario case into zones of interest directories (generally only run once unless calib. model changes)
+2. copy .tpl files from calibration case or baseline case into zones of interest directories
+3. edit .tpl file for updated case with any needed text changes
 
 Part 3 is file-specific, may require referring to STOMP online documentation to follow along.
 
