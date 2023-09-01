@@ -17,20 +17,20 @@ STEP 0: PREP FILES:
 
 STEP 1: RUN MOD2OBS ON BORE/SOIL CORE LOCATIONS
 
-1.2 On Windows: a "dummy" mod2obs input file is created using the script 01a_gen_stomp_mod2obs_input.py (in CSM contained scripts directory)
+1.2 A "dummy" mod2obs input file is created using the script 01a_gen_stomp_mod2obs_input.py (in CSM contained scripts directory)
 	- determines W- and E- faces of each source zone, writes out "Bore_coordinates.csv" input file
 		note: "Bore_coordinates.csv" was generated for previous versions of 100HR, so will not change assuming the same sources
 		note: for STOMP application, only layer 1 is considered
 	- creates dummy output file "Bore_Sample_File_in_model_xxx.csv", where xxx defines run type (calibration, predictive, etc)
 		In this file, heads are set to -9999. This file will only change if we want to consider different stress periods or bore locations.
-	-UPDATE 2023: this can now be run directly on cluster. Always check that inputs/outputs are in UNIX format 
+	-Note: always check that inputs/outputs are in UNIX format 
 
 1.3 If step 1.2 is run on Windows, input files uploaded to cluster
 
 1.4 MOD2OBS is run on flow model results (see batch file for command) -- double check inputs and paths in mod2obs_d_cell.in
 	-in .in file: make sure that the .hds file used and the saving location for output are consistent
 
-((1.5 Resulting .dat file is moved to windows into BC_mod2obs subdirectory for csm scenario of interest)) now runs on cluster
+((1.5 Resulting .dat file can be moved to windows into BC_mod2obs subdirectory for csm scenario of interest if needed)) now runs on cluster
 
 1.6 .dat file is manipulated to be STOMP-input friendly in the script 01b_split_mod2obs_results.py (in CSM contained scripts directory)
 	- For FY 2023: calibration first sp is set to 2014-01-01 and last sp is set to 2023-01-01; predictive first sp is 2023-01-01, last sp is 01-01-2026
@@ -38,7 +38,7 @@ STEP 1: RUN MOD2OBS ON BORE/SOIL CORE LOCATIONS
 	- Average water table is also calculated for each soil core 
 1.6.1 Update "STOMP_column_list.csv" average WT with output from script 01b_split_mod2obs_results.py
 
-1.7 R script make_BC.R is run to generate boundary condition .csv files for each soil core
+1.7 R script make_BC.R is run to generate boundary condition .csv files for each soil core. (on linux: Rscript make_BC.R)
 
 
 STEP 2: RUN STOMP. For details into program function visit https://stomp-userguide.pnnl.gov/index.html
@@ -59,7 +59,7 @@ STEP 2: RUN STOMP. For details into program function visit https://stomp-usergui
 2.2 When .tpl file is set up, run script 01_flow_to_stomp.py is run in order to populate input file "input_cycle2" 
 	with east and west hydraulic gradient boundary conditions. Detailed instructions on this script are provided within the script
 
-((2.3 Once input_cycle2 is generated, copy stomp directory and all subdirectories to linux cluster))
+((2.3 Once input_cycle2 is generated, copy stomp directory and all subdirectories to linux cluster)) now runs on cluster
 
 2.4 Run run_transient.sh (./run_transient.sh or bash run_transient.sh) shell script, which runs stomp for all subdirectories simultaneously
 

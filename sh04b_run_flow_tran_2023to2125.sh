@@ -42,7 +42,8 @@ for i in 'sce3a'; do            # change herr for a new sce (e.g., sce2, nfa)
 		7za e 100hr3_2023to2125.ghb.7z
 		#rm *.7z
 		#bash run_flow.sh > outlog.txt
-		../../../executables/linux/mf2k-mst-cpcc09dpl.x 100hr3_2023to2125.nam > run.log
+		#../../../executables/linux/mf2k-mst-cpcc09dpl.x 100hr3_2023to2125.nam > run.log
+		../../../executables/linux/mf2k-mst-cpcc09dpl.x 100hr3.nam > run.log
 		#cd ../../../scripts/
 		cd $wdir
     fi    
