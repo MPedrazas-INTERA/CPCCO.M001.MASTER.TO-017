@@ -25,7 +25,7 @@ def read_file(ifile, mode ='transport'):
     return df
 
 
-def gen_ifile_mod2obs_coords(inputDir, wells, lays = 'all'):
+def gen_ifile_mod2obs_coords(inputDir, wells, nlays, lays = 'all'):
     #This is USEFUL to generate a mod2obs input file for every layer in each well.
     ###Select wells of interest if subset, otherwise select all
 
@@ -43,7 +43,7 @@ def gen_ifile_mod2obs_coords(inputDir, wells, lays = 'all'):
     df_return = pd.DataFrame()
 
     if lays == 'all':
-        lays = 9
+        lays = nlays
     for wellid in df_wells.ID.unique():
         df_temp = df_wells.loc[df_wells['ID'] == wellid]
         for lay in range(lays): # Make wells exist for all nine layers of model
@@ -63,7 +63,7 @@ def gen_ifile_mod2obs_coords(inputDir, wells, lays = 'all'):
     print("Finished generating well coords input file for mod2obs")
     return df_return
 
-def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
+def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir):
     #%% ###### create dummy values for mod2obs input file in order to get continuous simulated hds or conc
 
     sp_file = pd.read_csv(os.path.join(timeDir, times))
@@ -94,24 +94,25 @@ def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
 
 if __name__ == "__main__":
 
-    sce = 'calib_2014_2023'
+    sce = 'calib_2014_2020' #'calib_2014_2023'
+    times = "sp_2014_2020.csv" #"sp_2014_2023.csv"
+    nlays = 6 #9
 
     cwd = os.getcwd()
     inputDir = os.path.join(cwd, 'output', 'well_info', sce)
     timeDir = os.path.join(cwd, 'input')
 
-    outputDir = os.path.join(cwd, 'output', 'mod2obs', sce, "transport_2014_2023") ##output directory in model run of choice
+    outputDir = os.path.join(cwd, 'output', 'mod2obs', sce, f"transport_{sce[-9:]}") ##output directory in model run of choice
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
     wells = 'all'     # wells = ['199-H4-83', '199-H4-84', '199-D5-151', '199-D5-160', '199-H4-86']
 
     # [STEP 1] run this function to get Bore_coordinates.csv ifile for wells for all layers (transport)
-    bore_coords = gen_ifile_mod2obs_coords(inputDir, wells, lays='all') #output is Bore_coordinates.csv
+    bore_coords = gen_ifile_mod2obs_coords(inputDir, wells, nlays, lays='all') #output is Bore_coordinates.csv
 
     ### [STEP 2] Generate mod2obs input file based on Bore_coordinates.csv and times.csv
     #Note. Remember to change date format in excel.
-    times = "sp_2014_2023.csv"
-    gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce) #output is Bore_Sample_File_in_model.csv
+    gen_ifile_mod2obs_sample_file(times, timeDir, outputDir) #output is Bore_Sample_File_in_model.csv
 
 
