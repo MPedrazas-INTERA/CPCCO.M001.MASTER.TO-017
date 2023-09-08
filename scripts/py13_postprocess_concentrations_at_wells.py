@@ -73,7 +73,7 @@ def plot_concentrations(df_conc, crvi):
         plt.grid(True)
         plt.title(f'{well}')
 
-        # plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f'{well}_2014_2023_draft.png'))
+        plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f"{sce}", f'{well}_2014_2023_draft.png'))
 
     return None
 
@@ -81,13 +81,13 @@ def plot_concentrations(df_conc, crvi):
 if __name__ == "__main__":
 
     cwd = os.getcwd()
-
+    sce = 'calib_2014_2023'
     wells = pd.read_csv(os.path.join(cwd, 'output', 'water_level_plots', 'monitoring_wells_coords_ij.csv'))
     chemfile = os.path.join(os.path.dirname(cwd), 'data', 'hydrochemistry', 'H-North Rebound Study Sampling_DATA.xlsx')
 
     times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
 
-    ucnfile = os.path.join(os.path.dirname(cwd), 'mruns', 'calib_2014_2023', 'tran_2014_2023', 'MT3D001.UCN')
+    ucnfile = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN')
 
     chemdata, crvi_filt = read_chemdata(chemfile)
 

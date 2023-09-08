@@ -119,7 +119,7 @@ def get_wells_ij(dict1, dict2, dict3, coordscsv):
     df2csv.reset_index(inplace=True)
     print(df2csv.head())
     print(df2csv.columns)
-    # df2csv.to_csv(os.path.join("output", "water_level_plots", "monitoring_wells_coords_ij.csv"), index=False)  # export CSV
+    # df2csv.to_csv(os.path.join("input", "monitoring_wells_coords_ij.csv"), index=False)  # export CSV
     return df
 
 ## TODO: unbreak it...
@@ -182,7 +182,7 @@ def generate_plots(dict1, dict2, dict3):
             # ax.set_xlabel("Date")
             ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
             ax.set_ylim([112.8,118])
-            # plt.savefig(os.path.join('output', 'water_level_plots', f'{nickname}_{k}.png'))
+            plt.savefig(os.path.join('output', 'water_level_plots', f'{sce}', f'{nickname}_{k}.png'))
             # plt.close()
     return None
 
@@ -191,11 +191,12 @@ if __name__ == "__main__":
     cwd = os.getcwd()
 
     dict1, dict2, dict3 = import_WL_data() ## run once at beginning of workflow
+
     coordscsv = os.path.join(os.path.dirname(cwd), 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
     mywells = get_wells_ij(dict1, dict2, dict3, coordscsv)
 
-    # hds_file = r"C:\100HR3-Rebound\mruns\calib_2014_2023\flow_2014_2023\100hr3.hds"
-    hds_file = os.path.join(os.path.dirname(cwd), 'mruns', 'calib_2014_2023', 'flow_2014_2023', '100hr3.hds')
+    sce = 'calib_2014_2023'
+    hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
     myHds = read_head(hds_file, mywells)
 
     generate_plots(dict1, dict2, dict3) ## provide column label to be plotted
