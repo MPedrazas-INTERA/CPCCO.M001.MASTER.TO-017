@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     cwd = os.getcwd()
     mode = 'mod2obs'
-    nlays = 9 #6
+    nlays = 6 #9
 
     if mode == 'mod2obs':
         calc_conc_fracs() #Get a weighted average of conc based on fraction of screen intervals in each model layer

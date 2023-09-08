@@ -3,11 +3,48 @@ This script creates a DB of well info including geographic coordinates AND model
 
 """
 
-import os
+import glob, os
 import pandas as pd
 import geopandas as gpd
 import numpy as np
 import sys
+import flopy
+
+def load_mf(flow_model_ws, grid):
+    # load an MODLOW flow model -------------------------------------------
+    nfiles = []
+    for file in os.listdir(flow_model_ws):
+        if file.endswith(".nam"):
+            nfiles.append(file)
+    if len(nfiles) == 1:
+        namfile = nfiles[0]
+        print(namfile)
+    else:
+        print("Error. More than one NAM file is in this flow model ws directory")
+
+    ml = flopy.modflow.Modflow.load(namfile,
+        model_ws=flow_model_ws,
+        load_only=["dis"],
+        verbose=False,
+        check=False,
+        exe_name="mf2k-mst-chprc08dpl",
+    )
+    nlays, nr, nc, nper = ml.dis.nlay, ml.dis.nrow, ml.dis.ncol, ml.dis.nper
+    print(nlays, nr, nc, nper)
+
+    bot = ml.dis.botm
+    dfz = pd.DataFrame()
+    for lay in range(nlays):
+        print(lay)
+        bot_array = bot.array[lay]
+        vals = []
+        for row, col in zip(grid.I, grid.J):
+            vals.append(bot_array[row - 1][col - 1])
+        dfz[f'botm_{lay + 1}'] = vals
+    dfbot = pd.concat([grid[["I","J"]],dfz], axis = 'columns')
+    dfbot.rename(columns = {"I":"Row", "J": "Col"}, inplace=True)
+
+    return nlays, dfbot
 
 def read_model_grid():
     """
@@ -46,28 +83,36 @@ def get_wells_ijk(well_list):
     df2.rename(columns={"NAME": "ID", "I": "Row", "J": "Col"}, inplace=True)
     return df2
 
-def gen_scrn_fracs(df, type, output_dir):
+def gen_scrn_fracs(nlays, df, type, dfbot, output_dir):
     print("Calculating Screen Fractions")
     print(df.head())
-    print('reading shapefile for btm elevations to find screen intervals')
-    dfz = gpd.read_file(os.path.join(root,"gis", "shp", "botm_elev", "botm_elev.shp"))
-    dfz.drop('node', axis=1, inplace=True)
+    # if nlays ==9:
+    #     print('reading shapefile for btm elevations to find screen intervals in 9L model')
+    #     dfbot = gpd.read_file(os.path.join(root,"gis", "shp", "botm_elev", "botm_elev.shp"))
+    # elif nlays == 6:
+    #     print('reading shapefile for btm elevations to find screen intervals in 6L model')
+    #     dfbot = gpd.read_file(os.path.join(root,"gis", "shp", "botm_elev_6L", "botm_elev_6L.shp"))
+
     # filter out to only well locations
-    dfmerge = pd.merge(df, dfz, how='left', left_on=['Row', 'Col'], right_on=['row', 'column'])
+    dfmerge = pd.merge(df, dfbot, how='left', on=['Row', 'Col'])
     # dfmerge.iloc[:,:-1].to_csv(os.path.join(outputDir, "checking_screen_botms.csv"))
 
     dfbot = dfmerge.filter(regex='botm')
 
     outf = open(os.path.join(output_dir, f'{type}_screen_summary_draft.csv'), 'w')
-    outf.write(
-        "wellID,scnLen,scnLenL1,scnLenL2,scnLenL3,scnLenL4,"
-        "scnLenL5,scnLenL6,scnLenL7,scnLenL8,scnLenL9,fracL1,fracL2,fracL3,fracLenL4,fracL5,fracL6,fracLenL7,fracL8,fracL9\n")  # write header
+    if nlays == 9:
+        outf.write(
+            "wellID,scnLen,scnLenL1,scnLenL2,scnLenL3,scnLenL4,"
+            "scnLenL5,scnLenL6,scnLenL7,scnLenL8,scnLenL9,fracL1,fracL2,fracL3,fracLenL4,fracL5,fracL6,fracLenL7,fracL8,fracL9\n")  # write header
+    elif nlays == 6:
+        outf.write(
+            "wellID,scnLen,scnLenL1,scnLenL2,scnLenL3,scnLenL4,"
+            "scnLenL5,scnLenL6,fracL1,fracL2,fracL3,fracLenL4,fracL5,fracL6\n")  # write header
 
     # mimic MJ script to get proportion of well screen in each layer using bottom option
     count = len(df)
     eltype = 'BOTTOM'
     mult = 0
-    nlays = 9#6
 
     my_string = []
     fracs = []
@@ -146,16 +191,25 @@ def gen_scrn_fracs(df, type, output_dir):
     print("unique well IDs:", df.ID.nunique())
     print("unique well IDs written to csv:", len(my_string))
 
-    return dfz, dfmerge
+    return dfbot, dfmerge
 
-def cleanup_screen_fracs(type, output_dir):
-    nlays = 9
+def cleanup_screen_fracs(nlays, type, output_dir):
     print("Cleaning up screen fractions")
     #  read in screen lengths and fractions by layer:
-
-    df = pd.read_csv(os.path.join(output_dir, f'{type}_screen_summary_draft.csv'), sep=',',skiprows=1, header=None,
-                   names=['ID','scLen','lenL1','lenL2','lenL3','lenL4','lenL5','lenL6','lenL7','lenL8','lenL9',
-                          'fL1','fL2','fL3','fL4','fL5','fL6','fL7','fL8','fL9'], index_col=False)
+    if nlays == 9:
+        df = pd.read_csv(os.path.join(output_dir, f'{type}_screen_summary_draft.csv'), sep=',',skiprows=1, header=None,
+                       names=['ID','scLen','lenL1','lenL2','lenL3','lenL4','lenL5','lenL6','lenL7','lenL8','lenL9',
+                              'fL1','fL2','fL3','fL4','fL5','fL6','fL7','fL8','fL9'], index_col=False)
+        ## reorder columns
+        df = df[['ID', 'scLen', 'lenL1', 'lenL2', 'lenL3', 'lenL4', 'lenL5', 'lenL6', 'lenL7', 'lenL8', 'lenL9',
+                   'fL1', 'fL2', 'fL3', 'fL4', 'fL5', 'fL6', 'fL7', 'fL8', 'fL9']]
+    elif nlays ==6:
+        df = pd.read_csv(os.path.join(output_dir, f'{type}_screen_summary_draft.csv'), sep=',',skiprows=1, header=None,
+                       names=['ID','scLen','lenL1','lenL2','lenL3','lenL4','lenL5','lenL6',
+                              'fL1','fL2','fL3','fL4','fL5','fL6'], index_col=False)
+        ## reorder columns
+        df = df[['ID', 'scLen', 'lenL1', 'lenL2', 'lenL3', 'lenL4', 'lenL5', 'lenL6',
+                   'fL1', 'fL2', 'fL3', 'fL4', 'fL5', 'fL6']]
 
     # clean file formating: search and replace list brackets
     df=df.replace('\[','',regex=True)
@@ -165,10 +219,6 @@ def cleanup_screen_fracs(type, output_dir):
     dff.drop(['ID'], axis=1, inplace=True)
     dff=dff.apply(pd.to_numeric)
     dff['ID']=df['ID']
-    ## reorder columns
-    dff=dff[['ID','scLen','lenL1','lenL2','lenL3','lenL4','lenL5','lenL6','lenL7','lenL8','lenL9',
-             'fL1','fL2','fL3','fL4','fL5','fL6','fL7','fL8','fL9']]
-    # dff.to_csv(os.path.join(output_dir, f'{type}_screen_summary.csv'), sep=',', header=True, index=False)
 
     ###Fix well if screens are divided into two rows
     fracs = pd.DataFrame()
@@ -178,8 +228,12 @@ def cleanup_screen_fracs(type, output_dir):
             fracs = fracs.append(OneWellAtaTime)
         elif len(OneWellAtaTime) > 1:
             print(well)
-            df_sum = pd.DataFrame(columns = ['ID', 'scLen', 'lenL1', 'lenL2', 'lenL3', 'lenL4', 'lenL5', 'lenL6','lenL7', 'lenL8', 'lenL9',
-                                'fL1', 'fL2', 'fL3', 'fL4', 'fL5', 'fL6', 'fL7', 'fL8', 'fL9'], data=None)
+            if nlays == 9:
+                df_sum = pd.DataFrame(columns = ['ID', 'scLen', 'lenL1', 'lenL2', 'lenL3', 'lenL4', 'lenL5', 'lenL6','lenL7', 'lenL8', 'lenL9',
+                                    'fL1', 'fL2', 'fL3', 'fL4', 'fL5', 'fL6', 'fL7', 'fL8', 'fL9'], data=None)
+            elif nlays == 6:
+                df_sum = pd.DataFrame(columns = ['ID', 'scLen', 'lenL1', 'lenL2', 'lenL3', 'lenL4', 'lenL5', 'lenL6',
+                                    'fL1', 'fL2', 'fL3', 'fL4', 'fL5', 'fL6'], data=None)
             df_sum = {'ID': well, 'scLen': OneWellAtaTime.scLen.sum()}
             for i in range(nlays):
                 df_sum[f'lenL{i+1}'] = OneWellAtaTime[f'lenL{i+1}'].sum()
@@ -194,7 +248,7 @@ def cleanup_screen_fracs(type, output_dir):
     lyr_dict = {'fL1':1,'fL2':2,'fL3':3,'fL4':4,
                 'fL5':5, 'fL6':6,'fL7':7,'fL8':8,'fL9':9}
 
-    max_frac = pd.DataFrame(fracs.loc[:, 'fL1':'fL9'].idxmax(axis=1), columns = ['lyrfrac'])
+    max_frac = pd.DataFrame(fracs.loc[:, 'fL1':f'fL{nlays}'].idxmax(axis=1), columns = ['lyrfrac'])
     max_frac = max_frac.replace(to_replace = lyr_dict)
 
     fracs['MaxFrac_Lay'] = max_frac #get largest screen fraction for each well
@@ -204,21 +258,21 @@ def cleanup_screen_fracs(type, output_dir):
     fracs.loc[filter, 'Deepest_Lay'] = int(4)
     filter2 = ((fracs['fL3'] > 0) & (pd.isna(fracs['fL4'])))    ##a few unconfined wells only down to layer 3
     fracs.loc[filter2, 'Deepest_Lay'] = int(3)
-    ##Get deepest screened fraction for wells in confined layer
-    filter9 = pd.notna(fracs['fL9'])
-    fracs.loc[filter9, 'Deepest_Lay'] = int(9)
+    ##Get deepest screened fraction for wells in confined layer (RUM-2)
+    filterRUM2 = pd.notna(fracs[f'fL{nlays}'])
+    fracs.loc[filterRUM2, 'Deepest_Lay'] = int(nlays)
     fracs.to_csv(os.path.join(output_dir, f'{type}_screen_summary.csv'), index=False)
     print(f"Saved '{type}_screen_summary' in {output_dir}")
     return fracs
 
-def get_layer_forPT(fracs): ## determines layer K based on filter screen fractions in each layer
+def get_layer_forPT(nlays, fracs): ## determines layer K based on filter screen fractions in each layer
     ### For particle tracking, we will set particles in every layer (04/03/2023)
     myLays = []
     print(f'Noted that particles were placed in aquifers only, not the aquitard \n')
     for well in np.unique(fracs.ID):
         mywell = fracs.loc[fracs.ID == well]
         #for n in range(1,10):
-        for n in [2,3,4,9]: # hpham ignores aquitard layers 5-8
+        for n in [2,3,4, nlays]: # hpham ignores aquitard layers 5-8 (aquitard)
             # print(mywell[f'fL{n}'].iloc[0])
             if pd.notna(mywell[f'fL{n}'].iloc[0]):
                 myLays.append([well, mywell[f'fL{n}'].iloc[0], n])
@@ -226,9 +280,9 @@ def get_layer_forPT(fracs): ## determines layer K based on filter screen fractio
     ptracks["LocalZ"] = 0.5
     return ptracks
 
-def gen_master_csv(df, fracs, ptracks, type, output_dir):
+def gen_master_csv(nlays, df, fracs, ptracks, type, output_dir):
     masterDF = pd.merge(df, fracs, on="ID")
-    masterDF['Aquifer'] = np.where(masterDF['Deepest_Lay'].isin([9]), 'RUM', 'Unconfined')
+    masterDF['Aquifer'] = np.where(masterDF['Deepest_Lay'].isin([nlays]), 'RUM', 'Unconfined')
     masterDF.to_csv(os.path.join(output_dir, f'{type}_master.csv'), index=False)  # master_spreadsheet
 
     ptracksDF = pd.merge(df[["ID", "Row","Col"]], ptracks, on="ID", how="right")
@@ -244,7 +298,9 @@ if __name__ == "__main__":
     root = os.path.join(os.path.dirname(cwd))
     grid = read_model_grid()
 
-    case = 'calib_2014_2023'
+    case = 'calib_2014_2020'#'calib_2014_2023'
+    flow_model_ws = os.path.join(root, "mruns", f"{case}", f"flow_{case[-9:]}")
+
     cluster = False
     if cluster:
         case = sys.argv[1]
@@ -257,9 +313,10 @@ if __name__ == "__main__":
 
     types = ['monitoring_wells']
     for type in types:
+        nlays, dfbot = load_mf(flow_model_ws, grid)
         well_list = pd.read_csv(os.path.join(cwd, "input", f"{type}_coords_ij.csv"), usecols=[0])  #getting list of monitoring wells (NAME)
         df = get_wells_ijk(well_list) #getting IJK, screen interval (Ztop, Zbot) and XY information
-        gen_scrn_fracs(df, type, output_dir) #calculating fraction of scrn interval in each lay for each well
-        fracs = cleanup_screen_fracs(type, output_dir) #cleanup previous fn + more layer info
-        ptracks = get_layer_forPT(fracs) #choosing layers to set particles for PT
-        masterDF, ptracksDF = gen_master_csv(df, fracs, ptracks, type, output_dir) #generating master spreadsheet + ptracks CSV
+        gen_scrn_fracs(nlays, df, type, dfbot, output_dir) #calculating fraction of scrn interval in each lay for each well
+        fracs = cleanup_screen_fracs(nlays, type, output_dir) #cleanup previous fn + more layer info
+        ptracks = get_layer_forPT(nlays, fracs) #choosing layers to set particles for PT
+        masterDF, ptracksDF = gen_master_csv(nlays, df, fracs, ptracks, type, output_dir) #generating master spreadsheet + ptracks CSV
