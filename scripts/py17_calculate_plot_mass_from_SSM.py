@@ -82,10 +82,10 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
         finalDF = finalDF.append(myDF)
 
 
-    finalDF2 = finalDF.merge(dates_df[["sp", "cdays", "tte"]], how="left", right_on="sp", left_on="SP")
-    finalDF2["Mass (ug)"] = finalDF2.Val * finalDF2.cdays  # mass rate (ug/day) * time (days) = mass (ug)
+    finalDF2 = finalDF.merge(dates_df[["sp", "spLen", "tte"]], how="left", right_on="sp", left_on="SP")
+    finalDF2["Mass (ug)"] = finalDF2.Val * finalDF2.spLen  # mass rate (ug/day) * time (days) = mass (ug)
     finalDF2["Mass (ug/month)"] = finalDF2["Mass (ug)"].copy()
-    finalDF2["Mass (ug/month)"].loc[finalDF2.cdays > 31] = finalDF2["Mass (ug)"]/12 #is cdays > 31, it means it's yearly, so divide by 12
+    finalDF2["Mass (ug/month)"].loc[finalDF2.spLen > 31] = finalDF2["Mass (ug)"]/12 #is spLen > 31, it means it's yearly, so divide by 12
     finalDF2.to_csv(os.path.join(outputDir, "paper_trail.csv"), index=False)
 
     ##########[Step 1] Calculate total amount of mass per SP for every group of source zone areas -  5 groups defined in dictioinary grpDict and wastesiteDict
@@ -182,8 +182,9 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
         ax.grid(which='minor', linestyle=':',linewidth='0.1', color='black', zorder=2)
         ax.set_xlabel("Time (Years) Since 01/01/2014", fontsize=12)
         ax.set_ylabel("Mass Release from Continuing Source (kg/month)", fontsize=12)
-        # ax.set_ylim([0, 0.1])
+        ax.set_ylim([0, 0.8])
         # ax.set_xlim([13, 102])
+        ax.set_xlim([0, 10])
         ax.minorticks_on()
         ax.tick_params(which='minor', direction='out')
         if secondary_axis:
@@ -207,7 +208,7 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
         # plt.show()
         fname = os.path.join(outputDir, f"mass_calculated_fromSSM_{times}.png")
         fig.savefig(fname, dpi=800, transparent=False, bbox_inches='tight') #,transparent = True) #facecolor=fig.get_facecolor())
-        # plt.close(fig)
+        plt.close()
     return None
 
 def plot_mass_compareCases(cases):
@@ -262,7 +263,7 @@ def plot_mass_compareCases(cases):
     # fname = os.path.join(outputDir, f"ECF_mass_calc_fromSSM_CT_2023_2125_grp{grp}.png")
     fig.savefig(fname, dpi=800, transparent=False,
                 bbox_inches='tight')  # ,transparent = True) #facecolor=fig.get_facecolor())
-    # plt.close(fig)
+    plt.close()
     return None
 
 if __name__ == "__main__":
@@ -282,28 +283,28 @@ if __name__ == "__main__":
     elif year == 2023:
         nr, nc, nlay, nsp = 433, 875, 9, 115
 
-    sce = 'flow_2014_2023'
-    # sce = sys.argv[1]
+    case = "calib_2014_2023"
     times = '2014_2023'
+    # times = '2014_2020'
 
     # directories
     cwd = os.getcwd()
     inputDir = os.path.join(cwd, "input")
 
-    ssmDir = os.path.join("..", 'model_packages', 'hist_2014_2023', 'ssm')
+    ssmDir = os.path.join("..", 'model_packages', 'hist_2014_2023', 'ssm_rr2')
     ssmFile = "100HR3_2014_2023_transport_stomp2ssm.ssm"
+    # ssmDir = r"C:\100HR3-Rebound\mruns\calib_2014_2020\tran_2014_2020"
+    # ssmFile = "100HR3_2014_2020_transport_stomp2ssm_activLays.ssm"
 
-    # outputDir = os.path.join(os.path.dirname(cwd), 'output', 'mass_calc_ssm', f"{case}")
-    outputDir = os.path.join(ssmDir,"mass_fromSSM")
-    # if not os.path.isdir(outputDir):
-    #     os.makedirs(outputDir)
+    outputDir = os.path.join(os.path.dirname(cwd), 'scripts', 'output', 'mass_calc_ssm', f"{case}")
+    # outputDir = os.path.join(ssmDir,"mass_fromSSM")
+    if not os.path.isdir(outputDir):
+        os.makedirs(outputDir)
 
     calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir)
 
     ##Plot mass releases from output CSV of previous function.
     # cases = ['sce4b_rr1_to2125', 'sce11b_rr1_to2125', 'sce11b_rr2_to2125', 'sce11b_rr3_to2125'] #chemical treatment comparison
-    # cases = ['sce9a_rr1_to2125', 'sce9a_rr2_to2125', 'sce9a_rr3_to2125', 'sce9a_rr4_to2125'] #super scenario comparison
-    # cases = ['sce2a_rr1_to2125', 'sce4a_rr6_to2125']
 
     # nameDict = {'sce4b_rr1_to2125':"0% CT",
     #              'sce11b_rr1_to2125':"30% CT",

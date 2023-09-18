@@ -1,6 +1,0 @@
-100hr3_2023to2125.mnw2
-100hr3_2023to2125.lst
-MT3D001.UCN	double		#Name of ucnfile and precision (single or double)
-9	433	875
-0			#Enter 1 for averaging concentrations; 0 to use the concentrations at the end of the stress period
-0.1	#Values of Q less than this number will be considered internal flow and not reported
