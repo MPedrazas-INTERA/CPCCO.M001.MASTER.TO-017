@@ -292,7 +292,7 @@ if __name__ == "__main__":
     #ifile = f'input/input_100HR3_calib_ECF.csv'
     #ifile = f'input/input_plume_postprocess.csv'
     ifile = sys.argv[2]
-    ifile_date = f'input/sp_2014_2023.csv'
+    ifile_date = f'input/sp_2014_2020.csv'
     show_well = sys.argv[3] # 'Y' show well layer, 
     start_sp = int(sys.argv[4])  # start SP
     stop_sp = int(sys.argv[5])  # start SP
