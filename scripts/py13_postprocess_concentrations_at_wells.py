@@ -27,7 +27,7 @@ def read_chemdata(chemfile):
 
     crvi = chemdata[chemdata['STD_CON_LONG_NAME'] == 'Hexavalent Chromium']
 
-    flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR']
+    flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR'] #what is G for 199-H3-84
     crvi_filt = crvi[~crvi['REVIEW_QUALIFIER'].isin(flags)]
 
     return chemdata, crvi_filt
@@ -191,8 +191,8 @@ if __name__ == "__main__":
             ntimes, nlay, nr, nc = data.shape
         elif mode == "mod2obs":
             df_conc = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process', 'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
-            # if sce == "calib_2014_2023":
-                # df_conc["WeightedConc"] = df_conc["WeightedConc"]/1000 ?
+            #if sce == "calib_2014_2020":
+                #df_conc["WeightedConc"] = df_conc["WeightedConc"]/1000 ?
 
         # plot_concentrations(df_conc, crvi_filt, mode)
 

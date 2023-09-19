@@ -216,9 +216,8 @@ def cleanup_screen_fracs(nlays, type, output_dir):
     df=df.replace('\]','',regex=True)
 
     dff=df.copy()
-    dff.drop(['ID'], axis=1, inplace=True)
-    dff=dff.apply(pd.to_numeric)
-    dff['ID']=df['ID']
+    for col in dff.columns[1:]:
+        dff[col] = pd.to_numeric(dff[col])
 
     ###Fix well if screens are divided into two rows
     fracs = pd.DataFrame()
@@ -261,6 +260,7 @@ def cleanup_screen_fracs(nlays, type, output_dir):
     ##Get deepest screened fraction for wells in confined layer (RUM-2)
     filterRUM2 = pd.notna(fracs[f'fL{nlays}'])
     fracs.loc[filterRUM2, 'Deepest_Lay'] = int(nlays)
+
     fracs.to_csv(os.path.join(output_dir, f'{type}_screen_summary.csv'), index=False)
     print(f"Saved '{type}_screen_summary' in {output_dir}")
     return fracs
