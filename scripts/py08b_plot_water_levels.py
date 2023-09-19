@@ -62,7 +62,7 @@ def import_WL_data():
     # return finalDF, finalDF_sp
     return None
 
-    def read_head(ifile_hds, df, all_lays=False):
+def read_head(ifile_hds, df, all_lays=False):
     """
        This fn will take in a data frame to loop through Rows, Columns, Times, Layers and extract Heads
        Input:  dataframe
