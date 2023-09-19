@@ -26,23 +26,39 @@ def import_WL_data():
     strings = [data_files[i].split("\\")[-1].split('.')[0] for i, e in enumerate(data_files)] ## isolate file names without .xlsx extension
     dict1, dict2, dict3 = all_data[strings[0]].copy(), all_data[strings[1]].copy(), all_data[strings[2]].copy() ## separate data from nested dict into simple dict. create copy to avoid edits to original data.
 
-
+    ## manipulations on individual dictionaries. Create consistent Date, ID, and water level columns to later combine all dicts into 1 df
     for k in dict1:
         dict1[k] = dict1[k].iloc[9:]
         dict1[k].columns = dict1[k].iloc[0]
         dict1[k].drop(dict1[k].index[0], inplace=True)
-        dict1[k].index.name = 'DT'
         dict1[k].set_index('Date and Time', inplace=True)
         dict1[k].index = pd.to_datetime(dict1[k].index)
+        dict1[k].index.name = 'Date'
+        dict1[k].insert(0, 'ID', k)
+        dict1[k].rename(columns = {'Elevation of the water level in the well (m)': 'Water Level (m)'}, inplace = True)
         # print(dict1[k].columns)  ##check correct column name assignment
 
     for k in dict2:
         dict2[k].set_index('Date/Time', inplace=True)
         dict2[k].index = pd.to_datetime(dict2[k].index)
+        dict2[k].index.name = 'Date'
+        dict2[k].insert(0, 'ID', k)
+        dict2[k].rename(columns={'Elevation (m)': 'Water Level (m)'}, inplace=True)
 
     for k in dict3:
         dict3[k].set_index('HYD_DATE_TIME_PST', inplace=True)
         dict3[k].index = pd.to_datetime(dict3[k].index)
+        dict3[k].index.name = 'Date'
+        dict3[k].insert(0, 'ID', k)
+        dict3[k].rename(columns={'HYD_HEAD_METERS_NAVD88': 'Water Level (m)'}, inplace=True)
+
+    masterdict = {**dict1, **dict2, **dict3}  ## combine all 3 separate dicts into one master dict
+    df = pd.concat([v for k, v in masterdict.items()])[['ID', 'Water Level (m)']] ## concatenate all into dataframe
+    df['Water Level (m)'] = pd.to_numeric(df['Water Level (m)'])
+    df_sp = df.reset_index()
+    df_sp.set_index(['ID', 'Date'], inplace = True)
+    df_sp = df_sp.groupby([pd.Grouper(level = 'ID'),
+                       pd.Grouper(freq = 'MS', level=-1)]).mean()
 
     ## resample to monthly to match model SPs. Possibly integrate this directly into plotting function.
     mydict, mydict_sp = {}, {}
@@ -56,11 +72,7 @@ def import_WL_data():
         mydict[k] = dict3[k].iloc[:,0]
         mydict_sp[k] = dict3[k].iloc[:,0].apply(pd.to_numeric).resample('MS').mean()
 
-    # @Robin, outputs:
-    # finalDF["ID", "Date", "WaterLevel (m)"]
-    # finalDF_sp["ID", "Date", "Monthly WL (m)"]#mydict, mydict_sp
-    # return finalDF, finalDF_sp
-    return None
+    return dict1, dict2, dict3, df, df_sp
 
 def read_head(ifile_hds, df, all_lays=False):
     """
@@ -183,7 +195,9 @@ if __name__ == "__main__":
 
     cwd = os.getcwd()
 
-    dict1, dict2, dict3 = import_WL_data() ## run once at beginning of workflow
+    dict1, dict2, dict3, df, df_sp = import_WL_data() ## run once at beginning of workflow
+    df.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'all.csv'))
+    df_sp.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'resampled_monthly.csv'))
 
     coordscsv = os.path.join(os.path.dirname(cwd), 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
     mywells = get_wells_ij(dict1, dict2, dict3, coordscsv)
