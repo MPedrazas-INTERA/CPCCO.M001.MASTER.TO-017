@@ -27,7 +27,7 @@ def read_chemdata(chemfile):
 
     crvi = chemdata[chemdata['STD_CON_LONG_NAME'] == 'Hexavalent Chromium']
 
-    flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR']
+    flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR'] #what is G for 199-H3-84
     crvi_filt = crvi[~crvi['REVIEW_QUALIFIER'].isin(flags)]
 
     return chemdata, crvi_filt
@@ -63,7 +63,7 @@ def plot_concentrations(df_conc, crvi, mode):
        '199-H4-64': "North_Manual", '199-H4-65': "North_Manual", '199-H4-8': "North_AWLN", '199-H4-84': "North_AWLN", '199-H4-85': "North_Manual",
        '199-H4-86':"North_PT_SensorData", '199-H4-88': "North_AWLN", '199-H4-89': "North_Manual"}
 
-    times['SPstart'] = pd.to_datetime(times['SPstart'])
+    times['start_date'] = pd.to_datetime(times['start_date'])
 
     if mode == "mod2obs":
         for well in df_conc['SAMP_SITE_NAME'].unique():
@@ -95,7 +95,7 @@ def plot_concentrations(df_conc, crvi, mode):
                 # print(lay)
                 ucn_toplot = df_conc[df_conc['NAME'] == well][df_conc['Layer'] == lay]
                 data_toplot = crvi[crvi['NAME'] == well]
-                ax.plot(times['SPstart'], ucn_toplot['Conc'], label = f'model layer {lay}')
+                ax.plot(times['start_date'], ucn_toplot['Conc'], label = f'model layer {lay}')
             ax.scatter(data_toplot['SAMP_DATE_TIME'], data_toplot['STD_VALUE_RPTD'], label = f"Observed", zorder = 10, c = 'grey', edgecolor="k", s=10)
             ax.set_title(f'{wellDict[well]}: {well}')
             ax.set_ylabel('Cr(VI) (ug/L)')
@@ -122,22 +122,31 @@ def plot_concentrations_ALL(myDict):
        '199-H4-64': "North_Manual", '199-H4-65': "North_Manual", '199-H4-8': "North_AWLN", '199-H4-84': "North_AWLN", '199-H4-85': "North_Manual",
        '199-H4-86':"North_PT_SensorData", '199-H4-88': "North_AWLN", '199-H4-89': "North_Manual"}
 
-    times['SPstart'] = pd.to_datetime(times['SPstart'])
+    times['start_date'] = pd.to_datetime(times['start_date'])
 
     for well in wellDict.keys():
         print(well)
+
         fig, ax = plt.subplots(figsize=(8, 5))
         for sce in myDict.keys():
             print(sce)
+
             crvi = myDict[sce][0] #crvi observations
             df_conc = myDict[sce][1] #simulated concs
-
             ucn_toplot = df_conc[df_conc['SAMP_SITE_NAME'] == well]
             data_toplot = crvi[crvi['NAME'] == well]
+
             if sce == "calib_2014_2020":
+                ###double-check concentrations from ECF-100HR3-22-0047:
+                df_conc2 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process','mod2obs_monitoring_wells', 'original', 'simulated_conc_mod2obs.csv'))
+                try:
+                    qc_plot = df_conc2[df_conc2['SAMP_SITE_NAME'] == well]
+                except:
+                    print(f"No info for {well} for ECF-22-0047")
                 ax.plot(pd.to_datetime(ucn_toplot["SAMP_DATE"]), ucn_toplot['WeightedConc'], label=f'Calibrated Model', color = "cornflowerblue")
                 ax.scatter(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, label = f"Calib Obs", c = "grey", edgecolor="k", s=10)
                 ax.plot(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, c = "grey", ls="--", alpha=0.7)
+                ax.plot(pd.to_datetime(qc_plot["SAMP_DATE"]), qc_plot['WeightedConc'], label=f'Calibrated Model ECF', color = "pink")
             if sce == "calib_2014_2023":
                 ax.plot(pd.to_datetime(ucn_toplot["SAMP_DATE"]), ucn_toplot['WeightedConc'], label=f'Extended Model', color = "olive")
                 ax.scatter(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, label = f"New Obs", c = "r", edgecolor="darkred", s=10)
@@ -154,7 +163,7 @@ def plot_concentrations_ALL(myDict):
         # fig.tight_layout()
         # ax.set_xlabel("Date")
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_MOD2OBS.png'))
+        plt.savefig(os.path.join(outputDir, f'{well}_MOD2OBS_qcECF-0047.png'))
         plt.close()
     return None
 
@@ -182,8 +191,8 @@ if __name__ == "__main__":
             ntimes, nlay, nr, nc = data.shape
         elif mode == "mod2obs":
             df_conc = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process', 'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
-            # if sce == "calib_2014_2023":
-                # df_conc["WeightedConc"] = df_conc["WeightedConc"]/1000 ?
+            #if sce == "calib_2014_2020":
+                #df_conc["WeightedConc"] = df_conc["WeightedConc"]/1000 ?
 
         # plot_concentrations(df_conc, crvi_filt, mode)
 

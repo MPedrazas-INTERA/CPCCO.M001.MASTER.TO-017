@@ -2,13 +2,10 @@ import os
 import glob
 import pandas as pd
 import geopandas as gpd
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Qt5Agg')
 import flopy.utils.binaryfile as bf
-from dateutil.relativedelta import *
-
 
 cwd = os.getcwd()
 wdir = os.path.dirname(cwd)
@@ -48,19 +45,24 @@ def import_WL_data():
         dict3[k].index = pd.to_datetime(dict3[k].index)
 
     ## resample to monthly to match model SPs. Possibly integrate this directly into plotting function.
-    dict1_sp = {}
+    mydict, mydict_sp = {}, {}
     for k in dict1.keys():
-        dict1_sp[k] = dict1[k].iloc[:,2].resample('MS').mean()
-    dict2_sp = {}
+        mydict[k] = dict1[k].iloc[:,2]
+        mydict_sp[k] = dict1[k].iloc[:,2].apply(pd.to_numeric).resample('MS').mean()
     for k in dict2.keys():
-        dict2_sp[k] = dict2[k].iloc[:,2].resample('MS').mean()
-    dict3_sp = {}
+        mydict[k] = dict2[k].iloc[:, 2]
+        mydict_sp[k] = dict2[k].iloc[:,2].apply(pd.to_numeric).resample('MS').mean()
     for k in dict3.keys():
-        dict3_sp[k] = dict3[k].iloc[:,0].resample('MS').mean()
+        mydict[k] = dict3[k].iloc[:,0]
+        mydict_sp[k] = dict3[k].iloc[:,0].apply(pd.to_numeric).resample('MS').mean()
 
-    return dict1_sp, dict2_sp, dict3_sp
+    # @Robin, outputs:
+    # finalDF["ID", "Date", "WaterLevel (m)"]
+    # finalDF_sp["ID", "Date", "Monthly WL (m)"]#mydict, mydict_sp
+    # return finalDF, finalDF_sp
+    return None
 
-def read_head(ifile_hds, df, all_lays=False):
+    def read_head(ifile_hds, df, all_lays=False):
     """
        This fn will take in a data frame to loop through Rows, Columns, Times, Layers and extract Heads
        Input:  dataframe
@@ -84,6 +86,7 @@ def read_head(ifile_hds, df, all_lays=False):
                 vals.append([data[t_idx][lay][row][col], t, lay + 1, row, col, df.NAME.iloc[idx]])  # 237 nodes * 84 times = 19908 vals for L1
     df_return = pd.DataFrame(vals, columns=['Head', 'Time', 'Layer', 'Row', 'Column', 'NAME'])
     df_return.drop_duplicates(inplace=True)
+    df_return.to_csv(os.path.join('output', 'water_level_data', f'{sce}', "simulated_heads.csv"), index=False)
     return df_return
 
 def read_model_grid():
@@ -122,7 +125,6 @@ def get_wells_ij(dict1, dict2, dict3, coordscsv):
     # df2csv.to_csv(os.path.join("input", "monitoring_wells_coords_ij.csv"), index=False)  # export CSV
     return df
 
-## TODO: unbreak it...
 def generate_plots(dict1, dict2, dict3):
 
     for mydict in [dict1, dict2, dict3]:
@@ -134,7 +136,6 @@ def generate_plots(dict1, dict2, dict3):
             col = 'Elevation (m)'
             title_spec = '100-H North AWLN'
             nickname = "North_AWLN"
-
         elif mydict == dict1:
             col = 'Elevation of the water level in the well (m)'
             col2 = 'Elevation of the water level in the well(m)'
@@ -144,13 +145,6 @@ def generate_plots(dict1, dict2, dict3):
             print(k)
             toplot = mydict[k]#.resample('D').mean()
             fig, ax = plt.subplots(figsize=(8, 5))
-        # if mydict == dict3:  ## dict3 are manual measurements -- scatter plot best
-        #     ax.scatter(toplot.index, toplot.loc[:,col], label = f"Observed", c = "r", edgecolor="darkred", s=4)
-        #     ax.plot(toplot.index, toplot.loc[:, col], c="r", ls="--")
-        #     df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == k)]
-        #     dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit = "days")
-        #     ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
-        # else:
         try:
             ax.scatter(toplot.index, toplot.loc[:,col], label = f"Observed", c = "r", edgecolor="darkred", s=4)
             ax.plot(toplot.index, toplot.loc[:,col], c = "r", ls="--")
@@ -159,31 +153,30 @@ def generate_plots(dict1, dict2, dict3):
             ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
         except:
             print('could not plot')
-                # ax.scatter(toplot.index, toplot.loc[:, col2], label = f"Observed", c = "r", edgecolor="darkred", s=4)
-                # ax.plot(toplot.index, toplot.loc[:,col], c = "r", ls="--")
-                # df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == k)]
-                # dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit="days")
-                # ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
-            ax.set_title(f'{title_spec}: {k}')
-            ax.set_ylabel('Water Level (m)')
-            ax.minorticks_on()
-            grid = True
-            if grid:
-                ax.grid(which='major', linestyle='-',
-                        linewidth='0.1', color='red')
-                ax.grid(which='minor', linestyle=':',
-                        linewidth='0.1', color='black')
-            else:
-                print("grid is OFF")
-                pass
-            ax.legend()
-            plt.xticks(rotation = 45)
-            fig.tight_layout()
-            # ax.set_xlabel("Date")
-            ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-            ax.set_ylim([112.8,118])
-            plt.savefig(os.path.join('output', 'water_level_plots', f'{sce}', f'{nickname}_{k}.png'))
-            # plt.close()
+            ax.scatter(toplot.index, toplot.loc[:, col2], label = f"Observed", c = "r", edgecolor="darkred", s=4)
+            ax.plot(toplot.index, toplot.loc[:,col], c = "r", ls="--")
+            df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == k)]
+            dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit="days")
+            ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
+        ax.set_title(f'{title_spec}: {k}')
+        ax.set_ylabel('Water Level (m)')
+        ax.minorticks_on()
+        grid = True
+        if grid:
+            ax.grid(which='major', linestyle='-',
+                    linewidth='0.1', color='red')
+            ax.grid(which='minor', linestyle=':',
+                    linewidth='0.1', color='black')
+        else:
+            print("grid is OFF")
+            pass
+        ax.legend()
+        plt.xticks(rotation = 45)
+        fig.tight_layout()
+        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        ax.set_ylim([112.8,118])
+        plt.savefig(os.path.join('output', 'water_level_plots', f'{sce}', f'{nickname}_{k}.png'))
+        plt.close()
     return None
 
 if __name__ == "__main__":
