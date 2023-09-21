@@ -16,7 +16,6 @@ matplotlib.use('Qt5Agg')
 
 
 ## Read in observation data
-## TODO: resample to average value per SP(?) + integrate calibration data
 def read_chemdata(chemfile):
 
     chemdata_raw = pd.read_excel(chemfile, engine='openpyxl')
@@ -180,12 +179,12 @@ if __name__ == "__main__":
             times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
             chemfile = os.path.join(os.path.dirname(cwd), 'data', 'hydrochemistry', 'H-North Rebound Study Sampling_DATA.xlsx')
             chemdata, crvi_filt = read_chemdata(chemfile)
-            crvi_filt.to_csv(os.path.join("output", "concentration_data", "2021to2023", "Cr_obs.csv"))
+          #  crvi_filt.to_csv(os.path.join("output", "concentration_data", "2021to2023", "Cr_obs.csv"))
         if sce == "calib_2014_2020":
             crvi_filt = pd.read_csv(os.path.join("output", "concentration_data", "2014to2020", "Cr_obs_avg_bySPs.csv")) #chem data used to calibrate 2014-2020 model
             crvi_filt.rename(columns={"SAMP_SITE_NAME":"NAME", "SAMP_DATE":"SAMP_DATE_TIME"}, inplace=True)
 
-        mode = "mod2obs" #"mod2obs"
+        mode = "ucn" #"mod2obs"
         if mode == "ucn":
             ucnfile = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN') #different UCN name for 2014_2020
             data, df_conc = process_ucn_file(ucnfile)
