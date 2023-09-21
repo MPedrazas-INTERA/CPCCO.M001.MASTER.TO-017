@@ -13,10 +13,41 @@ import geopandas as gpd
 import matplotlib
 matplotlib.use('Qt5Agg')
 
+##take a look at measured concentrations vs measured WLs
+def plot_meas_conc_vs_WLs():
 
-## original function from py13 for insp
-def plot_concentrations_ALL(myDict):
-    outputDir = os.path.join(cwd, 'output', 'concentration_plots', f"comparison_calib_2020_2023")
+    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'measured_data')
+    if not os.path.isdir(outputDir):
+        os.makedirs(outputDir)
+
+    for well in wls['ID'].unique():
+        toplot = wls[wls['ID'] == well]
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.minorticks_on()
+        ax.grid(which='major', linestyle='-',
+                linewidth='0.1', color='red')
+        ax.grid(which='minor', linestyle=':',
+                linewidth='0.1', color='black')
+        plt.xticks(rotation=45)
+        ax.set_title(f'{well}')
+        ax.plot(toplot.index, toplot['Water Level (m)'], label = 'Monthly Ave WL')
+        ax.set_ylabel('Water Level (m.asl)')
+
+        ax2 = ax.twinx()
+        toplot2 = crvi_meas[crvi_meas['NAME'] == well]
+        ax2.scatter(toplot2.index, toplot2['STD_VALUE_RPTD'], c = 'darkred', label = 'Measured Cr(VI)')
+        ax2.set_ylabel('Cr(VI) (μg/L)')
+
+        ## combined legend
+        lines, labels = ax.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax2.legend(lines + lines2, labels + labels2, loc=0)
+
+        plt.savefig(os.path.join(outputDir, f'{well}_measured_data.png'))
+
+## original function from py13 (w/minor edits)
+def plot_concentrations(myDict):
+    outputDir = os.path.join(cwd, 'output', 'concentration_plots', f"comparison_calib_2020_2023", 'rw_tests')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -41,19 +72,20 @@ def plot_concentrations_ALL(myDict):
 
             if sce == "calib_2014_2020":
                 ###double-check concentrations from ECF-100HR3-22-0047:
-                df_conc2 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process','mod2obs_monitoring_wells', 'original', 'simulated_conc_mod2obs.csv'))
+                df_conc2 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}',
+                                                    'post_process','mod2obs_monitoring_wells', 'original', 'simulated_conc_mod2obs.csv'))
                 try:
                     qc_plot = df_conc2[df_conc2['SAMP_SITE_NAME'] == well]
                 except:
                     print(f"No info for {well} for ECF-22-0047")
                 ax.plot(pd.to_datetime(ucn_toplot["SAMP_DATE"]), ucn_toplot['WeightedConc'], label=f'Calibrated Model', color = "cornflowerblue")
-                ax.scatter(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, label = f"Calib Obs", c = "grey", edgecolor="k", s=10)
+                ax.scatter(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, label = f"Calib Obs", c = "grey", edgecolor="k")
                 ax.plot(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, c = "grey", ls="--", alpha=0.7)
                 ax.plot(pd.to_datetime(qc_plot["SAMP_DATE"]), qc_plot['WeightedConc'], label=f'Calibrated Model ECF', color = "pink")
             if sce == "calib_2014_2023":
                 ax.plot(pd.to_datetime(ucn_toplot["SAMP_DATE"]), ucn_toplot['WeightedConc'], label=f'Extended Model', color = "olive")
-                ax.scatter(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, label = f"New Obs", c = "r", edgecolor="darkred", s=10)
-                ax.plot(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, c = "r", ls="--", alpha=0.7)
+                ax.scatter(data_toplot.index, data_toplot['STD_VALUE_RPTD'], zorder=10, label = f"New Obs", c = "r", edgecolor="darkred")
+                #ax.plot(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, c = "r", ls="--", alpha=0.7)
         ax.set_title(f'{wellDict[well]}: {well}')
         ax.set_ylabel('Cr(VI) (ug/L)')
         ax.minorticks_on()
@@ -70,18 +102,6 @@ def plot_concentrations_ALL(myDict):
         #plt.close()
     return None
 
-def plot_conc_vs_WLs():
-
-    for well in wls['ID'].unique():
-        toplot = wls[wls['ID'] == well]
-        fig, ax = plt.subplots()
-        ax.grid()
-        ax.plot(toplot.index, toplot['Water Level (m)'])
-
-        ax2 = ax.twinx()
-        toplot2 = crvi[crvi['NAME'] == well]
-        ax2.scatter(toplot2.index, toplot2['STD_VALUE_RPTD'], c = 'darkred')
-
 if __name__ == "__main__":
 
     cwd = os.getcwd()
@@ -90,37 +110,22 @@ if __name__ == "__main__":
     wldir = os.path.join(cwd, 'output', 'water_level_data')
     chemdir = os.path.join(cwd, 'output', 'concentration_data')
 
+    times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
 
     wls = pd.read_csv(os.path.join(wldir, 'measured_WLs_monthly.csv'), index_col = 'Date', parse_dates = True)
-    crvi = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'),
-                                    usecols = ['NAME', 'SAMP_DATE_TIME', 'STD_VALUE_RPTD', 'tte'],
-                       index_col = 'SAMP_DATE_TIME', parse_dates = True)
+    crvi_meas = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'), index_col = 'DATE', parse_dates = True)
 
-    # sces = ['calib_2014_2023', 'calib_2014_2020']
-    # myDict = {}
-    # for sce in sces:
-    #     if sce == 'calib_2014_2023':
-    #         times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
-    #         crvi_filt = pd.read_csv(os.path.join(chemdir, "2021to2023",
-    #                                              "Cr_obs.csv"))
-    #     if sce == "calib_2014_2020":
-    #         crvi_filt = pd.read_csv(os.path.join(chemdir, "2014to2020",
-    #                                              "Cr_obs_avg_bySPs.csv"))  # chem data used to calibrate 2014-2020 model
-    #         crvi_filt.rename(columns={"SAMP_SITE_NAME": "NAME", "SAMP_DATE": "SAMP_DATE_TIME"}, inplace=True)
-    #
-    #
-    #     df_conc = pd.read_csv(
-    #         os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process',
-    #                      'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
-    #         # if sce == "calib_2014_2020":
-    #         # df_conc["WeightedConc"] = df_conc["WeightedConc"]/1000 ?
-    #
-    #
-    #     if sce not in myDict.keys():
-    #         myDict[sce] = [crvi_filt, df_conc]
-    #
-    # plot_concentrations_ALL(myDict)
+    sce = 'calib_2014_2023'
+    crvi_sim = pd.read_csv(
+        os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process',
+                     'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
+
+    myDict = {}
+    if sce not in myDict.keys():
+        myDict[sce] = [crvi_meas, crvi_sim]
+
+    plot_concentrations(myDict)
 
 
 
