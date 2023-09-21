@@ -47,7 +47,7 @@ def generate_plots(mywells, SimHeads, TargetHeads, CalibHeads, plotTargetHeads =
             mymin = 41640 #min(CalibHeads.Time)
             obs_c = CalibHeads.loc[CalibHeads.Well == w]
             dates_obs_c = pd.to_datetime("2014-01-01") + pd.to_timedelta(obs_c.Time-mymin, unit="days")
-            # pd.to_datetime(obs_c.Time.iloc[0])
+
         sim = SimHeads.loc[(SimHeads.NAME == w) & (SimHeads.Layer == 1)]
         dates_sim = pd.to_datetime("2014-01-01") + pd.to_timedelta(sim.Time, unit="days")
 
@@ -103,6 +103,8 @@ if __name__ == "__main__":
     TargetHeads = pd.read_excel(os.path.join(os.path.dirname(cwd), "data", "water_levels", "calib_2014to2020_heads", "HeadTarg.xlsx"), engine = "openpyxl")
     CalibHeads = pd.read_excel(os.path.join(os.path.dirname(cwd), "data", "water_levels", "calib_2014to2020_heads", "RES_RUM_GHB.xlsx"), engine = "openpyxl")
 
+    myDF = CalibHeads[["Well", "Time", "Observed"]]
+    myDF.to_csv(os.path.join("output", "water_level_data", "calib_2014_2020", "calib_2014to2020_obs.csv"), index=False)
 
 
     sce = 'calib_2014_2023'
