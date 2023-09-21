@@ -28,6 +28,7 @@ def read_chemdata(chemfile):
 
     flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR'] #what is G for 199-H3-84
     crvi_filt = crvi[~crvi['REVIEW_QUALIFIER'].isin(flags)]
+    crvi_filt.insert(1, 'DATE', pd.to_datetime(crvi_filt['SAMP_DATE_TIME']).dt.date)
 
     return chemdata, crvi_filt
 
@@ -162,8 +163,8 @@ def plot_concentrations_ALL(myDict):
         # fig.tight_layout()
         # ax.set_xlabel("Date")
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_MOD2OBS_qcECF-0047.png'))
-        plt.close()
+        # plt.savefig(os.path.join(outputDir, f'{well}_MOD2OBS_qcECF-0047.png'))
+        # plt.close()
     return None
 
 if __name__ == "__main__":
@@ -179,12 +180,12 @@ if __name__ == "__main__":
             times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
             chemfile = os.path.join(os.path.dirname(cwd), 'data', 'hydrochemistry', 'H-North Rebound Study Sampling_DATA.xlsx')
             chemdata, crvi_filt = read_chemdata(chemfile)
-          #  crvi_filt.to_csv(os.path.join("output", "concentration_data", "2021to2023", "Cr_obs.csv"))
+            # crvi_filt[['NAME', 'DATE', 'STD_VALUE_RPTD']].to_csv(os.path.join("output", "concentration_data", "2021to2023", "Cr_obs.csv"), index = False)
         if sce == "calib_2014_2020":
             crvi_filt = pd.read_csv(os.path.join("output", "concentration_data", "2014to2020", "Cr_obs_avg_bySPs.csv")) #chem data used to calibrate 2014-2020 model
             crvi_filt.rename(columns={"SAMP_SITE_NAME":"NAME", "SAMP_DATE":"SAMP_DATE_TIME"}, inplace=True)
 
-        mode = "ucn" #"mod2obs"
+        mode = "mod2obs" #"mod2obs"
         if mode == "ucn":
             ucnfile = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN') #different UCN name for 2014_2020
             data, df_conc = process_ucn_file(ucnfile)
