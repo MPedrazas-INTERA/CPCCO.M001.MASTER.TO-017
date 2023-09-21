@@ -35,24 +35,44 @@ def read_head(ifile_hds, df, all_lays=False):
     df_return.to_csv(os.path.join('output', 'water_level_data', f'calib_2014_2023', "simulated_heads.csv"), index=False)
     return df_return
 
-def generate_plots(mywells, CalibHeads, SimHeads):
+def generate_plots(mywells, SimHeads, TargetHeads, CalibHeads, plotTargetHeads = False, plotCalibHeads = True):
 
     for w in mywells.NAME.unique():
         print(w)
-        obs = CalibHeads.loc[CalibHeads.Well == w]#.resample('D').mean()
-        dates_obs = pd.to_datetime("2014-01-01") + pd.to_timedelta(obs.Time, unit="days")
+
+        if plotTargetHeads:
+            obs_t = TargetHeads.loc[TargetHeads.Well == w]
+            dates_obs_t = pd.to_datetime("2014-01-01") + pd.to_timedelta(obs_t.Time, unit="days")
+        elif plotCalibHeads:
+            mymin = 41640 #min(CalibHeads.Time)
+            obs_c = CalibHeads.loc[CalibHeads.Well == w]
+            dates_obs_c = pd.to_datetime("2014-01-01") + pd.to_timedelta(obs_c.Time-mymin, unit="days")
+            # pd.to_datetime(obs_c.Time.iloc[0])
         sim = SimHeads.loc[(SimHeads.NAME == w) & (SimHeads.Layer == 1)]
         dates_sim = pd.to_datetime("2014-01-01") + pd.to_timedelta(sim.Time, unit="days")
 
-        fig, ax = plt.subplots(figsize=(8, 5))
-        ax.scatter(dates_obs, obs.HEAD, label = f"Calibrated", c = "r", edgecolor="darkred", s=4)
-        ax.scatter(dates_obs, obs.HEAD, c = "r", ls="--")
+        fig, ax = plt.subplots(figsize=(15, 5))
+        if plotTargetHeads: #if target heads is True
+            try:
+                ax.scatter(dates_obs_t, obs_t.HEAD, label = f"Calibrated", c = "r", edgecolor="darkred", s=4)
+                ax.plot(dates_obs_t, obs_t.HEAD, c = "r", ls="--")
+            except:
+                print(f"Coudn't find {w}")
+        elif plotCalibHeads:
+            try:
+                ax.scatter(dates_obs_c, obs_c["Zero Weight"], label = f"MPR: Simulated", c = "r", edgecolor="darkred", s=15, zorder=2)
+                ax.plot(dates_obs_c, obs_c["Zero Weight"], c = "r", ls="--", zorder=4)
+                ax.scatter(dates_obs_c, obs_c.Observed, label = f"MPR: Observed", c = "b", edgecolor="navy", s=15, zorder=3)
+                ax.plot(dates_obs_c, obs_c.Observed, c = "b", ls="--", zorder=5)
+                ax.scatter(dates_obs_c, obs_c["Simulated"], label = f"MPR: Zero-Weight", c = "grey", edgecolor="darkgrey", s=4, zorder=2)
 
-        ax.plot(dates_sim, sim.Head, label = f"Simulated", color = "cornflowerblue")
-        ax.plot(sim.Time, sim.Head, c = "r", ls="--")
+            except:
+                print(f"Coudn't find {w}")
 
-        ax.set_title(f'{w}')
-        ax.set_ylabel('Water Level (m)')
+        ax.plot(dates_sim, sim.Head, label = f"Extended Model", color = "olive", alpha=0.7, lw=1.5, zorder=1)
+
+        ax.set_title(f'{w}', fontsize=12, fontweight="bold")
+        ax.set_ylabel('Water Level (m)', fontsize=12, fontweight="bold")
         ax.minorticks_on()
         grid = True
         if grid:
@@ -66,8 +86,10 @@ def generate_plots(mywells, CalibHeads, SimHeads):
         ax.legend()
         plt.xticks(rotation = 45)
         fig.tight_layout()
-        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        ax.set_ylim([112.8,118])
+        # ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2021-01-01"))
+        # ax.set_ylim([112.8,118])
+        ax.set_ylim([113.5,117.5])
         plt.savefig(os.path.join('output', 'water_level_plots', 'calib_heads', f'{w}.png'))
         plt.close()
     return None
@@ -75,10 +97,15 @@ def generate_plots(mywells, CalibHeads, SimHeads):
 
 if __name__ == "__main__":
     cwd = os.getcwd()
-    CalibHeads = pd.read_excel(os.path.join(os.path.dirname(cwd), "data", "water_levels", "calib_2014to2020_heads", "HeadTarg.xlsx"), engine = "openpyxl")
-    mywells = pd.read_csv(os.path.join("input", "monitoring_wells_coords_ij.csv"))  # export CSV
+
+    mywells = pd.read_csv(os.path.join("input", "monitoring_wells_coords_ij.csv"))
+
+    TargetHeads = pd.read_excel(os.path.join(os.path.dirname(cwd), "data", "water_levels", "calib_2014to2020_heads", "HeadTarg.xlsx"), engine = "openpyxl")
+    CalibHeads = pd.read_excel(os.path.join(os.path.dirname(cwd), "data", "water_levels", "calib_2014to2020_heads", "RES_RUM_GHB.xlsx"), engine = "openpyxl")
+
+
 
     sce = 'calib_2014_2023'
     hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
     SimHeads = read_head(hds_file, mywells)
-    generate_plots(mywells, CalibHeads, SimHeads)
+    generate_plots(mywells, SimHeads, TargetHeads, CalibHeads, plotTargetHeads = False, plotCalibHeads = True) ###True will be the Heads that plots.
