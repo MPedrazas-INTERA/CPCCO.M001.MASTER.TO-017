@@ -14,15 +14,16 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 
 ##take a look at measured concentrations vs measured WLs
-def plot_meas_conc_vs_WLs():
+def plot_conc_vs_WLs():
 
-    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'measured_data')
+    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'testing_grounds')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
-    for well in wls['ID'].unique():
-        toplot = wls[wls['ID'] == well]
-        fig, ax = plt.subplots(figsize=(8, 5))
+    for well in wls_meas['ID'].unique():
+        toplot_calib = wls_sim[wls_sim['NAME'] == well] ##
+        toplot_extend = wls_meas[wls_meas['ID'] == well] ##
+        fig, ax = plt.subplots(figsize=(8, 6))
         ax.minorticks_on()
         ax.grid(which='major', linestyle='-',
                 linewidth='0.1', color='red')
@@ -30,20 +31,31 @@ def plot_meas_conc_vs_WLs():
                 linewidth='0.1', color='black')
         plt.xticks(rotation=45)
         ax.set_title(f'{well}')
-        ax.plot(toplot.index, toplot['Water Level (m)'], label = 'Monthly Ave WL')
+        ax.plot(times['end_date'], toplot_calib['Head'], label = 'Simulated WL')
+        ax.plot(toplot_extend.index, toplot_extend['Water Level (m)'], label='Observed WL')
+        ax.plot()
         ax.set_ylabel('Water Level (m.asl)')
 
         ax2 = ax.twinx()
-        toplot2 = crvi_meas[crvi_meas['NAME'] == well]
-        ax2.scatter(toplot2.index, toplot2['STD_VALUE_RPTD'], c = 'darkred', label = 'Measured Cr(VI)')
+        toplot2_calib = crvi_meas_1[crvi_meas_1['SAMP_SITE_NAME'] == well]  ## 2021 - 2023
+        toplot2_extend = crvi_meas_2[crvi_meas_2['NAME'] == well] ## 2021 - 2023
+        ax2.scatter(toplot2_calib.index, toplot2_calib['STD_VALUE_RPTD'], c='grey', label='Measured Cr(VI) Calib')
+        ax2.plot(pd.to_datetime(toplot2_calib.index), toplot2_calib['STD_VALUE_RPTD'], zorder=10, c="grey",
+                ls="--", alpha=0.7)
+        ax2.scatter(toplot2_extend.index, toplot2_extend['STD_VALUE_RPTD'], c = 'darkred', label = 'Measured Cr(VI) New')
+        ax2.plot(pd.to_datetime(toplot2_extend.index), toplot2_extend['STD_VALUE_RPTD'], zorder=10, c="darkred",
+                ls="--", alpha=0.7)
+
         ax2.set_ylabel('Cr(VI) (μg/L)')
+        # ax2.set_ylim(0.1, 500)
+        # ax2.set_yscale('log')
 
         ## combined legend
         lines, labels = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         ax2.legend(lines + lines2, labels + labels2, loc=0)
 
-        plt.savefig(os.path.join(outputDir, f'{well}_measured_data.png'))
+        plt.savefig(os.path.join(outputDir, f'{well}_v02.png'))
 
 ## original function from py13 (w/minor edits)
 def plot_concentrations(myDict):
@@ -57,6 +69,7 @@ def plot_concentrations(myDict):
        '199-H4-86':"North_PT_SensorData", '199-H4-88': "North_AWLN", '199-H4-89': "North_Manual"}
 
     times['start_date'] = pd.to_datetime(times['start_date'])
+    times['end_date'] = pd.to_datetime(times['end_date'])
 
     for well in wellDict.keys():
         print(well)
@@ -113,17 +126,21 @@ if __name__ == "__main__":
     times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
 
-    wls = pd.read_csv(os.path.join(wldir, 'measured_WLs_monthly.csv'), index_col = 'Date', parse_dates = True)
-    crvi_meas = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'), index_col = 'DATE', parse_dates = True)
+    ## 2014 - 2020, used for calibration
+    crvi_meas_1 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_all.csv'), index_col = 'SAMP_DATE', parse_dates = True)
+    ## 2021 - 2023, for extended model
+    wls_meas = pd.read_csv(os.path.join(wldir, 'measured_WLs_monthly.csv'), index_col='Date', parse_dates=True)
+    crvi_meas_2 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'), index_col = 'DATE', parse_dates = True)
 
     sce = 'calib_2014_2023'
-    crvi_sim = pd.read_csv(
-        os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process',
-                     'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
+    # sces = ['calib_2014_2023', 'calib_2014_2020']
+    wls_sim = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads.csv'))
+    crvi_sim = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}',
+                                        'post_process', 'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
 
     myDict = {}
     if sce not in myDict.keys():
-        myDict[sce] = [crvi_meas, crvi_sim]
+        myDict[sce] = [crvi_meas_2, crvi_sim]
 
     plot_concentrations(myDict)
 
