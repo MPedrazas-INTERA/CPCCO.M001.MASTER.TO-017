@@ -191,7 +191,8 @@ if __name__ == "__main__":
             data, df_conc = process_ucn_file(ucnfile)
             ntimes, nlay, nr, nc = data.shape
         elif mode == "mod2obs":
-            df_conc = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'post_process', 'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
+            df_conc = pd.read_csv(os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}',
+                                               'post_process', 'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv'))
             #if sce == "calib_2014_2020":
                 #df_conc["WeightedConc"] = df_conc["WeightedConc"]/1000 ?
 

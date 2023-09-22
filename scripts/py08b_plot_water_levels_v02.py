@@ -156,8 +156,8 @@ def generate_plots():
         fig.tight_layout()
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
         ax.set_ylim([112.8,118])
-    # plt.savefig(os.path.join('output', 'water_level_plots', f'{sce}', f'{nickname}_{k}.png'))
-    plt.close()
+        plt.savefig(os.path.join('output', 'water_level_plots', f'{sce}', 'monthly resampled', f'{well}.png'))
+    # plt.close()
 
     return None
 
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
     myHds = read_head(hds_file, mywells)
 
-    #generate_plots(dict1, dict2, dict3) ## provide column label to be plotted
+    generate_plots()
 
 ### --- QC --- ###
 ##quick check for overlapping occurences##
