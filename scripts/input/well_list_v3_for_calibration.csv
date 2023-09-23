@@ -1,0 +1,35 @@
+Well_ID,Area,Type,i,j,k
+199-D5-146,100-D-100 Sidewall 1,Extraction,349,147,1
+199-D5-152,100-D-100 Sidewall 1,Monitoring,349,156,1
+199-D5-98,100-D-100 Sidewall 1,Monitoring,356,162,4
+199-D5-97,100-D-100 Sidewall 1,Monitoring,353,151,1
+199-D5-43,100-D-100 Sidewall 1,Monitoring,357,143,1
+199-D5-104,100-D-100 Sidewall 2,Extraction,341,152,1
+199-D5-151,100-D-100 Sidewall 2,Monitoring,344,157,1
+199-D5-34,100-D-100 Sidewall 2,Extraction,328,150,1
+199-D5-145,100-D-100 Sidewall 3,Monitoring,344,147,1
+199-D5-157,100-D-100 Sidewall 3,Monitoring,348,160,2
+199-D5-149,100-D-100 Sidewall 3,Monitoring,337,158,1
+199-D5-141,100-D-100 Sidewall 3,Monitoring,341,150,1
+199-D5-103,100-D-56-2 Pipeline 1,Extraction,337,176,2
+199-D5-160,100-D-56-2 Pipeline 1,Monitoring,341,177,1
+199-D5-150,100-D-56-2 Pipeline 2,Monitoring,343,168,1
+199-D5-106,100-D-56-2 Pipeline 2,Monitoring,324,176,1
+199-D5-42,100-D-56-2 Pipeline 2,Monitoring,321,173,1
+199-H4-86,100-H-46 Waste Site 1,Extraction,209,596,5
+199-H4-87,100-H-46 Waste Site 1,Monitoring,217,599,1
+199-H3-2C,100-H-46 Waste Site 2,Extraction,208,589,1
+199-H3-2A,100-H-46 Waste Site 2,Monitoring,208,588,1
+199-H4-13,107-H Retention Basin 1,Monitoring,224,647,2
+199-H3-21,107-H Retention Basin 1,Monitoring,220,638,1
+199-H4-63,107-H Retention Basin 1,Extraction,217,644,3
+199-H4-83,107-H Retention Basin 1,Monitoring,220,639,2
+199-H4-69,107-H Retention Basin 2,Extraction,215,627,3
+199-H4-70,107-H Retention Basin 2,Extraction,219,626,1
+199-H4-71,107-H Retention Basin 2,Injection,225,627,1
+199-H4-11,107-H Retention Basin 2,Monitoring,211,640,1
+199-H4-84,183-H Solar Evaporation Basins 1,Monitoring,199,616,3
+199-H4-88,183-H Solar Evaporation Basins 1,Monitoring,200,611,1
+199-H3-29,183-H Solar Evaporation Basins 2,Extraction,195,618,1
+199-H4-89,183-H Solar Evaporation Basins 2,Monitoring,194,618,1
+199-H4-85,183-H Solar Evaporation Basins 2,Monitoring,195,623,1
