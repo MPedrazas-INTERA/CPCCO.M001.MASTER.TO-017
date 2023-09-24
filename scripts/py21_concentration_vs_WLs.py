@@ -23,7 +23,6 @@ def plot_WL_vs_conc(wl_df, conc_df, dtype):
     Common errors: double check column names (e.g. "NAME" vs "ID", "time" vs "Date", etc.)
         rename columns outside of function for consistency.
     """
-
     for well in wells['NAME']:
 
         ## set data to be plotted
@@ -40,14 +39,12 @@ def plot_WL_vs_conc(wl_df, conc_df, dtype):
         ax.grid(which='minor', linestyle=':',
                 linewidth='0.1', color='black')
         plt.xticks(rotation=45)
-        ## conditional title color -- work in progress.
-        # result = wells['NAME'].isin(calibwells['Well_ID'])
-        # for index, match in result.iteritems():
-        #     if match:
-        #         ax.set_title(f'{well}', color = 'red')
-        #     else:
-        #         ax.set_title(f'{well}', color = 'black')
-        ax.set_title(f'{well}')
+        ## conditional title color
+        is_in_calibwells = well in calibwells['Well_ID'].values
+        if is_in_calibwells:
+            ax.set_title(f'{well}', color = 'red')
+        else:
+            ax.set_title(f'{well}', color = 'black')
         ax.set_ylabel('Water Level (m.asl)')
         ## create secondary axis and specs
         ax2 = ax.twinx()
@@ -61,10 +58,10 @@ def plot_WL_vs_conc(wl_df, conc_df, dtype):
             ax2.plot(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], zorder=10,
                      c="darkred", label='Simulated Cr(VI)')
         elif dtype == 'measured':
-            ax.scatter(toplot_wl['DATE'], toplot_wl['Head'], label='Measured WL')
-            ax.plot(toplot_wl['DATE'], toplot_wl['Head'], zorder=10,
-                    ls="--", alpha=0.7)
-            ax2.scatter(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], c='darkred',
+            ax.plot(toplot_wl['DATE'], toplot_wl['Head'], label='Measured WL')  ## water level always solid line
+            # ax.plot(toplot_wl['DATE'], toplot_wl['Head'], zorder=10,
+            #         ls="--", alpha=0.7)
+            ax2.scatter(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], c='darkred',       ## set concentrations to scatter if measured
                         label='Measured Cr(VI)')
             ax2.plot(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], zorder=10, c="darkred",
                     ls="--", alpha=0.7)
@@ -77,6 +74,8 @@ def plot_WL_vs_conc(wl_df, conc_df, dtype):
         ax2.legend(lines + lines2, labels + labels2, loc=0)
 
         # plt.savefig(os.path.join(outputDir, f'{well}.png'))
+
+    return None
 
 if __name__ == "__main__":
 

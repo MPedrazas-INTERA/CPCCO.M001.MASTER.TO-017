@@ -139,7 +139,11 @@ def generate_plots():
         df = myHds.loc[(myHds.Layer == 1) & (myHds.NAME == well)]
         dates = pd.to_datetime("2014-01-01") + pd.to_timedelta(df.Time, unit="days")
         ax.plot(dates, df.Head, label = f"Simulated", color = "cornflowerblue")
-        ax.set_title(f'{well}')
+        is_in_calibwells = well in calibwells['Well_ID'].values
+        if is_in_calibwells:
+            ax.set_title(f'{well}', color = 'red')
+        else:
+            ax.set_title(f'{well}', color = 'black')
         ax.set_ylabel('Water Level (m)')
         ax.minorticks_on()
         grid = True
@@ -164,6 +168,8 @@ def generate_plots():
 if __name__ == "__main__":
 
     cwd = os.getcwd()
+
+    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
     dict1, dict2, dict3, df, df_sp = import_WL_data() ## run once at beginning of workflow
     #df.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'all.csv'))

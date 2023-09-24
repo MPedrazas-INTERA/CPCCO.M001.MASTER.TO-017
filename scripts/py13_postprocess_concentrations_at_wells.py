@@ -85,8 +85,8 @@ def plot_concentrations(df_conc, crvi, mode):
             fig.tight_layout()
             # ax.set_xlabel("Date")
             ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-            plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f"{sce}", f'{well}_2014_2023_MOD2OBS.png'))
-            plt.close()
+            # plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f"{sce}", f'{well}_2014_2023_MOD2OBS.png'))
+            # plt.close()
 
     elif mode == "ucn":
         for well in df_conc['NAME'].unique():
@@ -108,12 +108,12 @@ def plot_concentrations(df_conc, crvi, mode):
             plt.xticks(rotation=45)
             fig.tight_layout()
             ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-            plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f"{sce}", f'{well}_2014_2023_UCN.png'))
-            plt.close()
+            # plt.savefig(os.path.join(cwd, 'output', 'concentration_plots', f"{sce}", f'{well}_2014_2023_UCN.png'))
+            # plt.close()
     return None
 
 def plot_concentrations_ALL(myDict):
-    outputDir = os.path.join(cwd, 'output', 'concentration_plots', f"comparison_calib_2020_2023")
+    outputDir = os.path.join(cwd, 'output', 'concentration_plots', f"comparison_calib_2020_2023", 'rw_tests')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -151,7 +151,12 @@ def plot_concentrations_ALL(myDict):
                 ax.plot(pd.to_datetime(ucn_toplot["SAMP_DATE"]), ucn_toplot['WeightedConc'], label=f'Extended Model', color = "olive")
                 ax.scatter(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, label = f"New Obs", c = "r", edgecolor="darkred", s=10)
                 ax.plot(pd.to_datetime(data_toplot['SAMP_DATE_TIME']), data_toplot['STD_VALUE_RPTD'], zorder=10, c = "r", ls="--", alpha=0.7)
-        ax.set_title(f'{wellDict[well]}: {well}')
+        # ax.set_title(f'{wellDict[well]}: {well}')
+        is_in_calibwells = well in calibwells['Well_ID'].values
+        if is_in_calibwells:
+            ax.set_title(f'{wellDict[well]}: {well}', color = 'red')
+        else:
+            ax.set_title(f'{wellDict[well]}: {well}', color = 'black')
         ax.set_ylabel('Cr(VI) (ug/L)')
         ax.minorticks_on()
         ax.grid(which='major', linestyle='-',
@@ -163,7 +168,7 @@ def plot_concentrations_ALL(myDict):
         # fig.tight_layout()
         # ax.set_xlabel("Date")
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        # plt.savefig(os.path.join(outputDir, f'{well}_MOD2OBS_qcECF-0047.png'))
+        plt.savefig(os.path.join(outputDir, f'{well}_MOD2OBS_qcECF-0047.png'))
         # plt.close()
     return None
 
@@ -172,6 +177,7 @@ if __name__ == "__main__":
     cwd = os.getcwd()
 
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
+    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
     sces = ['calib_2014_2023', 'calib_2014_2020']
     myDict = {}
