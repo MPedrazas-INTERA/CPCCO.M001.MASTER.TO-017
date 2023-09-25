@@ -62,7 +62,9 @@ def import_WL_data():
     ## resample
     df_sp.set_index(['ID', 'Date'], inplace = True)
     df_sp = df_sp.groupby([pd.Grouper(level = 'ID'),
-                       pd.Grouper(freq = 'MS', level=-1)]).mean()
+                       pd.Grouper(freq = 'D', level=-1)]).mean()
+    # df_sp = df_sp.groupby([pd.Grouper(level = 'ID'),
+    #                    pd.Grouper(freq = 'MS', level=-1)]).mean()
 
     return dict1, dict2, dict3, df, df_sp
 
@@ -173,7 +175,7 @@ if __name__ == "__main__":
 
     dict1, dict2, dict3, df, df_sp = import_WL_data() ## run once at beginning of workflow
     #df.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'all.csv'))
-    #df_sp.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'resampled_monthly.csv'))
+    df_sp.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'obs_2021_2023', 'measured_WLs_daily.csv'))
 
     coordscsv = os.path.join(os.path.dirname(cwd), 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
     mywells = get_wells_ij(dict1, dict2, dict3, coordscsv)
