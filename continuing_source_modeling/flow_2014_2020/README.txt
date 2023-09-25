@@ -1,0 +1,1 @@
+These results are direct copies from Rel.112 and are used for comparison purposes

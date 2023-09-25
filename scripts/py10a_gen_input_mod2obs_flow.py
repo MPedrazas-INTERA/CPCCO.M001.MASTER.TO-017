@@ -13,7 +13,7 @@ import numpy as np
 
 
 
-def read_file(ifile, mode ='transport'):
+def read_file(ifile, mode ='flow'):
     if mode =='flow':
         cols = ['WellName', 'Date', 'Time', 'Groundwater level (m)']
     elif mode == 'transport':
@@ -30,10 +30,10 @@ def gen_ifile_mod2obs_coords(inputDir, wells, lays = 'all'):
     #This is USEFUL to generate a mod2obs input file for every layer in each well.
     ###Select wells of interest if subset, otherwise select all
 
-    df_wells_all = pd.read_csv(os.path.join(inputDir, 'extractionwells_IJ_XYZ.csv'))
+    df_wells_all = pd.read_csv(os.path.join(inputDir, 'monitoring_wells_master.csv'))
     df_wells = pd.DataFrame()
     if wells == 'all':
-        df_wells = df_wells_all.loc[:,['ID', 'X', 'Y']]
+        df_wells = df_wells_all.loc[:,['ID', 'centroid_x', 'centroid_y']]
     else: #define sub-list of wells
         for well in wells:
             print(well)
@@ -70,8 +70,11 @@ def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
     sp_file = pd.read_csv(os.path.join(timeDir, times))
     sp = pd.to_datetime(sp_file['start_date'], format='%m/%d/%Y')
 
+    ## use this range in df_new for daily timesteps
+    # sp_daily = pd.date_range(start = '2014-01-01', end = '2023-08-01')
+
     dfs = []
-    df_wells = pd.read_csv(os.path.join(outputDir, "Bore_coordinates.csv"), header= None)
+    df_wells = pd.read_csv(os.path.join(outputDir, 'flow_2014_2023', "Bore_coordinates.csv"), header= None)
 
     wells = list(df_wells[0].unique())
 
@@ -86,7 +89,7 @@ def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
         dfs.append(df_new)
     df_final = pd.concat(dfs)
     df_final.Date = df_final.Date.dt.strftime("%m/%d/%Y")
-    df_final.to_csv(os.path.join(outputDir, 'Bore_Sample_File_in_model.csv'), index=False, header=False)
+    df_final.to_csv(os.path.join(outputDir, 'Bore_Sample_File_in_model_daily.csv'), index=False, header=False)
 
     print('Saved {}'.format('Bore_Sample_File_in_model.csv'))
     return None
@@ -94,7 +97,7 @@ def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
 
 if __name__ == "__main__":
 
-    sce = 'mnw2_sce3a_to2125_rr1'
+    sce = 'calib_2014_2023'
 
     cwd = os.getcwd()
     inputDir = os.path.join(cwd, 'output', 'well_info', sce)
@@ -109,7 +112,7 @@ if __name__ == "__main__":
 
     # [STEP 1] run this function to get Bore_coordinates.csv ifile for wells for all layers (transport)
     # or lays = 1 for dummy layer value (flow)
-    bore_coords = gen_ifile_mod2obs_coords(inputDir, wells) #, lays=1) #output is Bore_coordinates.csv
+   #bore_coords = gen_ifile_mod2obs_coords(inputDir, wells) #, lays=1) #output is Bore_coordinates.csv
 
     ### [STEP 2] Generate mod2obs input file based on Bore_coordinates.csv and times.xlsx
     #Note. Remember to change date format in excel.
