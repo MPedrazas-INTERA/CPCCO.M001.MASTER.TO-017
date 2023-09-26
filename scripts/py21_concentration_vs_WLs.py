@@ -101,7 +101,7 @@ def plot_residual_WL_individual(wls_obs, wls_sim, mode):
     plt.rc('xtick', labelsize=14)
     plt.rc('ytick', labelsize=14)
 
-    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residuals')
+    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'crossplots')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -138,10 +138,11 @@ def plot_residual_WL_individual(wls_obs, wls_sim, mode):
         ax.grid(which='minor', linestyle=':',
                 linewidth='0.1', color='black')
         plt.xticks(rotation=45)
+
         ### Add Statistics
         r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
         mae = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
-        ax.text(113, 117.75, '$\mathregular{r^2}$ = ' + str(r2) + " m", fontsize=14)
+        ax.text(113, 117.75, '$\mathregular{r^2}$ = ' + str(r2), fontsize=14)
         ax.text(113, 117.5, f'MAE = {mae} m', fontsize=14)
 
         plt.savefig(os.path.join(outputDir, f'{well}_{mode}.png'), bbox_inches='tight')
@@ -162,7 +163,7 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
     plt.rc('xtick', labelsize=14)
     plt.rc('ytick', labelsize=14)
 
-    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residuals')
+    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'crossplots')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -171,6 +172,26 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
     groups = [group1, group2]
 
     for grp in groups:
+        if len(grp) == 2:
+            fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 7))
+            # size = len(grp)
+            # if size == 6:
+            #     fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(
+            #         16, 6), sharex=True, sharey=False)
+            # if size == 5:
+            #     fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(
+            #         16, 6), sharex=True, sharey=False)
+            # elif size == 4:
+            #     fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(
+            #         12, 6), sharex=True, sharey=False)
+            # elif size == 3:
+            #     fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(
+            #         16, 3), sharex=True, sharey=False)
+            # elif size == 2:
+            #     fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(
+            #         12, 3), sharex=True, sharey=False)
+        else:
+            pass
         cnt = 0
         for well in grp:
             print(well)
@@ -182,11 +203,6 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
             toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
             toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
             toplot.dropna(subset=["Observed"], inplace=True)
-
-            if len(grp) == 2:
-                fig, ax = plt.subplots(nrows = 1, ncols = 2, figsize=(15, 7))
-            else:
-                pass
 
             ax[cnt].plot(toplot['Observed'], toplot['Simulated'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
                     markeredgewidth=1, markersize=10, alpha=0.5, zorder=1)
