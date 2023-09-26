@@ -98,7 +98,7 @@ def read_head(ifile_hds, df, all_lays=False):
                 vals.append([data[t_idx][lay][row][col], t, lay + 1, row, col, df.NAME.iloc[idx]])  # 237 nodes * 84 times = 19908 vals for L1
     df_return = pd.DataFrame(vals, columns=['Head', 'Time', 'Layer', 'Row', 'Column', 'NAME'])
     df_return.drop_duplicates(inplace=True)
-    df_return.to_csv(os.path.join('output', 'water_level_data', f'{sce}', "simulated_heads.csv"), index=False)
+    df_return.to_csv(os.path.join('output', 'water_level_data', f'{sce}', "simulated_heads_monthly.csv"), index=False)
     return df_return
 
 def read_model_grid():
