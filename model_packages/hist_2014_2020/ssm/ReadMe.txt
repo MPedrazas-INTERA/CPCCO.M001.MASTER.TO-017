@@ -1,0 +1,2 @@
+SSM file copied from S:\PSC\CHPRC.C003.HANOFF\Rel.112\transport calibration\model_files\continuing_source_modeling\ssm\cr6
+SSM active_lays copied from /home/mpedrazas/100HR3-Rebound/mruns/calib_2014_2020/tran_2014_2020
