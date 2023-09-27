@@ -103,8 +103,16 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
     finalDF4.reset_index(inplace=True)
     finalDF4["WasteSite"] = finalDF4["Group"].map(wastesiteDict)
 
-    ### added by Robin to calculate total mass released for specific time slices ###
-    #####
+    # if case.startswith('transport_NFA'):
+    if year == 2125:
+        years = 105   ##105 for plotting to 2125, 12 for plotting to 2032
+    # elif case == 'transport_RPO_2032_wSSM':
+    elif year == 2032:
+        years = 12
+    elif year == 2023: ## for rebound study, plot through end of july
+        years = 9 + 7/12
+
+    ## uncomment to calculate mass release for specific time slice
     # t = finalDF2[finalDF2['SP'].isin(list(range(0, 217)))]
     # fdf5 = pd.pivot_table(t, index=["Group"], values=["Mass (ug)"],
     #                           aggfunc=np.sum)
@@ -122,17 +130,6 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
     # one = finalDF4.iloc[0:2, 2].sum()/1E9
     # two = fdf5.iloc[0:2, 2].sum()/1E9
     # three = fdf6.iloc[0:2, 2].sum() / 1E9
-    ######
-
-    # if case.startswith('transport_NFA'):
-    if year == 2125:
-        years = 105   ##105 for plotting to 2125, 12 for plotting to 2032
-    # elif case == 'transport_RPO_2032_wSSM':
-    elif year == 2032:
-        years = 12
-    elif year == 2023: ## for rebound study, plot through end of july
-        years = 9 + 7/12
-
 
     totalyearlymass100D, totalyearlymass100H = 0,0
     totalmass100D, totalmass100H = 0,0
@@ -146,7 +143,7 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
             totalmass100H += (finalDF4["Total Mass (ug)"].loc[idx])
             print("100-H", finalDF4["Total Mass (ug)"].loc[idx])
 
-    finalDF4.to_csv(os.path.join(outputDir, "total_annual_mass_calculated_fromSSM.csv"), index=False)
+  #  finalDF4.to_csv(os.path.join(outputDir, "total_annual_mass_calculated_fromSSM.csv"), index=False)
 
 ##########[Step 3] Plotting results:
     plot = True
@@ -206,39 +203,47 @@ def calculate_mass_fromSSM(times, inputDir, ssmDir, ssmFile, outputDir):
             pass
         # plt.title('Mass calculated from SSM')
         # plt.show()
-        fname = os.path.join(outputDir, f"mass_calculated_fromSSM_{times}.png")
-        fig.savefig(fname, dpi=800, transparent=False, bbox_inches='tight') #,transparent = True) #facecolor=fig.get_facecolor())
-        plt.close()
+        # fname = os.path.join(outputDir, f"mass_calculated_fromSSM_{times}.png")
+       #    fig.savefig(fname, dpi=800, transparent=False,
+       #         bbox_inches='tight')  # ,transparent = True) #facecolor=fig.get_facecolor())
+    plt.close()
+
     return None
+
+
+######
+
 
 def plot_mass_compareCases(cases):
     print("Generating mass time series figure")
     import matplotlib.pyplot as plt
 
     plt.tick_params(labelsize=12)
-    fig, ax = plt.subplots(1, 1, figsize=(12, 5)) #figsize=(8.5, 6)
+    fig, ax = plt.subplots(1, 1, figsize=(12, 5))  # figsize=(8.5, 6)
     # colorLst = ['slategrey', 'brown', 'olivedrab', 'cornflowerblue', 'peru']
-    colorLst = ['peru', 'navy','forestgreen', 'firebrick', "slategrey", "brown","olivedrab"]
-    #colorLst = ['royalblue', 'rebeccapurple','forestgreen', 'firebrick']
-    lineStyleLst = ['-','-','--','--','dashdot','dashdot']#*8
+    colorLst = ['peru', 'navy', 'forestgreen', 'firebrick', "slategrey", "brown", "olivedrab"]
+    # colorLst = ['royalblue', 'rebeccapurple','forestgreen', 'firebrick']
+    lineStyleLst = ['-', '-', '--', '--', 'dashdot', 'dashdot']  # *8
     counter = 0
     for case in cases:
         inputDir = os.path.join("..", 'model_packages', 'pred_2023_2125', f'ssm_{case}')
         mySSM = pd.read_csv(os.path.join(inputDir, "mass_fromSSM", "mass_calculated_fromSSM.csv"))
         # for grp in [1,2]:  #(mySSM.Group.unique()):
-        for grp in [3,4,5]:
+        for grp in [3, 4, 5]:
             oneGrpataTime = mySSM.loc[
                 mySSM.Group == grp]
             print(counter)
             if nsp < 598:
-                ax.scatter((oneGrpataTime.tte / 365.25) + 2021, oneGrpataTime['Mass (ug/month)'] / 1e9, s=5, color=colorLst[counter],
+                ax.scatter((oneGrpataTime.tte / 365.25) + 2021, oneGrpataTime['Mass (ug/month)'] / 1e9, s=5,
+                           color=colorLst[counter],
                            zorder=6)
                 ax.plot((oneGrpataTime.tte / 365.25) + 2021, oneGrpataTime['Mass (ug/month)'] / 1e9, linewidth=1.75,
-                        color=colorLst[counter], linestyle = lineStyleLst[counter],
+                        color=colorLst[counter], linestyle=lineStyleLst[counter],
                         zorder=5, label=f"{nameDict[case]}:\n{wastesiteDict[grp]}")
             else:
-                ax.plot((oneGrpataTime.tte / 365.25) + 2023, oneGrpataTime['Mass (ug/month)'] / 1e9, linewidth=1, #0.5
-                        color=colorLst[counter], zorder=5,  label=f"{nameDict[case]}: {wastesiteDict[grp]}", linestyle = lineStyleLst[counter])
+                ax.plot((oneGrpataTime.tte / 365.25) + 2023, oneGrpataTime['Mass (ug/month)'] / 1e9, linewidth=1,  # 0.5
+                        color=colorLst[counter], zorder=5, label=f"{nameDict[case]}: {wastesiteDict[grp]}",
+                        linestyle=lineStyleLst[counter])
             counter += 1
 
     ax.legend(fontsize='medium', loc='upper right', ncol=1).set_zorder(10)  # title="Waste Sites")
@@ -250,8 +255,8 @@ def plot_mass_compareCases(cases):
     ax.set_ylabel("Mass Release from Continuing Source (kg/month)", fontsize=12)
     # ax.set_xlim([2023, 2126])  #full extent
     # ax.set_xlim([2023, 2040]) #zoomin1
-    ax.set_xlim([2040, 2125]) #zoomin2
-    ax.set_ylim([0,0.06]) #CT + SF ylimit
+    ax.set_xlim([2040, 2125])  # zoomin2
+    ax.set_ylim([0, 0.06])  # CT + SF ylimit
     # ax.set_ylim([0, 35]) #superscenario SF ylimit
     # ax.set_ylim([0, 45]) #SF ylimit
     # ax.set_yscale('log')      ##use log for normal/no zoom
@@ -265,6 +270,7 @@ def plot_mass_compareCases(cases):
                 bbox_inches='tight')  # ,transparent = True) #facecolor=fig.get_facecolor())
     plt.close()
     return None
+
 
 if __name__ == "__main__":
 

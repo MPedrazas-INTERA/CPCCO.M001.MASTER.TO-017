@@ -190,7 +190,6 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
         fig.suptitle('Groundwater Levels 2021 - 2023', fontweight='bold', fontsize = 14)
         for i, well in enumerate(grp):
             ax = axes[i]
-            # for well in wells:
             print(well)
             wls_sim.index = wls_sim["DATE"]
             mywell_sim = wls_sim[wls_sim['NAME'] == well]
