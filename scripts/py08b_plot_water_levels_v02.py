@@ -61,12 +61,14 @@ def import_WL_data():
     df_sp = df.reset_index()
     ## resample
     df_sp.set_index(['ID', 'Date'], inplace = True)
+    ## resample to daily
     df_sp = df_sp.groupby([pd.Grouper(level = 'ID'),
                        pd.Grouper(freq = 'D', level=-1)]).mean()
-    # df_sp = df_sp.groupby([pd.Grouper(level = 'ID'),
-    #                    pd.Grouper(freq = 'MS', level=-1)]).mean()
+    # resample to monthly
+    df_sp_m = df_sp.groupby([pd.Grouper(level = 'ID'),
+                       pd.Grouper(freq = 'MS', level=-1)]).mean()
 
-    return dict1, dict2, dict3, df, df_sp
+    return df, df_sp, df_sp_m
 
 def read_head(ifile_hds, df, all_lays=False):
     """
@@ -105,31 +107,31 @@ def read_model_grid():
     print('finished reading grid file')
     return grid
 
-def get_wells_ij(dict1, dict2, dict3, coordscsv):
+def get_wells_ij(df, coordscsv):
     print("Getting row and column info for each well")
     coords_database = pd.read_csv(coordscsv, delimiter = "|")
-    well_lst = list(dict1.keys()) + list(dict2.keys()) + list(dict3.keys())
-    mywells = coords_database.loc[coords_database.NAME.isin(well_lst)]
+    well_lst = list(df['ID'].unique())
+    wells = coords_database.loc[coords_database.NAME.isin(well_lst)]
 
     ## create GDF from wells dataframe and merge with grid
     grid = read_model_grid()
     mycrs = grid.crs
-    wells_gdf = gpd.GeoDataFrame(mywells,
-                                 geometry=gpd.points_from_xy(mywells['XCOORDS'], mywells['YCOORDS']),
+    wells_gdf = gpd.GeoDataFrame(wells,
+                                 geometry=gpd.points_from_xy(wells['XCOORDS'], wells['YCOORDS']),
                                  crs=mycrs)
 
     gridwells = gpd.sjoin(grid, wells_gdf, how='right')
-    df = gridwells.loc[:, ['NAME', 'XCOORDS', 'YCOORDS', 'I', 'J']]
-    df = df[~df.index.duplicated(keep='first')]
+    mywells = gridwells.loc[:, ['NAME', 'XCOORDS', 'YCOORDS', 'I', 'J']]
+    mywells = mywells[~mywells.index.duplicated(keep='first')]
 
-    df.columns = ['NAME', 'X', 'Y', 'Row', 'Col']
+    mywells.columns = ['NAME', 'X', 'Y', 'Row', 'Col']
     print('finished joining geodataframes')
-    df2csv = df.copy()
+    df2csv = mywells.copy()
     df2csv.reset_index(inplace=True)
     print(df2csv.head())
     print(df2csv.columns)
     # df2csv.to_csv(os.path.join("input", "monitoring_wells_coords_ij.csv"), index=False)  # export CSV
-    return df
+    return mywells
 
 def generate_plots():
 
@@ -162,7 +164,7 @@ def generate_plots():
         fig.tight_layout()
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
         ax.set_ylim([112.8,118])
-        plt.savefig(os.path.join('output', 'water_level_plots', f'{sce}', 'monthly resampled', f'{well}.png'))
+        # plt.savefig(os.path.join('output', 'water_level_plots', f'{sce}', 'monthly resampled', f'{well}.png'))
     # plt.close()
 
     return None
@@ -173,18 +175,18 @@ if __name__ == "__main__":
 
     calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
-    dict1, dict2, dict3, df, df_sp = import_WL_data() ## run once at beginning of workflow
+    df, df_sp, df_sp_m = import_WL_data() ## run once at beginning of workflow
     #df.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'all.csv'))
     # df_sp.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'obs_2021_2023', 'measured_WLs_daily.csv'))
 
     coordscsv = os.path.join(os.path.dirname(cwd), 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
-    mywells = get_wells_ij(dict1, dict2, dict3, coordscsv)
+    mywells = get_wells_ij(df, coordscsv)
 
     sce = 'calib_2014_2023'
     hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
     myHds = read_head(hds_file, mywells)
 
-    generate_plots()
+    # generate_plots()
 
 ### --- QC --- ###
 ##quick check for overlapping occurences##
@@ -193,3 +195,20 @@ if __name__ == "__main__":
 # l = list(itertools.chain(wells1, wells2, wells3))
 # from collections import Counter
 # Counter(l)
+
+## check resampled wls vs measured wls
+odir = os.path.join(cwd, 'output', 'water_level_plots', 'resampling_checks')
+if not os.path.isdir(odir):
+    os.makedirs(odir)
+for well in df['ID'].unique():
+    print(well)
+    raw = df[df['ID'] == well]
+    resampled = df_sp_m.xs(well, level='ID')
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.scatter(raw.index, raw['Water Level (m)'], label = 'Observed - Raw')
+    ax.plot(resampled.index.get_level_values('Date'), resampled['Water Level (m)'], c = 'darkred',
+            label = 'Observed - Resampled Monthly')
+    ax.legend()
+    ax.grid()
+    plt.savefig(os.path.join(odir, f'{well}_monthly.png'))
+
