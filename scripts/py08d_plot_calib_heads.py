@@ -32,7 +32,7 @@ def read_head(ifile_hds, df, all_lays=False):
                 vals.append([data[t_idx][lay][row][col], t, lay + 1, row, col, df.NAME.iloc[idx]])  # 237 nodes * 84 times = 19908 vals for L1
     df_return = pd.DataFrame(vals, columns=['Head', 'Time', 'Layer', 'Row', 'Column', 'NAME'])
     df_return.drop_duplicates(inplace=True)
-    df_return.to_csv(os.path.join('output', 'water_level_data', f'calib_2014_2023', "simulated_heads.csv"), index=False)
+    # df_return.to_csv(os.path.join('output', 'water_level_data', f'calib_2014_2023', "simulated_heads.csv"), index=False)
     return df_return
 
 def generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads, plotTargetHeads = False, plotCalibHeads = True):
@@ -50,9 +50,11 @@ def generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads,
             obs_t = TargetHeads.loc[TargetHeads.Well == w]
             dates_obs_t = pd.to_datetime("2014-01-01") + pd.to_timedelta(obs_t.Time, unit="days")
         elif plotCalibHeads:
-            mymin = 41640 #min(CalibHeads.Time)
-            obs_c = CalibHeads.loc[CalibHeads.Well == w]
-            dates_obs_c = pd.to_datetime("2014-01-01") + pd.to_timedelta(obs_c.Time-mymin, unit="days")
+            try:
+                obs_c = CalibHeads.loc[CalibHeads.Well == w]
+                dates_obs_c = pd.to_datetime(obs_c.Time)
+            except:
+                pass
 
         sim = SimHeads.loc[(SimHeads.NAME == w) & (SimHeads.Layer == 1)]
         dates_sim = pd.to_datetime("2014-01-01") + pd.to_timedelta(sim.Time, unit="days")
@@ -71,7 +73,6 @@ def generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads,
                 ax.scatter(dates_obs_c, obs_c.Observed, label = f"MPR: Observed", c = "b", edgecolor="navy", s=15, zorder=3)
                 ax.plot(dates_obs_c, obs_c.Observed, c = "b", ls="--", zorder=5)
                 #ax.scatter(dates_obs_c, obs_c["Simulated"], label = f"MPR: Zero-Weight", c = "grey", edgecolor="darkgrey", s=4, zorder=2)
-
             except:
                 print(f"Coudn't find {w}")
 
@@ -102,7 +103,7 @@ def generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads,
         # ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2021-01-01"))
         ax.set_ylim([112.8,118])
         # ax.set_ylim([113.5,117.5])
-        plt.savefig(os.path.join('output', 'water_level_plots', 'calib_heads', f'{w}.png'))
+        plt.savefig(os.path.join('output', 'water_level_plots', 'calib_heads', f'{w}_V2.png'))
         plt.close()
     return None
 
@@ -115,8 +116,9 @@ if __name__ == "__main__":
     TargetHeads = pd.read_excel(os.path.join(os.path.dirname(cwd), "data", "water_levels", "calib_2014to2020_heads", "HeadTarg.xlsx"), engine = "openpyxl")
     CalibHeads = pd.read_excel(os.path.join(os.path.dirname(cwd), "data", "water_levels", "calib_2014to2020_heads", "RES_RUM_GHB.xlsx"), engine = "openpyxl")
 
-    myDF = CalibHeads[["Well", "Time", "Observed"]]
-    myDF.to_csv(os.path.join("output", "water_level_data", "calib_2014_2020", "calib_2014to2020_obs.csv"), index=False)
+    myDF = CalibHeads[["Well", "Time", "Observed", "Zero Weight"]]
+    myDF.rename(columns = {"Zero Weight" : "Simulated"}, inplace=True)
+    myDF.to_csv(os.path.join("output", "water_level_data", "calib_2014_2020", "calib_2014to2020_obs_sim.csv"), index=False)
 
     newWL = pd.read_csv(os.path.join("output", "water_level_data", "obs_2021_2023", "measured_WLs_monthly.csv"))
     newWL_raw = pd.read_csv(os.path.join("output", "water_level_data", "obs_2021_2023", "measured_WLs_formatted.csv"))

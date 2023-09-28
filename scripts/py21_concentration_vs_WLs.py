@@ -147,7 +147,7 @@ def plot_residual_WL_individual(wls_obs, wls_sim, mode):
         print("Done")
     return None
 
-def plot_residual_WL_subplots(wls_obs, wls_sim):
+def plot_residual_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
 
     """
     Generates grouped crossplots of simulated vs observed water levels (or other variable of interest)
@@ -165,9 +165,9 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
     group3 = [ '199-H4-84', '199-H4-88']  ## Midland near 183-H-SEB source
     group4 = ['199-H4-8', '199-H4-17', '199-H4-18', '199-H4-65', '199-H4-85', '199-H4-89'] ## Midland
     group5 = ['199-H4-4', '199-H4-5', '199-H4-12A', '199-H4-15A', '199-H4-64'] ## Riverside
-    groups = [group1, group2, group3, group4, group5]
+    groups = [group1, group2, group3, group4,group5] #
 
-    for grp in groups:
+    for val, grp in enumerate(groups):
         size = len(grp)
         if size == 6:
             fig, axes = plt.subplots(nrows=2, ncols=3, gridspec_kw={'width_ratios': [1,1,1]},
@@ -186,23 +186,63 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
                                      figsize=(9, 4), sharex=False, sharey=False)
         else:
             pass
+
         axes = axes.flatten()
         fig.suptitle('Groundwater Levels 2021 - 2023', fontweight='bold', fontsize = 14)
         for i, well in enumerate(grp):
             ax = axes[i]
-            print(well)
-            wls_sim.index = wls_sim["DATE"]
-            mywell_sim = wls_sim[wls_sim['NAME'] == well]
-            mywell_obs = wls_obs[wls_obs['ID'] == well]
+            print("Well: ",well)
+            flag = "True"
+            for idx in range(2):
+                print("Idx: ",idx)
+                if idx == 0:
+                    mywell_obs = wls_obs.loc[wls_obs['ID'] == well]
+                    wls_sim.index = wls_sim["DATE"]
+                    mywell_sim = wls_sim[wls_sim['NAME'] == well]
+                    toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
+                    toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
+                    toplot.dropna(subset=["Observed"], inplace=True)
+                elif idx == 1:
+                    try:
+                        mywell_sim = wls_sim2[wls_sim2['Well'] == well]
+                        mywell_obs = wls_obs2.loc[wls_obs2['Well'] == well]
+                        #mywell_obs["Time1"] = mywell_obs.Time.apply(lambda x : x.replace(day=1)) #rounded down by 15 days
+                        # mywell_obs.index = pd.to_datetime(mywell_obs.Time1)
+                        # toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
+                        toplot = pd.merge(mywell_obs, mywell_sim, on="Time", how="inner")
+                        # toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
+                        toplot.dropna(subset=["Observed"], inplace=True)
+                        print("Found: ",idx, well, len(toplot))
+                        if len(toplot) == 0:
+                            flag = "NA"
+                    except:
+                        print(f"{well} not found in 2014-2020 observations from MPR")
+                        flag = "NA"
+                        print("Not Found: ", idx, well, len(toplot))
 
-            toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
-            toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
-            toplot.dropna(subset=["Observed"], inplace=True)
-            ax.plot(toplot['Observed'], toplot['Simulated'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
-                    markeredgewidth=1, markersize=10, alpha=0.5, zorder=1)
-            ax.plot([0, 1], [0, 1], color='red', linewidth=0.5, transform=ax.transAxes, zorder=10)
+                if idx == 0:
+                    ax.plot(toplot['Observed'], toplot['Simulated'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
+                            markeredgewidth=1, markersize=10, alpha=0.5, zorder=9, label = "2021 to 2023")
+                    ax.plot([0, 1], [0, 1], color='red', linewidth=0.5, transform=ax.transAxes, zorder=10)
+                elif idx == 1 and (flag != "NA"):
+                    ax.plot(toplot['Observed'], toplot['Simulated'], 'o', markerfacecolor="olive", markeredgecolor='darkgreen',
+                            markeredgewidth=1, markersize=10, alpha=0.5, zorder=8, label = "2014 to 2020")
+                    ax.plot([0, 1], [0, 1], color='red', linewidth=0.5, transform=ax.transAxes, zorder=10)
 
-            ## conditional title color
+                ### Add Statistics
+                if idx == 0:
+                    print("P5 stat: ",len(toplot))
+                    r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
+                    mae = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
+                    ax.text(113, 117.5, '2021 - 2022: ' + '$\mathregular{r^2}$ = ' + str(r2), fontsize=9)
+                    ax.text(113, 117, '2021 - 2022: ' + f'MAE = {mae} m', fontsize=9)
+                elif idx == 1 and (flag != "NA"):
+                    r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
+                    mae = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
+                    ax.text(113, 116.5, '2014 - 2020: ' + '$\mathregular{r^2}$ = ' + str(r2), fontsize=9)
+                    ax.text(113, 116, '2014 - 2020: ' + f'MAE = {mae} m', fontsize=9)
+
+            ### conditional title color
             is_in_calibwells = well in calibwells['Well_ID'].values
             if is_in_calibwells:
                 ax.set_title(f'{well} ({wellDict[well]})', color='navy', fontsize=14)
@@ -221,11 +261,8 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
             ax.grid(which='minor', linestyle=':',
                     linewidth='0.1', color='black')
             # plt.xticks(rotation=45)
-            ### Add Statistics
-            r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
-            mae = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
-            ax.text(113, 117.5, '$\mathregular{r^2}$ = ' + str(r2) , fontsize=13)
-            ax.text(113, 117, f'MAE = {mae} m', fontsize=13)
+            ax.legend(loc="lower right")
+
             # Hide any remaining empty subplots
         for i in range(len(groups), len(axes)):
             if len(toplot) == 0:
@@ -233,7 +270,7 @@ def plot_residual_WL_subplots(wls_obs, wls_sim):
             else:
                 pass
         fig.tight_layout()
-        plt.savefig(os.path.join(outputDir, f'{grp}.png'), bbox_inches='tight', dpi=600)
+        plt.savefig(os.path.join(outputDir, f'grp{val+1}_V3.png'), bbox_inches='tight', dpi=600)
 
         plt.close()
         print("Done")
@@ -275,7 +312,7 @@ if __name__ == "__main__":
     crvi_sim = pd.read_csv(crvi_ifile)
     crvi_sim.rename(columns={'SAMP_SITE_NAME':'NAME','SAMP_DATE':'DATE'}, inplace = True)
 
-    ### Observed CONC for 2014 to 2020, and 2021 - 2023:
+    ### Observed CONC for 2014 to 2021, and 2021 - 2023:
     crvi_meas_1 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
     crvi_meas_2 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'), index_col = 'DATE', parse_dates = True)
 
@@ -283,20 +320,28 @@ if __name__ == "__main__":
     wl_meas = pd.read_csv(os.path.join(wldir, 'obs_2021_2023', 'measured_WLs_monthly.csv'), index_col='Date', parse_dates=True)
     wl_meas_daily = pd.read_csv(os.path.join(wldir, 'obs_2021_2023', 'measured_WLs_daily.csv'), index_col='Date', parse_dates=True)
 
+    ### Observed WL for 2014 to 2020:
+    wl_2014 = pd.read_csv(os.path.join("output", "water_level_data", "calib_2014_2020", "calib_2014to2020_obs_sim.csv")) ###monthly/SP-averaged
+    wl_meas_2014 = wl_2014[["Well", "Time", "Observed"]]
+    wl_sim_2014 = wl_2014[["Well", "Time", "Simulated"]]
+
     ### Plot WLs and CONCs:
     # plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wls_sim_SP, crvi_sim)
 
     ### Plot WLs Residuals:
-    mode = "daily"
+    mode = "monthly"
     if mode == "monthly":
         wls_obs = wl_meas #averaged by SP = monthly
+        wls_obs2 = wl_meas_2014
         wls_sim = wls_sim_SP
+        wls_sim2 = wl_sim_2014
     if mode == "daily":
         wls_obs = wl_meas_daily
         wls_sim =wls_sim_daily
+
     # plot_residual_WL_individual(wls_obs, wls_sim, mode)
 
-    plot_residual_WL_subplots(wls_obs, wls_sim)
+    plot_residual_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2)
 
 
 
