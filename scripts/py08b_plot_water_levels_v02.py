@@ -197,18 +197,18 @@ if __name__ == "__main__":
 # Counter(l)
 
 ## check resampled wls vs measured wls
-odir = os.path.join(cwd, 'output', 'water_level_plots', 'resampling_checks')
-if not os.path.isdir(odir):
-    os.makedirs(odir)
-for well in df['ID'].unique():
-    print(well)
-    raw = df[df['ID'] == well]
-    resampled = df_sp_m.xs(well, level='ID')
-    fig, ax = plt.subplots(figsize=(8, 5))
-    ax.scatter(raw.index, raw['Water Level (m)'], label = 'Observed - Raw')
-    ax.plot(resampled.index.get_level_values('Date'), resampled['Water Level (m)'], c = 'darkred',
-            label = 'Observed - Resampled Monthly')
-    ax.legend()
-    ax.grid()
-    plt.savefig(os.path.join(odir, f'{well}_monthly.png'))
+# odir = os.path.join(cwd, 'output', 'water_level_plots', 'resampling_checks')
+# if not os.path.isdir(odir):
+#     os.makedirs(odir)
+# for well in df['ID'].unique():
+#     print(well)
+#     raw = df[df['ID'] == well]
+#     resampled = df_sp_m.xs(well, level='ID')
+#     fig, ax = plt.subplots(figsize=(8, 5))
+#     ax.scatter(raw.index, raw['Water Level (m)'], label = 'Observed - Raw')
+#     ax.plot(resampled.index.get_level_values('Date'), resampled['Water Level (m)'], c = 'darkred',
+#             label = 'Observed - Resampled Monthly')
+#     ax.legend()
+#     ax.grid()
+#     plt.savefig(os.path.join(odir, f'{well}_monthly.png'))
 
