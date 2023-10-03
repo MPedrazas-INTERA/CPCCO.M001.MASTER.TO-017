@@ -109,6 +109,22 @@ def plot_WL_vs_conc(wl_df, conc_df, nlays =9):
     print("Done")
     return None
 
+def read_model_grid():
+    """
+    input : grid_with_centroids.shp <-- shapefile of model grid
+    :return: grid <-- geopandas dataframe for model grid
+    """
+    print('reading grid file')
+    grid = gpd.read_file(os.path.join(root, 'gis', 'shp', 'grid_with_centroids.shp'))
+    print('finished reading grid file')
+    return grid
+
+def get_wells_coords(wells, grid):
+    print("Getting coords info for each row, col")
+    df = pd.merge(wells, grid, left_on = ["Row", "Column"], right_on = ['I', 'J'])
+    df.to_csv(os.path.join(cwd, "input", f"100H_sources_XY.csv"), index=False)
+    return df
+
 if __name__ == "__main__":
 
     cwd = os.getcwd()
@@ -146,6 +162,10 @@ if __name__ == "__main__":
     # myConcs = read_ucn(ucn_file, sources, precision = "double",all_lays = "True")
     myConcs = pd.read_csv(os.path.join('output', 'concentration_data', '2014to2023', "sim_conc_flopy_100H_sources.csv"))
 
-
     ### Plot WLs and CONCs:
-    plot_WL_vs_conc(myHds, myConcs, nlays = 9)
+    # plot_WL_vs_conc(myHds, myConcs, nlays = 9)
+
+    root = os.path.join(os.path.dirname(cwd))
+    grid = read_model_grid()
+    well_list = pd.read_csv(os.path.join(cwd, "input", f"100H_sources.csv"))  # getting list of fake wells
+    df = get_wells_coords(well_list, grid)  # getting XY info using GRID
