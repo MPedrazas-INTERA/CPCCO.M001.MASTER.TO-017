@@ -49,12 +49,10 @@ def read_ucn(ifile_ucn):
     #    conc = ucnobj.get_data(totim=t)
     return data, ntimes, nlay, nr, nc, times, ucnobj
 
-def active_wells_shp(run_sce):
+def active_wells_shp():
 
-    # run_sce = 'mnw2_sce6a_rr2'
-
-    wellinfo = f'../../../../../model_packages/pred_2023_2125/{run_sce}/wellinfodxhx_cy2023_2125.csv'
-    wellrate = f'../../../../../model_packages/pred_2023_2125/{run_sce}/wellratedxhx_cy2023_2125.csv'
+    wellinfo = f'../../../../../model_packages/hist_2014_2023/mnw2/wellinfodxhx_cy2014_jul2023_v02.csv'
+    wellrate = f'../../../../../model_packages/hist_2014_2023/mnw2/wellratesdxhx_cy2014_jul2023_v02.csv'
 
     info = pd.read_csv(wellinfo, skiprows = [0,2], usecols = ['NAME', 'XW', 'YW'], index_col = 'NAME')
     rates = pd.read_csv(wellrate, index_col='ID')
@@ -96,25 +94,28 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
 
 
     # Plot 1 - show extraction/injection wells ============================
-    show_well = False
-    if show_well == 'Y':
-        #ifile_zone = f'input/shp_files/extraction_wells.shp'
-        ifile_zone = f'../../../../../model_packages/pred_2023_2125/{run_sce}/extraction_wells.shp'
-        extwells = gpd.read_file(ifile_zone)
-        extwells.plot(ax=ax, alpha=1, linewidth=0.5, color='none', label = 'Extraction', 
-                        markersize=9, marker='^',edgecolor='red', zorder=3)    
-        #ifile_zone = f'input/shp_files/injection_wells.shp'
-        ifile_zone = f'../../../../../model_packages/pred_2023_2125/{run_sce}/injection_wells.shp'
-        extwells = gpd.read_file(ifile_zone)
-        extwells.plot(ax=ax, alpha=1, linewidth=0.5, color='none', label = 'Injection', 
-                        markersize=9, marker='v',edgecolor='green', zorder=3)   
+    show_well = True
+    if show_well:
+        ifile_zone = f'input/shp_files/rebound_study_wells.shp'
+        zones = gpd.read_file(ifile_zone)
+        zones.plot(ax = ax, color = 'black', label = 'Rebound study wells', markersize = 9, zorder=2.5)
+        # #ifile_zone = f'input/shp_files/extraction_wells.shp'
+        # ifile_zone = f'../../../../../model_packages/pred_2023_2125/{run_sce}/extraction_wells.shp'
+        # extwells = gpd.read_file(ifile_zone)
+        # extwells.plot(ax=ax, alpha=1, linewidth=0.5, color='none', label = 'Extraction', 
+                        # markersize=9, marker='^',edgecolor='red', zorder=3)    
+        # #ifile_zone = f'input/shp_files/injection_wells.shp'
+        # ifile_zone = f'../../../../../model_packages/pred_2023_2125/{run_sce}/injection_wells.shp'
+        # extwells = gpd.read_file(ifile_zone)
+        # extwells.plot(ax=ax, alpha=1, linewidth=0.5, color='none', label = 'Injection', 
+                        # markersize=9, marker='v',edgecolor='green', zorder=3)   
 
     # Plot 2 - show shoreline cells =======================================
     show_shoreline = True
     if show_shoreline:
         ifile_zone = f'input/shp_files/shoreline_cells_100DH.shp'
         zones = gpd.read_file(ifile_zone)
-        zones.plot(ax=ax, alpha=1, linewidth=1, color='#7fc97f', label = 'Shoreline',)        
+        zones.plot(ax=ax, alpha=1, linewidth=1, color='#7fc97f', label = 'Shoreline')        
 
     # Plot 3 - show continuing source cells ===============================
     show_cs = True
@@ -123,10 +124,9 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
         zones = gpd.read_file(ifile_zone)
         zones.columns
         zones.crs
-        zones.plot(color = '#e78ac3', ax=ax,
+        zones.plot(ax = ax, color = '#e78ac3',
                     alpha=0.5, linewidth=1, edgecolor='#e78ac3',                                               
-                    label = 'Source Zone',
-                    )        
+                    label = 'Source Zone')        
 
     # Plot 4 - show road layer ============================================
     show_road = True
@@ -137,7 +137,7 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
         zones.crs
         zones.plot(color = '#bdbdbd', ax=ax, zorder=20,
                     alpha=0.25, linewidth=1, edgecolor='#bdbdbd',                                               
-                    label = 'Road',
+                    label = 'Road'
                     )        
 
     # Plot 5 - Show river =================================================
@@ -148,9 +148,9 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
         #zone2.plot(ax=ax, alpha=0.3, linewidth=0.5, zorder=4, column='J', categorical=True, legend=True)
         zone2.plot(color='#a6cee3', ax=ax, zorder=10,
                     alpha=0.5, linewidth=0.1, edgecolor='#a6cee3',                       
-                     label = 'River',)
+                     label = 'River')
         #zone2.plot(ax=ax)
-        ax.text(572700, 151650, 'Columbia River', ha='center', rotation=45)
+        #ax.text(572700, 151650, 'Columbia River', ha='center', rotation=45)
 
         #zone2.apply(lambda x: ax.annotate(s=x.NAME,xy=x.geometry.centroid.coords[0], ha='center'), axis=1)        
         #for x, y, label in zip(zone2.geometry.centroid.x, zone2.geometry.centroid.y, zone2['NAME']):
@@ -176,7 +176,7 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
     cbar.ax.tick_params(labelsize=8)
 
     #
-    ax.set_title(ptitle, fontsize = 8, color='#f0f0f0')
+    ax.set_title(ptitle, fontsize = 8, color='darkgrey')
     ax.set_xlim([dx.X.min(), dx.X.max()])
     ax.set_ylim([dy.Y.min(), dy.Y.max()])
     #
@@ -185,23 +185,18 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
     ax.set_xlabel('UTM_X (m)')
     ax.set_ylabel('UTM_Y (m)')
     
-    #ax.set_title('Test', fontsize = 7, color='#f0f0f0')
     ax.legend(fontsize=10,
             frameon=True,
            loc=('upper right'),
+           facecolor='white').set_zorder(25)
             #bbox_to_anchor=(1.22,1),
             #title="LEGEND",
-            )
-    
-    #ax.legend(loc='upper right', fontsize=8, frameon=True)
-    #ax.set_axis_off()
-    #title="CPT"
     
     # Add arrow
     if ifile=='input/input_100DH.csv':
         x, y, arrow_length = 0.20, -0.12, 0.12
     else:
-        x, y, arrow_length = 0.10, -0.08, 0.12
+        x, y, arrow_length = 0.05, -0.08, 0.12
 
     ax.annotate('N', xy=(x, y), xytext=(x, y-arrow_length),
             arrowprops=dict(facecolor='#f0f0f0', width=2, headwidth=8),
@@ -275,7 +270,7 @@ def arr2shp(arr,gridShp,ofile):
     df['val'] = val
 
     # export shapefile
-    gdf1 = gpd.GeoDataFrame(df, crs='EPSG:4326', geometry=gdf.geometry)
+    gdf1 = gpd.GeoDataFrame(df, geometry=gdf.geometry)
     # ofile_shp = os.path.join(
     #    work_dir, 'scripts', 'output', 'shp', 'Cmax_trit_ts76.shp')
     gdf1.to_file(driver='ESRI Shapefile', filename=ofile)
