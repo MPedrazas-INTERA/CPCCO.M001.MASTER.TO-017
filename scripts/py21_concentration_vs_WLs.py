@@ -270,7 +270,7 @@ def plot_residual_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
             else:
                 pass
         fig.tight_layout()
-        plt.savefig(os.path.join(outputDir, f'grp{val+1}_V3.png'), bbox_inches='tight', dpi=600)
+        plt.savefig(os.path.join(outputDir, f'grp{val+1}_V4.png'), bbox_inches='tight', dpi=600)
 
         plt.close()
         print("Done")
@@ -294,9 +294,16 @@ if __name__ == "__main__":
      '199-H4-64': "North Manual", '199-H4-65': "North Manual", '199-H4-8': "North AWLN", '199-H4-84': "North AWLN", '199-H4-85': "North Manual",
      '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual" }
 
-    ## Simulated WL, 2014 to 2023 [MONTHLY/SPs]
-    wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly.csv'))
-    wls_sim_SP['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wls_sim_SP.Time, unit="days")
+    ## Simulated WL, 2014 to 2023 [MONTHLY/SPs], using FLOPY
+    # wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly_flopy.csv'))
+    # wls_sim_SP['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wls_sim_SP.Time, unit="days")
+    ## Using MOD2OBS monthly instead:
+    wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly.dat'), delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
+    wls_sim_SP["NAME"] = "199-" + wls_sim_SP["ID"].str.strip().str[:-3]  # monitoring wells
+    wls_sim_SP["Layer"] = wls_sim_SP["ID"].str.strip().str[-1].astype(int)
+    wls_sim_SP = wls_sim_SP.loc[wls_sim_SP.Layer == 1]
+    wls_sim_SP['Date'] = pd.to_datetime(wls_sim_SP['Date'])
+    wls_sim_SP.rename(columns={"Date": "DATE"}, inplace=True)
 
     ### Simulated WL, 2014 to 2023 [DAILY]: Daily simulated values from mod2obs require a bit more data wrangling.
     wls_sim_daily = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_daily.dat'), delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
