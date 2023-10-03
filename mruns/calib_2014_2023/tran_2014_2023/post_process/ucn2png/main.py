@@ -49,12 +49,10 @@ def read_ucn(ifile_ucn):
     #    conc = ucnobj.get_data(totim=t)
     return data, ntimes, nlay, nr, nc, times, ucnobj
 
-def active_wells_shp(run_sce):
+def active_wells_shp():
 
-    # run_sce = 'mnw2_sce6a_rr2'
-
-    wellinfo = f'../../../../../model_packages/pred_2023_2125/{run_sce}/wellinfodxhx_cy2023_2125.csv'
-    wellrate = f'../../../../../model_packages/pred_2023_2125/{run_sce}/wellratedxhx_cy2023_2125.csv'
+    wellinfo = f'../../../../../model_packages/hist_2014_2023/mnw2/wellinfodxhx_cy2014_jul2023_v02.csv'
+    wellrate = f'../../../../../model_packages/hist_2014_2023/mnw2/wellratesdxhx_cy2014_jul2023_v02.csv'
 
     info = pd.read_csv(wellinfo, skiprows = [0,2], usecols = ['NAME', 'XW', 'YW'], index_col = 'NAME')
     rates = pd.read_csv(wellrate, index_col='ID')
@@ -178,7 +176,7 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
     cbar.ax.tick_params(labelsize=8)
 
     #
-    ax.set_title(ptitle, fontsize = 8, color='#f0f0f0')
+    ax.set_title(ptitle, fontsize = 8, color='darkgrey')
     ax.set_xlim([dx.X.min(), dx.X.max()])
     ax.set_ylim([dy.Y.min(), dy.Y.max()])
     #
@@ -189,7 +187,8 @@ def generate_map1(arr, ifile, ofile, ptitle, levels, colors, xy, show_well):
     
     ax.legend(fontsize=10,
             frameon=True,
-           loc=('upper right'))
+           loc=('upper right'),
+           facecolor='white').set_zorder(25)
             #bbox_to_anchor=(1.22,1),
             #title="LEGEND",
     
