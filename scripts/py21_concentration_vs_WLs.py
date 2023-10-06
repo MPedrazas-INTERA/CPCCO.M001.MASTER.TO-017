@@ -1,5 +1,8 @@
 """
-Plot simulated and observed water levels + simulated and observed Cr(VI) concentrations
+Plotting functions:
+Simulated and observed water levels + simulated and observed Cr(VI) concentrations timeseries
+Scatter plots of simulated and observed water levels
+Residual/error plots of observed-simulated vs observed water levels
 """
 
 import numpy as np
@@ -12,6 +15,9 @@ import geopandas as gpd
 import matplotlib
 matplotlib.use('Qt5Agg')
 from sklearn.metrics import mean_absolute_error,  mean_squared_error, r2_score
+
+plt.rc('xtick', labelsize=14)
+plt.rc('ytick', labelsize=14)
 
 def plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wl_df, conc_df):
 
@@ -82,13 +88,13 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wl_df, conc_df):
         ax2.legend(lines + lines2, labels + labels2, loc=0)
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
         ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_V2.png'))
+        # plt.savefig(os.path.join(outputDir, f'{well}_V2.png'))
         plt.close()
     print("Done")
 
     return None
 
-def plot_residual_WL_individual(wls_obs, wls_sim, mode):
+def crossplots_WL_individual(wls_obs, wls_sim, mode):
 
     """
     Generates a crossplot of simulated vs observed water levels (or other variable of interest)
@@ -142,12 +148,12 @@ def plot_residual_WL_individual(wls_obs, wls_sim, mode):
         ax.text(113, 117.75, '$\mathregular{r^2}$ = ' + str(r2), fontsize=14)
         ax.text(113, 117.5, f'MAE = {mae} m', fontsize=14)
 
-        plt.savefig(os.path.join(outputDir, f'{well}_{mode}.png'), bbox_inches='tight')
+        # plt.savefig(os.path.join(outputDir, f'{well}_{mode}.png'), bbox_inches='tight')
         plt.close()
         print("Done")
     return None
 
-def plot_residual_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
+def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
 
     """
     Generates grouped crossplots of simulated vs observed water levels (or other variable of interest)
@@ -188,7 +194,7 @@ def plot_residual_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
             pass
 
         axes = axes.flatten()
-        fig.suptitle('Groundwater Levels 2021 - 2023', fontweight='bold', fontsize = 14)
+        fig.suptitle('Groundwater Levels', fontweight='bold', fontsize = 14)
         for i, well in enumerate(grp):
             ax = axes[i]
             print("Well: ",well)
@@ -270,15 +276,137 @@ def plot_residual_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
             else:
                 pass
         fig.tight_layout()
-        plt.savefig(os.path.join(outputDir, f'grp{val+1}_V4.png'), bbox_inches='tight', dpi=600)
+        plt.savefig(os.path.join(outputDir, f'grp{val+1}_V5.png'), bbox_inches='tight', dpi=600)
 
         plt.close()
         print("Done")
 
     return None
 
+def calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2):
+
+    """
+    Note that the statistical definition of residuals is the difference between actual and fitted values.
+    So technically speaking, observed - simulated = residual for the calibration period only.
+    The difference between actual and **forecasted** values is the error.
+    So observed - simulated = error for the validation period.
+    See: https://en.wikipedia.org/wiki/Errors_and_residuals
+    """
+
+    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residual_plots')
+    if not os.path.isdir(outputDir):
+        os.makedirs(outputDir)
+
+    group1 = ['199-H3-25', '199-H3-26', '199-H3-27']  ## Inland
+    group2 = ['199-H3-2A', '199-H4-86']  ## Inland near 100-H-46 source
+    group3 = ['199-H4-84', '199-H4-88']  ## Midland near 183-H-SEB source
+    group4 = ['199-H4-8', '199-H4-17', '199-H4-18', '199-H4-65', '199-H4-85', '199-H4-89']  ## Midland
+    group5 = ['199-H4-4', '199-H4-5', '199-H4-12A', '199-H4-15A', '199-H4-64']  ## Riverside
+    groups = [group1, group2, group3, group4, group5]  #
+
+    for val, grp in enumerate(groups):
+        size = len(grp)
+        if size == 6:
+            fig, axes = plt.subplots(nrows=2, ncols=3, gridspec_kw={'width_ratios': [1, 1, 1]},
+                                     figsize=(14, 8), sharex=False, sharey=False)
+        if size == 5:
+            fig, axes = plt.subplots(nrows=2, ncols=3, gridspec_kw={'width_ratios': [1, 1, 1]},
+                                     figsize=(14, 8), sharex=False, sharey=False)
+        elif size == 4:
+            fig, axes = plt.subplots(nrows=2, ncols=2, gridspec_kw={'width_ratios': [1, 1]},
+                                     figsize=(14, 8), sharex=False, sharey=False)
+        elif size == 3:
+            fig, axes = plt.subplots(nrows=1, ncols=3, gridspec_kw={'width_ratios': [1, 1, 1]},
+                                     figsize=(14, 4), sharex=False, sharey=False)
+        elif size == 2:
+            fig, axes = plt.subplots(nrows=1, ncols=2, gridspec_kw={'width_ratios': [1, 1]},
+                                     figsize=(9, 4), sharex=False, sharey=False)
+        else:
+            pass
+
+        axes = axes.flatten()
+        fig.suptitle('Model Deviations', fontweight='bold', fontsize=14)
+        for i, well in enumerate(grp):
+            ax = axes[i]
+            print("Well: ", well)
+            flag = "True"
+            for idx in range(2):
+                print("Idx: ", idx)
+                if idx == 0:
+                    mywell_obs = wls_obs.loc[wls_obs['ID'] == well]
+                    wls_sim.index = wls_sim["DATE"]
+                    mywell_sim = wls_sim[wls_sim['NAME'] == well]
+                    toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
+                    toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
+                    toplot.dropna(subset=["Observed"], inplace=True)
+                    toplot['Error'] = toplot['Observed'] - toplot['Simulated']
+                elif idx == 1:
+                    try:
+                        mywell_sim = wls_sim2[wls_sim2['Well'] == well]
+                        mywell_obs = wls_obs2.loc[wls_obs2['Well'] == well]
+                        toplot = pd.merge(mywell_obs, mywell_sim, on="Time", how="inner")
+                        toplot.dropna(subset=["Observed"], inplace=True)
+                        toplot['Residual'] = toplot['Observed'] - toplot['Simulated']
+                        print("Found: ", idx, well, len(toplot))
+                        if len(toplot) == 0:
+                            flag = "NA"
+                    except:
+                        print(f"{well} not found in 2014-2020 observations from MPR")
+                        flag = "NA"
+                        print("Not Found: ", idx, well, len(toplot))
+
+                if idx == 0:
+                    ax.plot(toplot['Observed'], toplot['Error'], 'o', markerfacecolor="steelblue",
+                            markeredgecolor='blue',
+                            markeredgewidth=1, markersize=10, alpha=0.5, zorder=9, label="2021 to 2023")
+                    # ax.plot([0, 1], [0, 1], color='red', linewidth=0.5, transform=ax.transAxes, zorder=10)
+                    ax.axhline(y=0, color='r', linestyle='-')
+                elif idx == 1 and (flag != "NA"):
+                    ax.plot(toplot['Observed'], toplot['Residual'], 'o', markerfacecolor="olive",
+                            markeredgecolor='darkgreen',
+                            markeredgewidth=1, markersize=10, alpha=0.5, zorder=8, label="2014 to 2020")
+                    # ax.plot([0, 1], [0, 1], color='red', linewidth=0.5, transform=ax.transAxes, zorder=10)
+                    plt.axhline(y=0, color='r', linestyle='-')
+
+            ### conditional title color
+            is_in_calibwells = well in calibwells['Well_ID'].values
+            if is_in_calibwells:
+                ax.set_title(f'{well} ({wellDict[well]})', color='navy', fontsize=14)
+            else:
+                ax.set_title(f'{well} ({wellDict[well]})', color='black', fontsize=14)
+
+            ax.set_ylabel('Observed - Simulated (m)', fontsize=14)
+            ax.set_xlabel('Observed (m)', fontsize=14)
+            ax.label_outer()
+            ax.set_xlim([112.8, 118])
+            ax.set_ylim(-2,2)
+
+            ax.minorticks_on()
+            ax.grid(which='major', linestyle='-',
+                    linewidth='0.1', color='darkred')
+            ax.grid(which='minor', linestyle=':',
+                    linewidth='0.1', color='black')
+            # plt.xticks(rotation=45)
+            ax.legend(loc="lower right")
+
+            # Hide any remaining empty subplots
+        for i in range(len(groups), len(axes)):
+            if len(toplot) == 0:
+                fig.delaxes(axes[i])
+            else:
+                pass
+        fig.tight_layout()
+
+        plt.savefig(os.path.join(outputDir, f'grp{val+1}_deviations.png'), bbox_inches='tight', dpi=600)
+
+        plt.close()
+        print("Done")
+
+
 if __name__ == "__main__":
 
+
+    ### SET FILE DIRECTORIES
     cwd = os.getcwd()
 
     mdir = os.path.join(os.path.dirname(cwd), 'mruns')
@@ -289,11 +417,14 @@ if __name__ == "__main__":
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
     calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
+    ### SET WELL NAME ASSOCIATIONS
     wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
      '199-H4-15A': "North Manual", '199-H4-17': "North PT Sensor Data", '199-H4-18': "North Manual", '199-H4-4': "North PT Sensor Data", '199-H4-5': "North AWLN",
      '199-H4-64': "North Manual", '199-H4-65': "North Manual", '199-H4-8': "North AWLN", '199-H4-84': "North AWLN", '199-H4-85': "North Manual",
      '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual" }
 
+
+    ### IMPORT FILES
     ## Simulated WL, 2014 to 2023 [MONTHLY/SPs], using FLOPY
     # wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly_flopy.csv'))
     # wls_sim_SP['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wls_sim_SP.Time, unit="days")
@@ -332,10 +463,12 @@ if __name__ == "__main__":
     wl_meas_2014 = wl_2014[["Well", "Time", "Observed"]]
     wl_sim_2014 = wl_2014[["Well", "Time", "Simulated"]]
 
-    ### Plot WLs and CONCs:
+    ### PLOTTING
+
+    ## Plot WLs and CONCs:
     # plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wls_sim_SP, crvi_sim)
 
-    ### Plot WLs Residuals:
+    ### Plot WLs scatterplots:
     mode = "monthly"
     if mode == "monthly":
         wls_obs = wl_meas #averaged by SP = monthly
@@ -346,97 +479,9 @@ if __name__ == "__main__":
         wls_obs = wl_meas_daily
         wls_sim =wls_sim_daily
 
-    # plot_residual_WL_individual(wls_obs, wls_sim, mode)
+    # crossplots_WL_individual(wls_obs, wls_sim, mode)
 
-    plot_residual_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2)
+    crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2)
 
-
-
-## archive ##
-# def plot_residual_WL_subplots(wls_obs, wls_sim):
-#
-#     """
-#     Generates grouped crossplots of simulated vs observed water levels (or other variable of interest)
-#     at discrete time points. Groups determined geospatially (riverside to inland, proximity to sources)
-#     """
-#     plt.rc('xtick', labelsize=14)
-#     plt.rc('ytick', labelsize=14)
-#
-#     outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'crossplots')
-#     if not os.path.isdir(outputDir):
-#         os.makedirs(outputDir)
-#
-#     group1 = ['199-H3-25', '199-H3-26', '199-H3-27']  ## Inland
-#     group2 = ['199-H3-2A', '199-H4-86']  ## Inland near 100-H-46 source
-#     group3 = [ '199-H4-84', '199-H4-88']  ## Midland near 183-H-SEB source
-#     group4 = ['199-H4-17', '199-H4-8', '199-H4-89', '199-H4-85', '199-H4-65', '199-H4-18'] ## Midland
-#     group5 = ['199-H4-15A', '199-H4-64', '199-H4-12A', '199-H4-4', '199-H4-5'] ## Riverside
-#     groups = [group1, group2, group3, group4, group5]
-#     # groups = group4
-#
-#     for grp in groups:
-#         # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 7))
-#         size = len(grp)
-#         if size == 6:
-#             fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(
-#                 16, 6), sharex=True, sharey=False)
-#         if size == 5:
-#             fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(
-#                 16, 6), sharex=True, sharey=False)
-#         elif size == 4:
-#             fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(
-#                 16, 6), sharex=True, sharey=False)
-#         elif size == 3:
-#             fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(
-#                 16, 6), sharex=True, sharey=False)
-#         elif size == 2:
-#             fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(
-#                 16, 6), sharex=True, sharey=False)
-#         else:
-#             pass
-#         cnt = 0
-#         for well in grp:
-#             print(well)
-#             ## set data to be plotted
-#             wls_sim.index = wls_sim["DATE"]
-#             mywell_sim = wls_sim[wls_sim['NAME'] == well]
-#             mywell_obs = wls_obs[wls_obs['ID'] == well]
-#
-#             toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
-#             toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
-#             toplot.dropna(subset=["Observed"], inplace=True)
-#             ax[cnt].plot(toplot['Observed'], toplot['Simulated'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
-#                     markeredgewidth=1, markersize=10, alpha=0.5, zorder=1)
-#             ax[cnt].plot([0, 1], [0, 1], color='red', linewidth=0.5, transform=ax[cnt].transAxes, zorder=10)
-#
-#             ## conditional title color
-#             is_in_calibwells = well in calibwells['Well_ID'].values
-#             if is_in_calibwells:
-#                 ax[cnt].set_title(f'{well} ({wellDict[well]})', color='navy', fontweight='bold', fontsize=14)
-#             else:
-#                 ax[cnt].set_title(f'{well} ({wellDict[well]})', color='black', fontweight='bold', fontsize=14)
-#
-#             ax[cnt].set_ylabel('Simulated Head 2021-2023 (m)', fontweight='bold', fontsize=14)
-#             ax[cnt].set_xlabel('Observed Head 2021-2023 (m)', fontweight='bold', fontsize=14)
-#             # plt.ylabel('Simulated Head 2021-2023 (m)', fontweight='bold', fontsize=14)
-#             # plt.xlabel('Observed Head 2021-2023 (m)', fontweight='bold', fontsize=14)
-#             ax[cnt].set_xlim([112.8, 118])
-#             ax[cnt].set_ylim([112.8, 118])
-#
-#             ax[cnt].minorticks_on()
-#             ax[cnt].grid(which='major', linestyle='-',
-#                     linewidth='0.1', color='darkred')
-#             ax[cnt].grid(which='minor', linestyle=':',
-#                     linewidth='0.1', color='black')
-#             # plt.xticks(rotation=45)
-#             ### Add Statistics
-#             r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
-#             mae = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
-#             ax[cnt].text(113, 117.75, '$\mathregular{r^2}$ = ' + str(r2) , fontsize=14)
-#             ax[cnt].text(113, 117.5, f'MAE = {mae} m', fontsize=14)
-#             cnt += 1
-#         # plt.savefig(os.path.join(outputDir, f'{grp}.png'), bbox_inches='tight')
-#         # plt.close()
-#         print("Done")
-#
-#     return None
+    ## Plot deviations
+    calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2)
