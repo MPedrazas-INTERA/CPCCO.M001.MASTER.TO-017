@@ -35,7 +35,7 @@ def read_head(ifile_hds, df, all_lays=False):
     df_return = pd.DataFrame(vals, columns=['Head', 'Time', 'Layer', 'Row', 'Column', 'NAME'])
     df_return.drop_duplicates(inplace=True)
     df_return["Date"] = pd.to_datetime("2014-01-01") + pd.to_timedelta(df_return.Time, unit="days")
-    df_return.to_csv(os.path.join('output', 'water_level_data', f'{sce}', "sim_hds_flopy_100H_sources.csv"), index=False)
+    # df_return.to_csv(os.path.join('output', 'water_level_data', f'{sce}', "sim_hds_flopy_100H_sources.csv"), index=False)
     return df_return
 
 def read_ucn(ifile_ucn, df, precision = "double",all_lays = "True"):
@@ -57,15 +57,15 @@ def read_ucn(ifile_ucn, df, precision = "double",all_lays = "True"):
     df_return = pd.DataFrame(vals, columns=['Conc', 'Time', 'Layer', 'Row', 'Column', 'NAME'])
     df_return.drop_duplicates(inplace=True)
     df_return["Date"] = pd.to_datetime("2014-01-01") + pd.to_timedelta(df_return.Time, unit="days")
-    df_return.to_csv(os.path.join('output', 'concentration_data', f'2014to2023', "sim_conc_flopy_100H_sources.csv"), index=False)
+    # df_return.to_csv(os.path.join('output', 'concentration_data', f'2014to2023', "sim_conc_flopy_100H_sources.csv"), index=False)
     return df_return
 
-def plot_WL_vs_conc(wl_df, conc_df, nlays =9):
+def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
 
     """
     Plot concentration data of interest against water levels in one graph.
     """
-    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'sim_2014_2023', 'sources')
+    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'sim_2014_2023', oname)
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
     hdsColors = ["seagreen", "green", "lawngreen", "dodgerblue", "darkblue", "slateblue", "midnightblue", "cyan", "darkviolet"]
@@ -128,44 +128,61 @@ def get_wells_coords(wells, grid):
 if __name__ == "__main__":
 
     cwd = os.getcwd()
-
-    # dictionaries to relate waste site groups to source zone areas:
-    wastesiteDict = {1: '100-D-100 Sidewall', 2: '100-D-56-2 Pipeline', 3: '100-H-46-WS',
-                     5: '107-H-RB', 4: '183-H-SEB'}
-    grpDict = {3: 1, 4: 1, 14: 1, 19: 2, 6: 2, 18: 2, 9: 3, 10: 4, 13: 5, 25: 5, 12: 5}
-
-    ssmDir = os.path.join("..", 'model_packages', 'hist_2014_2023', 'ssm')
-    df_zon = pd.read_csv(os.path.join(ssmDir, "cr6_source_zones.dat"), delim_whitespace=True)
-    df_src = df_zon.loc[df_zon['Zone'].isin(
-        [9, 10, 12, 13, 25])]  # 100-H Waste Sites
-    df_src['Group'] = df_src['Zone'].map(grpDict)  # group source zones into 5 groups based on waste site location
-    df_src['R_C'] = df_src.Row.map(str) + '_' + df_src['Column'].map(str)
-    df_src["WasteSite"] = df_src['Group'].map(wastesiteDict)
-
-    sources = pd.DataFrame()
-    df_src["NAME"] = ""
-    for ws in df_src.WasteSite.unique():
-        print(ws)
-        mydf = df_src.loc[df_src.WasteSite == ws]
-        for idx in range(len(mydf)):
-            mydf.reset_index(drop=True, inplace=True)
-            # print(idx)
-            mydf["NAME"].iloc[idx] = mydf.WasteSite.map(str).iloc[idx] + '_' + str(idx)
-        sources = sources.append(mydf)
-
     sce = 'calib_2014_2023'
-    hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
-    # myHds = read_head(hds_file, sources, all_lays = True)
-    myHds = pd.read_csv(os.path.join('output', 'water_level_data', f'{sce}', "sim_hds_flopy_100H_sources.csv"))
+    root = os.path.join(os.path.dirname(cwd))
 
-    ucn_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN')
-    # myConcs = read_ucn(ucn_file, sources, precision = "double",all_lays = "True")
-    myConcs = pd.read_csv(os.path.join('output', 'concentration_data', '2014to2023', "sim_conc_flopy_100H_sources.csv"))
+    ### DON'T NEED TO RE-RUN THIS ANYMORE. Already got the 100-H sources output file:
+    find_100HSources = False
+    if find_100HSources:
+        # dictionaries to relate waste site groups to source zone areas:
+        wastesiteDict = {1: '100-D-100 Sidewall', 2: '100-D-56-2 Pipeline', 3: '100-H-46-WS',
+                         5: '107-H-RB', 4: '183-H-SEB'}
+        grpDict = {3: 1, 4: 1, 14: 1, 19: 2, 6: 2, 18: 2, 9: 3, 10: 4, 13: 5, 25: 5, 12: 5}
+
+        ssmDir = os.path.join("..", 'model_packages', 'hist_2014_2023', 'ssm')
+        df_zon = pd.read_csv(os.path.join(ssmDir, "cr6_source_zones.dat"), delim_whitespace=True)
+        df_src = df_zon.loc[df_zon['Zone'].isin(
+            [9, 10, 12, 13, 25])]  # 100-H Waste Sites
+        df_src['Group'] = df_src['Zone'].map(grpDict)  # group source zones into 5 groups based on waste site location
+        df_src['R_C'] = df_src.Row.map(str) + '_' + df_src['Column'].map(str)
+        df_src["WasteSite"] = df_src['Group'].map(wastesiteDict)
+
+        sources = pd.DataFrame()
+        df_src["NAME"] = ""
+        for ws in df_src.WasteSite.unique():
+            print(ws)
+            mydf = df_src.loc[df_src.WasteSite == ws]
+            for idx in range(len(mydf)):
+                mydf.reset_index(drop=True, inplace=True)
+                # print(idx)
+                mydf["NAME"].iloc[idx] = mydf.WasteSite.map(str).iloc[idx] + '_' + str(idx)
+            sources = sources.append(mydf)
+
+        ### Used to get COORDS for ROW, COL 100-H SOURCES:
+        grid = read_model_grid()
+        well_list = pd.read_csv(os.path.join(cwd, "input", f"100H_sources.csv"))  # getting list of 100H Sources
+        df = get_wells_coords(well_list, grid)  # getting XY info using GRID
+
+    else:
+        pass
+
+
+    mode = "plot_sources" #"plot_wells"
+
+    if mode == "plot_sources":
+        mywells = pd.read_csv(os.path.join(cwd, "input", f"100H_sources.csv"))
+        myHds = pd.read_csv(os.path.join('output', 'water_level_data', f'{sce}', "sim_hds_flopy_100H_sources.csv")) ###If you already have the output, no need to re-run flopy
+        myConcs = pd.read_csv(os.path.join('output', 'concentration_data', '2014to2023', "sim_conc_flopy_100H_sources.csv")) ###If you already have the output, no need to re-run flopy
+        oname = "sources"
+    elif mode == "plot_wells":
+        mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
+        mywells.rename(columns={"Col": "Column"}, inplace=True)
+        hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
+        myHds = read_head(hds_file, mywells, all_lays=True)
+        ucn_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN')
+        myConcs = read_ucn(ucn_file, mywells, precision="double", all_lays="True")
+        oname = 'flopy_monitoring_wells'
 
     ### Plot WLs and CONCs:
-    # plot_WL_vs_conc(myHds, myConcs, nlays = 9)
+    plot_WL_vs_conc(myHds, myConcs, oname, nlays = 9) #UPDATE OUTPUT DIR INSIDE THIS FUNCTION!
 
-    root = os.path.join(os.path.dirname(cwd))
-    grid = read_model_grid()
-    well_list = pd.read_csv(os.path.join(cwd, "input", f"100H_sources.csv"))  # getting list of fake wells
-    df = get_wells_coords(well_list, grid)  # getting XY info using GRID
