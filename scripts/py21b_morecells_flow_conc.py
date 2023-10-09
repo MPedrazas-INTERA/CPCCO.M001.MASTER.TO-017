@@ -1,14 +1,10 @@
 import os
-import glob
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Qt5Agg')
 import flopy.utils.binaryfile as bf
-
-cwd = os.getcwd()
-wdir = os.path.dirname(cwd)
 
 def read_head(ifile_hds, df, all_lays=False):
     """
@@ -65,11 +61,15 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
     """
     Plot concentration data of interest against water levels in one graph.
     """
+
     outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'sim_2014_2023', oname)
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
     hdsColors = ["seagreen", "green", "lawngreen", "dodgerblue", "darkblue", "slateblue", "midnightblue", "cyan", "darkviolet"]
     concColors = ["rosybrown", "lightcoral", "indianred", "brown", "firebrick", "maroon", "red", "orangered", "chocolate"]
+
+    hdsColors = ["dodgerblue", "darkviolet"]
+    concColors = ["firebrick",  "maroon"]
     lsLst = ["-", "--"]*9
     for well in wl_df['NAME'].unique():
         print(well)
@@ -79,14 +79,41 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
 
         ## create figure instance and set specs
         fig, ax = plt.subplots(figsize=(15, 5))
+        plt.rc('xtick', labelsize=14)
+        plt.rc('ytick', labelsize=14)
         ax2 = ax.twinx()
-        for lay in [0,1,2,3,8]:
-            crvi = toplot_crvi.loc[toplot_crvi.Layer == lay+1]
-            wl = toplot_wl.loc[toplot_wl.Layer == lay+1]
 
-            ax.plot(pd.to_datetime(wl['Date']), wl['Head'], label=f'Sim WL - L{lay+1}', c= hdsColors[lay], ls = lsLst[lay])
-            ax2.plot(pd.to_datetime(crvi['Date']), crvi['Conc'], zorder=10,
-                     c = concColors[lay], label=f'Sim Cr(VI) - L{lay+1}', ls = lsLst[lay])
+        for n, lay in enumerate(["Unconfined Aq.", "RUM-2"]):
+            mycrvi, mywl = pd.DataFrame(), pd.DataFrame()
+            if lay == "Unconfined Aq.":
+                crvi = toplot_crvi.loc[toplot_crvi.Layer <= 4] ###GET MAXIMUM CONCENTRATION FROM UNCONFINED LAYERS
+                for mydate in crvi.Date.unique():
+                    mycrvidate = crvi.loc[crvi.Date == mydate]
+                    maxcrvi = mycrvidate.Conc.max() ###Found maximum concentration from Layers 1 through 4
+                    mymaxconcdf = mycrvidate[['Time', 'Row', 'Column', 'NAME', 'Date']].copy()
+                    mymaxconcdf.drop_duplicates(inplace=True)
+                    mymaxconcdf["Conc"] = maxcrvi
+                    mymaxconcdf["Layer"] = "Unconfined"
+                    mycrvi = mycrvi.append(mymaxconcdf)
+
+                wl = toplot_wl.loc[toplot_wl.Layer <= 4]  ###GET AVERAGE WATER LEVEL FROM UNCONFINED LAYERS
+                for mydate in wl.Date.unique():
+                    mywldate = wl.loc[wl.Date == mydate]
+                    avgwl = mywldate.Head.mean()  ###Found average head from Layers 1 through 4
+                    myavgwldf = mywldate[['Time', 'Row', 'Column', 'NAME', 'Date']].copy()
+                    myavgwldf.drop_duplicates(inplace=True)
+                    myavgwldf["Head"] = avgwl
+                    myavgwldf["Layer"] = "Unconfined"
+                    mywl = mywl.append(myavgwldf)
+            elif lay == "RUM-2":
+                mycrvi = toplot_crvi.loc[toplot_crvi.Layer == 9] #max Cr(VI) for lay 9 is just lay 9
+                mywl = toplot_wl.loc[toplot_wl.Layer == 9]
+            if mywl.NAME.unique()[0].startswith("183-H-SEB"):
+                ax2.axvline(pd.to_datetime("6/8/2023"), lw=2, zorder=1, label="H4-84 Peak", color="k", ls="-", alpha=0.5) #H4-84 peak
+            ax.plot(pd.to_datetime(mywl['Date']), mywl['Head'], label=f'Sim WL - {lay}', c= hdsColors[n], ls = lsLst[n], lw=2.5, zorder=9)
+            ax2.plot(pd.to_datetime(mycrvi['Date']), mycrvi['Conc'], zorder=10,
+                     c = concColors[n], label=f'Sim Cr(VI) - {lay}', ls = lsLst[n], lw=2)
+
         ax.minorticks_on()
         ax.grid(which='major', linestyle='-',
                 linewidth='0.1', color='red')
@@ -94,17 +121,17 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
                 linewidth='0.1', color='black')
         plt.xticks(rotation=45)
 
-        ax.set_title(f'{well}', color='black')
-        ax.set_ylabel('Water Level (m.asl)')
-        ax2.set_ylabel('Cr(VI) (μg/L)')
+        ax.set_title(f'{well}', color='black', fontsize=14)
+        ax.set_ylabel('Water Level (m.asl)', fontsize=14)
+        ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
         ## combined legend
         lines, labels = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         ax2.legend(lines + lines2, labels + labels2, loc=0)
-        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_V2.png'))
+        ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        plt.savefig(os.path.join(outputDir, f'{well}_V4.png'))
         plt.close()
     print("Done")
     return None
