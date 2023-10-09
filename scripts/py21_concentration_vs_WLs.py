@@ -86,9 +86,9 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wl_df, conc_df):
         lines, labels = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         ax2.legend(lines + lines2, labels + labels2, loc=0)
-        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        # plt.savefig(os.path.join(outputDir, f'{well}_V2.png'))
+        ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        plt.savefig(os.path.join(outputDir, f'{well}_V3.png'))
         plt.close()
     print("Done")
 
@@ -143,9 +143,9 @@ def crossplots_WL_individual(wls_obs, wls_sim, mode):
         plt.xticks(rotation=45)
 
         ### Add Statistics
-        r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
+        # r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
         mae = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
-        ax.text(113, 117.75, '$\mathregular{r^2}$ = ' + str(r2), fontsize=14)
+        # ax.text(113, 117.75, '$\mathregular{r^2}$ = ' + str(r2), fontsize=14)
         ax.text(113, 117.5, f'MAE = {mae} m', fontsize=14)
 
         # plt.savefig(os.path.join(outputDir, f'{well}_{mode}.png'), bbox_inches='tight')
@@ -466,7 +466,7 @@ if __name__ == "__main__":
     ### PLOTTING
 
     ## Plot WLs and CONCs:
-    # plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wls_sim_SP, crvi_sim)
+    plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wls_sim_SP, crvi_sim)
 
     ### Plot WLs scatterplots:
     mode = "monthly"
@@ -481,7 +481,7 @@ if __name__ == "__main__":
 
     # crossplots_WL_individual(wls_obs, wls_sim, mode)
 
-    crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2)
+    # crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2)
 
     ## Plot deviations
-    calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2)
+    # calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2)

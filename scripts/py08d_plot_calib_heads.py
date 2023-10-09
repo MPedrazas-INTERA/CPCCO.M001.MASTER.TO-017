@@ -81,7 +81,7 @@ def generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads,
         ax.scatter(dates_new, obs_new["Water Level (m)"], label=f"New Obs", c="purple", edgecolor="purple", s=15, zorder=1)
         ax.plot(dates_new, obs_new["Water Level (m)"], c="purple", ls="--", zorder=5)
 
-        ax.scatter(dates_new_raw, obs_new_raw["Water Level (m)"], label=f"New Obs (Raw)", c="plum", s=15, zorder=1, alpha = 0.2)
+        # ax.scatter(dates_new_raw, obs_new_raw["Water Level (m)"], label=f"New Obs (Raw)", c="plum", s=15, zorder=1, alpha = 0.2)
         ax.plot(dates_new_raw, obs_new_raw["Water Level (m)"], c="plum", ls="--", alpha=0.2, zorder=5)
 
         ax.set_title(f'{w}', fontsize=12, fontweight="bold")
@@ -99,11 +99,11 @@ def generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads,
         ax.legend()
         plt.xticks(rotation = 45)
         fig.tight_layout()
-        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
         # ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2021-01-01"))
         ax.set_ylim([112.8,118])
         # ax.set_ylim([113.5,117.5])
-        plt.savefig(os.path.join('output', 'water_level_plots', 'calib_heads', f'{w}_V2.png'))
+        plt.savefig(os.path.join('output', 'water_level_plots', 'calib_heads', f'{w}_V3.png'))
         plt.close()
     return None
 
@@ -126,4 +126,4 @@ if __name__ == "__main__":
     sce = 'calib_2014_2023'
     hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
     SimHeads = read_head(hds_file, mywells)
-    generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads, plotTargetHeads = False, plotCalibHeads = True) ###True will be the Heads that plots.
+    generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads, plotTargetHeads = False, plotCalibHeads = False) ###True will be the Heads that plots.
