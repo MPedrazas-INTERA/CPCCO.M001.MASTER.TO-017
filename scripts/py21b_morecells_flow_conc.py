@@ -80,7 +80,7 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
         ## create figure instance and set specs
         fig, ax = plt.subplots(figsize=(15, 5))
         ax2 = ax.twinx()
-        for lay in range(4):
+        for lay in [0,1,2,3,8]:
             crvi = toplot_crvi.loc[toplot_crvi.Layer == lay+1]
             wl = toplot_wl.loc[toplot_wl.Layer == lay+1]
 
@@ -104,7 +104,7 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
         ax2.legend(lines + lines2, labels + labels2, loc=0)
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
         ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}.png'))
+        plt.savefig(os.path.join(outputDir, f'{well}_V2.png'))
         plt.close()
     print("Done")
     return None
