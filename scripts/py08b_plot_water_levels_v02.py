@@ -133,6 +133,38 @@ def get_wells_ij(df, coordscsv):
     # df2csv.to_csv(os.path.join("input", "monitoring_wells_coords_ij.csv"), index=False)  # export CSV
     return mywells
 
+## import data from calibration period 2014 - 2020.
+## for now this is after get_wells_ij b/c it depends on output from that function.
+def import_prior_data():
+
+    path2data = "S:/AUS/CHPRC.C003.HANOFF/Rel.044/045_100AreaPT/d01_CY2021_datapack/0_Data/Water_Level_Data/DataPull_020222"
+    prior_data_files = ['qryAWLNAWLN_2.txt', 'qryManAWLN.txt', 'qryManHEIS.txt']
+
+    all_prior_data = {}
+    for file in prior_data_files:
+       # print(file.split("\\")[-1].split('.')[0]) ## extract filename directory and use as dict key
+        k = file.split('.')[0]
+        all_prior_data[k] = pd.read_csv(os.path.join(path2data, file), sep = '|', parse_dates=['EVENT']) #, index_col = 0, parse_dates=True)
+    #data_file = pd.read_csv(os.path.join(path2data, 'qryAWLNAWLN_2.txt'), sep = '|') singular file import
+    rebound_wells = {}
+    for k in all_prior_data.keys():
+        rebound_wells[k] = all_prior_data[k].loc[all_prior_data[k]['NAME'].isin(list(mywells['NAME'].unique()))]
+        rebound_wells[k] = rebound_wells[k].loc[(rebound_wells[k]['EVENT'].dt.year.astype(str) >= '2014') &
+                                                (rebound_wells[k]['EVENT'].dt.year.astype(str) <= '2020')]
+        # rebound_wells[k] = rebound_wells[k].loc[rebound_wells[k]['EVENT'].dt.year.astype(str) <= '2020']
+
+    prior_data = pd.concat([v for k, v in rebound_wells.items()])
+    # prior_data.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'measured_WLs_2014to2020_daily.csv'), index = False)
+
+    ## QA ts plots. Note that IF plotting thru 2022, 2 outlier manual measurements are present. Can be dropped
+    # for well in list(prior_data['NAME'].unique()):
+    #     toplot = prior_data[prior_data['NAME'] == well]
+    #     fig, ax = plt.subplots(figsize = (5,3))
+    #     ax.scatter(toplot['EVENT'], toplot['VAL'], label = well)
+    #     ax.legend(ncol = 2)
+    #     plt.grid(True)
+
+
 def generate_plots():
 
     for well in df_sp.index.get_level_values('ID').unique():
