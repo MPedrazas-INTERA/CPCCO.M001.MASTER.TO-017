@@ -19,7 +19,7 @@ from sklearn.metrics import mean_absolute_error,  mean_squared_error, r2_score
 plt.rc('xtick', labelsize=14)
 plt.rc('ytick', labelsize=14)
 
-def plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wl_df, conc_df):
+def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, conc_df):
 
     """
     Plot concentration data of interest against water levels in one graph.
@@ -39,9 +39,9 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wl_df, conc_df):
         toplot_wl = wl_df[wl_df['NAME'] == well]  ## match to the correct input when function is called
         toplot_crvi = conc_df[conc_df['NAME'] == well] ## match to the correct input when function is called
 
-        cr1 = crvi_meas_1.loc[crvi_meas_1['SAMP_SITE_NAME'] == well]  ## match to the correct input when function is called
+        cr1 = crvi_meas_2014.loc[crvi_meas_2014['SAMP_SITE_NAME'] == well]  ## match to the correct input when function is called
         try:
-            cr2 = crvi_meas_2.loc[crvi_meas_2['NAME'] == well] ## match to the correct input when function is called
+            cr2 = crvi_meas_2021.loc[crvi_meas_2021['NAME'] == well] ## match to the correct input when function is called
         except:
             pass
         wl1 = wl_meas[wl_meas['ID'] == well]
@@ -94,14 +94,14 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wl_df, conc_df):
 
     return None
 
-def crossplots_WL_individual(wls_obs, wls_sim, mode):
+def crossplots_WL_individual(wls_obs, wls_obs2, wls_sim, mode):
 
     """
     Generates a crossplot of simulated vs observed water levels (or other variable of interest)
     at discrete time points.
     """
-    plt.rc('xtick', labelsize=14)
-    plt.rc('ytick', labelsize=14)
+    # plt.rc('xtick', labelsize=14)
+    # plt.rc('ytick', labelsize=14)
 
     outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'crossplots')
     if not os.path.isdir(outputDir):
@@ -110,19 +110,8 @@ def crossplots_WL_individual(wls_obs, wls_sim, mode):
         # print(well)
         ## set data to be plotted
         mywell_obs = wls_obs[wls_obs['ID'] == well]  ## 2021 - 2023
-        mywell_obs2 = wls_obs2[wls_obs2['NAME'] == well]  ## 2014 -2020
-        mywell_sim = wls_sim[wls_sim['NAME'] == well]
-
-        # for n, lay in enumerate(['Unconfined Aq.']):  ## add in RUM if necessary: enumerate(['Unconfined Aq.', 'RUM-2'])
-        #     if lay == 'Unconfined Aq.':
-        #         temp = wls_sim[(wls_sim['NAME'] == well) & (wls_sim['Layer'] <= 4)]
-        #         mywell_sim = temp.groupby(['DATE']).agg({'Head': 'mean'}).reset_index()
-        #         mywell_sim['Layer'] = lay
-        #         mywell_sim.set_index('DATE', inplace=True)
-        #     elif lay == 'RUM-2':
-        #         mywell_sim = wls_sim[(wls_sim['NAME'] == well) & (wls_sim['Layer'] == 9)]
-        #         mywell_sim['Layer'] = lay
-        #         mywell_sim.set_index('DATE', inplace=True)
+        mywell_obs2 = wls_obs2[wls_obs2['NAME'] == well]  ## 2014 - 2020
+        mywell_sim = wls_sim[wls_sim['NAME'] == well]  ## extended model covers 2014 - 2023
 
         toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
         toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
@@ -133,13 +122,13 @@ def crossplots_WL_individual(wls_obs, wls_sim, mode):
         toplot2.dropna(subset=["Observed"], inplace=True)
 
         fig, ax = plt.subplots(figsize=(10, 10))
-        ax.plot(toplot['Observed'], toplot['Simulated'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
-                markeredgewidth=1,markersize=10, alpha =0.5, zorder=1)
+        ax.plot(toplot['Observed'], toplot['Simulated'], 'o', markerfacecolor="steelblue", markeredgecolor='blue', markeredgewidth=1,
+                markersize=10, alpha =0.3, zorder=1, label = '2021 - 2023')
         try:
-            ax.plot(toplot2['Observed'], toplot2['Simulated'], 'o', markerfacecolor="olive", markeredgecolor='darkgreen',
-                markeredgewidth=1,markersize=10, alpha =0.5, zorder=1)
+            ax.plot(toplot2['Observed'], toplot2['Simulated'], 'o', markerfacecolor="olive", markeredgecolor='darkgreen', markeredgewidth=1,
+                markersize=8, alpha =0.3, zorder=1, label = '2014 - 2020')
         except:
-            print(f"{well} not found in 2014-2020 observations")
+             print(f"{well} not found in 2014-2020 observations")
         ax.plot([0, 1], [0, 1], color='red', linewidth=0.5, transform=ax.transAxes, zorder=10)
 
         ## conditional title color
@@ -160,14 +149,21 @@ def crossplots_WL_individual(wls_obs, wls_sim, mode):
         ax.grid(which='minor', linestyle=':',
                 linewidth='0.1', color='black')
         plt.xticks(rotation=45)
+        ax.legend(loc="lower right")
 
         ### Add Statistics
         # r2 = r2_score(toplot['Observed'], toplot["Simulated"]).round(3)  # r2:coefficient of determination
-        mae = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
+        mae_2021 = mean_absolute_error(toplot["Observed"], toplot["Simulated"]).round(3)
+        ax.text(113, 117.5, f'MAE 2021 - 2023 = {mae_2021} m', fontsize=14)
         # ax.text(113, 117.75, '$\mathregular{r^2}$ = ' + str(r2), fontsize=14)
-        ax.text(113, 117.5, f'MAE = {mae} m', fontsize=14)
 
-        plt.savefig(os.path.join(outputDir, f'{well}_{mode}_v2.png'), bbox_inches='tight')
+        try:
+            mae_2014 = mean_absolute_error(toplot2["Observed"], toplot2["Simulated"]).round(3)
+            ax.text(113, 117.2, f'MAE 2014 - 2020 = {mae_2014} m', fontsize=14)
+        except:
+            pass
+
+        plt.savefig(os.path.join(outputDir, f'{well}_{mode}.png'), bbox_inches='tight')
         plt.close()
         print("Done")
     return None
@@ -222,7 +218,7 @@ def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
                 print("Idx: ",idx)
                 if idx == 0:
                     mywell_obs = wls_obs.loc[wls_obs['ID'] == well]
-                    wls_sim.index = wls_sim["DATE"]
+                    # wls_sim.index = wls_sim["DATE"]
                     mywell_sim = wls_sim[wls_sim['NAME'] == well]
                     toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
                     toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
@@ -295,6 +291,7 @@ def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
             else:
                 pass
         fig.tight_layout()
+
         plt.savefig(os.path.join(outputDir, f'grp{val+1}_V5.png'), bbox_inches='tight', dpi=600)
 
         plt.close()
@@ -302,7 +299,7 @@ def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
 
     return None
 
-def calculate_plot_residuals_individual(wls_obs, wls_obs2, wls_sim):
+def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
 
     outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residual_plots')
     if not os.path.isdir(outputDir):
@@ -327,10 +324,10 @@ def calculate_plot_residuals_individual(wls_obs, wls_obs2, wls_sim):
 
         fig, ax = plt.subplots(figsize=(10, 10))
         ax.plot(toplot['Observed'], toplot['Error'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
-                markeredgewidth=1, markersize=10, alpha=0.3, zorder = 2, label="2021 to 2023")
+                markeredgewidth=1, markersize=10, alpha=0.5, zorder = 2, label="2021 to 2023")
         ax.plot(toplot2['Observed'], toplot2['Residual'], 'o', markerfacecolor="olive",
                     markeredgecolor='darkgreen',
-                    markeredgewidth=1, markersize=10, alpha=0.3, zorder = 2, label="2014 to 2020")
+                    markeredgewidth=1, markersize=8, alpha=0.3, zorder = 2, label="2014 to 2020")
         ax.axhline(y=0, color='r', linestyle='-', zorder = 1)
 
         ## conditional title color
@@ -352,9 +349,9 @@ def calculate_plot_residuals_individual(wls_obs, wls_obs2, wls_sim):
                 linewidth='0.1', color='black')
         ax.legend(loc="lower right")
 
-        plt.savefig(os.path.join(outputDir, f'{well}_daily_v0.png'), bbox_inches='tight', dpi=600)
+        plt.savefig(os.path.join(outputDir, f'{well}_daily.png'), bbox_inches='tight', dpi=600)
 
-def calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2):
+def residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim):
 
     """
     Note that the statistical definition of residuals is the difference between actual and fitted values.
@@ -400,46 +397,30 @@ def calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2):
         for i, well in enumerate(grp):
             ax = axes[i]
             print("Well: ", well)
-            flag = "True"
-            # for idx in range(2):
-            #     print("Idx: ", idx)
-            #     ## when idx == 0, plot 2021 - 2023
-            #     if idx == 0:
             mywell_obs = wls_obs.loc[wls_obs['ID'] == well]
-            wls_sim.index = wls_sim["DATE"]
+           # wls_sim.index = wls_sim["DATE"]
             mywell_sim = wls_sim[wls_sim['NAME'] == well]
             toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
             toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
             toplot.dropna(subset=["Observed"], inplace=True)
             toplot['Error'] = toplot['Observed'] - toplot['Simulated']
-            # elif idx == 1:
-            try:
-                mywell_sim2 = wls_sim2[wls_sim2['Well'] == well]
-                #mywell_sim = wls_sim[wls_sim['Well'] == well]
-                mywell_obs2 = wls_obs2.loc[wls_obs2['NAME'] == well]
-                toplot2 = pd.merge(mywell_obs2, mywell_sim2, on="Time", how="inner")
-                toplot2.rename(columns={"Head": "Simulated", "VAL": "Observed"}, inplace=True)
-                toplot2.dropna(subset=["Observed"], inplace=True)
-                toplot2['Residual'] = toplot2['Observed'] - toplot2['Simulated']
-                print("Found: ", well, len(toplot2))
-                if len(toplot2) == 0:
-                    flag = "NA"
-            except:
-                print(f"{well} not found in 2014-2020 observations from MPR")
-                flag = "NA"
-                print("Not Found: ", well, len(toplot2))
+            mywell_sim2 = wls_sim[wls_sim['NAME'] == well]  ## using the extended model results (works for daily and monthly)
+            mywell_obs2 = wls_obs2.loc[wls_obs2['NAME'] == well]
+            toplot2 = pd.merge(mywell_obs2, mywell_sim2, left_index=True, right_index=True, how="inner")
+            toplot2.rename(columns={"Head": "Simulated", "VAL": "Observed"}, inplace=True)
+            toplot2.dropna(subset=["Observed"], inplace=True)
+            toplot2['Residual'] = toplot2['Observed'] - toplot2['Simulated']
+            print("Found: ", well, len(toplot2))
 
-        # if idx == 0:
             ax.plot(toplot['Observed'], toplot['Error'], 'o', markerfacecolor="steelblue",
                     markeredgecolor='blue',
-                    markeredgewidth=1, markersize=10, alpha=0.5, zorder=9, label="2021 to 2023")
-            ax.axhline(y=0, color='r', linestyle='-')
-        # elif idx == 1 and (flag != "NA"):
+                    markeredgewidth=1, markersize=10, alpha=0.5, zorder=2, label="2021 to 2023")
+            ax.axhline(y=0, color='r', linestyle='-', zorder = 1)
+
             try:
                 ax.plot(toplot2['Observed'], toplot2['Residual'], 'o', markerfacecolor="olive",
                         markeredgecolor='darkgreen',
-                        markeredgewidth=1, markersize=10, alpha=0.5, zorder=8, label="2014 to 2020")
-                # plt.axhline(y=0, color='r', linestyle='-')
+                        markeredgewidth=1, markersize=8, alpha=0.3, zorder=2, label="2014 to 2020")
             except:
                 print("Not Found: ", well, len(toplot2))
 
@@ -454,7 +435,7 @@ def calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2):
             ax.set_xlabel('Observed (m)', fontsize=14)
             ax.label_outer()
             ax.set_xlim([112.8, 118])
-            ax.set_ylim(-2,2)
+            ax.set_ylim(-3,3)
 
             ax.minorticks_on()
             ax.grid(which='major', linestyle='-',
@@ -472,15 +453,15 @@ def calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2):
                 pass
         fig.tight_layout()
 
-        # plt.savefig(os.path.join(outputDir, f'grp{val+1}_deviations_daily_test.png'), bbox_inches='tight', dpi=600)
+        plt.savefig(os.path.join(outputDir, f'grp{val+1}_deviations_daily.png'), bbox_inches='tight', dpi=600)
 
-        # plt.close()
+        plt.close()
         print("Done")
     return None
 
 if __name__ == "__main__":
 
-    ### SET FILE DIRECTORIES
+    ### SET FILE DIRECTORIES ###
     cwd = os.getcwd()
 
     mdir = os.path.join(os.path.dirname(cwd), 'mruns')
@@ -491,44 +472,41 @@ if __name__ == "__main__":
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
     calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
-    ### SET WELL NAME ASSOCIATIONS
+    ### SET WELL NAME ASSOCIATIONS ###
     wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
      '199-H4-15A': "North Manual", '199-H4-17': "North PT Sensor Data", '199-H4-18': "North Manual", '199-H4-4': "North PT Sensor Data", '199-H4-5': "North AWLN",
      '199-H4-64': "North Manual", '199-H4-65': "North Manual", '199-H4-8': "North AWLN", '199-H4-84': "North AWLN", '199-H4-85': "North Manual",
-     '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual" }
+     '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual"}
 
     ### IMPORT FILES ###
 
-    ## Simulated WL, 2014 to 2023 [MONTHLY/SPs], using FLOPY
-    # wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly_flopy.csv'))
-    # wls_sim_SP['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wls_sim_SP.Time, unit="days")
-
     ### WATER LEVELS
     ### Observed WL for 2021 to 2023:
-    wl_meas = pd.read_csv(os.path.join(wldir, 'obs_2021_2023', 'measured_WLs_monthly.csv'), index_col='Date', parse_dates=True)
+    wl_meas_monthly = pd.read_csv(os.path.join(wldir, 'obs_2021_2023', 'measured_WLs_monthly.csv'), index_col='Date', parse_dates=True)
     wl_meas_daily = pd.read_csv(os.path.join(wldir, 'obs_2021_2023', 'measured_WLs_daily.csv'), index_col='Date', parse_dates=True)
 
-    ### Monthly WL for 2014 to 2020, from original calibration model:
+    ### Monthly WL (obs and sim) for 2014 to 2020, from original calibration model:
     wl_2014 = pd.read_csv(os.path.join(wldir, "calib_2014_2020", "calib_2014to2020_obs_sim.csv")) ###monthly/SP-averaged
     wl_meas_2014 = wl_2014[["Well", "Time", "Observed"]]
     wl_sim_2014 = wl_2014[["Well", "Time", "Simulated"]]
 
-    ### Daily raw WL data for 2014 to 2020
+    ### Daily obs raw WL data for 2014 to 2020
     ### extracted from S:\AUS\CHPRC.C003.HANOFF\Rel.044\045_100AreaPT\d01_CY2021_datapack\0_Data\Water_Level_Data\DataPull_020222
     wl_meas_2014_daily = pd.read_csv(os.path.join(cwd, wldir, 'obs_2014_2020', 'measured_WLs_2014to2020_daily.csv'))
     wl_meas_2014_daily['EVENT'] = pd.to_datetime(wl_meas_2014_daily['EVENT']).dt.normalize()
     wl_meas_2014_daily.rename(columns={'EVENT':'DATE'}, inplace=True)
     wl_meas_2014_daily.set_index('DATE', inplace=True)
 
-    ## MOD2OBS monthly:
-    wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly.dat'), delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
+    ## MOD2OBS simulated WL monthly extended model:
+    wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly.dat'),
+                             delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
     wls_sim_SP["NAME"] = "199-" + wls_sim_SP["ID"].str.strip().str[:-3]  # monitoring wells
     wls_sim_SP["Layer"] = wls_sim_SP["ID"].str.strip().str[-1].astype(int)
     # wls_sim_SP = wls_sim_SP.loc[wls_sim_SP.Layer == 1]
     wls_sim_SP['Date'] = pd.to_datetime(wls_sim_SP['Date'])
     wls_sim_SP.rename(columns={"Date": "DATE"}, inplace=True)
 
-    ### MOD2OBS daily: Simulated WL, 2014 to 2023 [DAILY]: Daily simulated values from mod2obs require a bit more data wrangling.
+    ### MOD2OBS simulated WL daily extended model:
     wls_sim_daily = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_daily.dat'), delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
     wls_sim_daily["NAME"] = "199-" + wls_sim_daily["ID"].str.strip().str[:-3]  # monitoring wells
     wls_sim_daily["Layer"] = wls_sim_daily["ID"].str.strip().str[-1].astype(int)
@@ -537,39 +515,47 @@ if __name__ == "__main__":
     wls_sim_daily.rename(columns={"Date": "DATE"}, inplace=True)
     # wls_sim_daily.set_index('DATE', inplace=True)
 
-    ### CONCENTRATIONS
-    ## Simulated CONC, 2014 to 2023:
+    ### CONCENTRATIONS ###
+    
+    ## Simulated CONC, 2014 to 2023 extended model:
     crvi_ifile = os.path.join(mdir, 'calib_2014_2023', f'tran_2014_2023', 'post_process',
                               'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv')
     crvi_sim = pd.read_csv(crvi_ifile)
     crvi_sim.rename(columns={'SAMP_SITE_NAME':'NAME','SAMP_DATE':'DATE'}, inplace = True)
 
     ### Observed CONC for 2014 to 2021, and 2021 - 2023:
-    crvi_meas_1 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
-    crvi_meas_2 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'), index_col = 'DATE', parse_dates = True)
+    crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
+    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'), index_col = 'DATE', parse_dates = True)
 
     mode = "daily"
     if mode == "monthly":
-        wls_obs = wl_meas #averaged by SP = monthly
+        wls_obs = wl_meas_monthly #averaged by SP = monthly
         wls_obs2 = wl_meas_2014
         wls_sim = wls_sim_SP
         wls_sim2 = wl_sim_2014
     if mode == "daily":
         wls_obs = wl_meas_daily
-        wls_sim = wls_sim_daily
         wls_obs2 = wl_meas_2014_daily
-        wls_sim2 = wl_sim_2014
+        wls_sim = wls_sim_daily
+        # wls_sim2 = wl_sim_2014
 
     ## If we want to use average WL or max concentration of layers, group here:
     group = True
+    ## + when rum2 wells are included in analysis
+    rum2 = False
     if group:
-        temp = wls_sim[wls_sim['Layer'] <= 4]
-        mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
-        mywell_sim['Layer'] = 'Unconfined Aq.'
-        # mywell_sim2 = wls_sim[wls_sim['Layer'] == 9]
-        # mywell_sim2['Layer'] = 'RUM-2'
-        wls_sim = mywell_sim ## todo integrate conditional RUM-2 statement
-        # wls_sim = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
+        if rum2:
+            temp = wls_sim[wls_sim['Layer'] <= 4]
+            mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
+            mywell_sim['Layer'] = 'Unconfined Aq.'
+            mywell_sim2 = wls_sim[wls_sim['Layer'] == 9]
+            mywell_sim2['Layer'] = 'RUM-2'
+            wls_sim = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
+        else:
+            temp = wls_sim[wls_sim['Layer'] <= 4]
+            mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
+            mywell_sim['Layer'] = 'Unconfined Aq.'
+            wls_sim = mywell_sim
     else:
         wls_sim = wls_sim
     wls_sim.set_index('DATE', inplace=True)
@@ -577,12 +563,33 @@ if __name__ == "__main__":
     ### PLOTTING
 
     ## Plot WLs and CONCs:
-    # plot_WL_vs_conc(wl_meas, crvi_meas_1, crvi_meas_2, wls_sim_SP, crvi_sim)
+    # plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wls_sim_SP, crvi_sim)
 
     ### Plot WLs scatterplots:
-    #crossplots_WL_individual(wls_obs, wls_sim, mode)
+    #crossplots_WL_individual(wls_obs, wls_obs2, wls_sim, mode)
     # crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2)
 
     ## Plot deviations
-    calculate_plot_residuals_individual(wls_obs, wls_obs2, wls_sim)
-    # calculate_plot_residuals(wls_obs, wls_obs2, wls_sim, wls_sim2)
+    # residualplots_WL_individual(wls_obs, wls_obs2, wls_sim)
+    # residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim)
+
+
+
+### QA
+    ### compare wls from flopy to mod2obs
+
+    ### Simulated WL, 2014 to 2023 [MONTHLY/SPs], using FLOPY
+    # wls_sim_flopy = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly_flopy.csv'))
+    # wls_sim_flopy['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wls_sim_flopy.Time, unit="days")
+
+    # for well in wls_sim_flopy['NAME'].unique():
+    #     fig, ax = plt.subplots(figsize=(7,4))
+    #     fplot = wls_sim_flopy[wls_sim_flopy['NAME'] == well]
+    #     mplot = wls_sim_SP[(wls_sim_SP['NAME'] == well) & (wls_sim_SP['Layer'] == 1)]
+    #     ax.plot(fplot['DATE'], fplot['Head'], label = 'flopy')
+    #     ax.plot(mplot['DATE'], mplot['Head'], label = 'mod2obs')
+    #     # ax.scatter(fplot['Head'].iloc[:-1], mplot['Head']) ## scatter
+    #     ax.legend()
+    #     ax.grid()
+    #     plt.title(f'{well}')
+    #     plt.savefig(os.path.join(cwd, 'output', 'water_level_plots', 'flopy_vs_mod2obs', f'{well}_lyr1.png'), bbox_inches='tight', dpi=600)
