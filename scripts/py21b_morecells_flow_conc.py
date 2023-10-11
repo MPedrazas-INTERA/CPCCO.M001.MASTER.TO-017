@@ -1,10 +1,14 @@
+#%%
 import os
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib
+import numpy as np
+
 matplotlib.use('Qt5Agg')
 import flopy.utils.binaryfile as bf
+
 
 def read_head(ifile_hds, df, all_lays=False):
     """
@@ -27,14 +31,16 @@ def read_head(ifile_hds, df, all_lays=False):
     for idx, row, col in zip(range(len(df)), df.Row, df.Column):
         for t_idx, t in enumerate(times):
             for lay in nlays:
-                vals.append([data[t_idx][lay][row][col], t, lay + 1, row, col, df.NAME.iloc[idx]])  # 237 nodes * 84 times = 19908 vals for L1
+                vals.append([data[t_idx][lay][row][col], t, lay + 1, row, col,
+                             df.NAME.iloc[idx]])  # 237 nodes * 84 times = 19908 vals for L1
     df_return = pd.DataFrame(vals, columns=['Head', 'Time', 'Layer', 'Row', 'Column', 'NAME'])
     df_return.drop_duplicates(inplace=True)
     df_return["Date"] = pd.to_datetime("2014-01-01") + pd.to_timedelta(df_return.Time, unit="days")
     # df_return.to_csv(os.path.join('output', 'water_level_data', f'{sce}', "sim_hds_flopy_100H_sources.csv"), index=False)
     return df_return
 
-def read_ucn(ifile_ucn, df, precision = "double",all_lays = "True"):
+
+def read_ucn(ifile_ucn, df, precision="double", all_lays="True"):
     ucnobj = bf.UcnFile(ifile_ucn, precision=precision)
     times = ucnobj.get_times()
     data = ucnobj.get_alldata(mflay=None, nodata=-1) / 1000  # dividing by 1000 to match units of Obs
@@ -56,8 +62,8 @@ def read_ucn(ifile_ucn, df, precision = "double",all_lays = "True"):
     # df_return.to_csv(os.path.join('output', 'concentration_data', f'2014to2023', "sim_conc_flopy_100H_sources.csv"), index=False)
     return df_return
 
-def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
 
+def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
     """
     Plot concentration data of interest against water levels in one graph.
     """
@@ -65,17 +71,22 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
     outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'sim_2014_2023', oname)
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
-    hdsColors = ["seagreen", "green", "lawngreen", "dodgerblue", "darkblue", "slateblue", "midnightblue", "cyan", "darkviolet"]
-    concColors = ["rosybrown", "lightcoral", "indianred", "brown", "firebrick", "maroon", "red", "orangered", "chocolate"]
+    hdsColors = ["seagreen", "green", "lawngreen", "dodgerblue", "darkblue", "slateblue", "midnightblue", "cyan",
+                 "darkviolet"]
+    concColors = ["rosybrown", "lightcoral", "indianred", "brown", "firebrick", "maroon", "red", "orangered",
+                  "chocolate"]
 
     hdsColors = ["dodgerblue", "darkviolet"]
-    concColors = ["firebrick",  "maroon"]
-    lsLst = ["-", "--"]*9
+    concColors = ["firebrick", "maroon"]
+    lsLst = ["-", "--"] * 9
     for well in wl_df['NAME'].unique():
         print(well)
         ## set data to be plotted
         toplot_wl = wl_df[wl_df['NAME'] == well]  ## match to the correct input when function is called
-        toplot_crvi = conc_df[conc_df['NAME'] == well] ## match to the correct input when function is called
+        # drycells = toplot_wl.loc[toplot_wl['Head'] >= 900.0]
+        # toplot_wl["Head"].iloc[drycells.index] = np.nan
+        toplot_wl.loc[toplot_wl['Head'] >= 900.0] = np.nan
+        toplot_crvi = conc_df[conc_df['NAME'] == well]  ## match to the correct input when function is called
 
         ## create figure instance and set specs
         fig, ax = plt.subplots(figsize=(15, 5))
@@ -86,10 +97,10 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
         for n, lay in enumerate(["Unconfined Aq.", "RUM-2"]):
             mycrvi, mywl = pd.DataFrame(), pd.DataFrame()
             if lay == "Unconfined Aq.":
-                crvi = toplot_crvi.loc[toplot_crvi.Layer <= 4] ###GET MAXIMUM CONCENTRATION FROM UNCONFINED LAYERS
+                crvi = toplot_crvi.loc[toplot_crvi.Layer <= 4]  ###GET MAXIMUM CONCENTRATION FROM UNCONFINED LAYERS
                 for mydate in crvi.Date.unique():
                     mycrvidate = crvi.loc[crvi.Date == mydate]
-                    maxcrvi = mycrvidate.Conc.max() ###Found maximum concentration from Layers 1 through 4
+                    maxcrvi = mycrvidate.Conc.max()  ###Found maximum concentration from Layers 1 through 4
                     mymaxconcdf = mycrvidate[['Time', 'Row', 'Column', 'NAME', 'Date']].copy()
                     mymaxconcdf.drop_duplicates(inplace=True)
                     mymaxconcdf["Conc"] = maxcrvi
@@ -106,13 +117,15 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
                     myavgwldf["Layer"] = "Unconfined"
                     mywl = mywl.append(myavgwldf)
             elif lay == "RUM-2":
-                mycrvi = toplot_crvi.loc[toplot_crvi.Layer == 9] #max Cr(VI) for lay 9 is just lay 9
+                mycrvi = toplot_crvi.loc[toplot_crvi.Layer == 9]  # max Cr(VI) for lay 9 is just lay 9
                 mywl = toplot_wl.loc[toplot_wl.Layer == 9]
             if mywl.NAME.unique()[0].startswith("183-H-SEB"):
-                ax2.axvline(pd.to_datetime("6/8/2023"), lw=2, zorder=1, label="H4-84 Peak", color="k", ls="-", alpha=0.5) #H4-84 peak
-            ax.plot(pd.to_datetime(mywl['Date']), mywl['Head'], label=f'Sim WL - {lay}', c= hdsColors[n], ls = lsLst[n], lw=2.5, zorder=9)
+                ax2.axvline(pd.to_datetime("6/8/2023"), lw=2, zorder=1, label="H4-84 Peak", color="k", ls="-",
+                            alpha=0.5)  # H4-84 peak
+            ax.plot(pd.to_datetime(mywl['Date']), mywl['Head'], label=f'Sim WL - {lay}', c=hdsColors[n], ls=lsLst[n],
+                    lw=2.5, zorder=9)
             ax2.plot(pd.to_datetime(mycrvi['Date']), mycrvi['Conc'], zorder=10,
-                     c = concColors[n], label=f'Sim Cr(VI) - {lay}', ls = lsLst[n], lw=2)
+                     c=concColors[n], label=f'Sim Cr(VI) - {lay}', ls=lsLst[n], lw=2)
 
         ax.minorticks_on()
         ax.grid(which='major', linestyle='-',
@@ -131,10 +144,11 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays =9):
         ax2.legend(lines + lines2, labels + labels2, loc=0)
         ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
         ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_V4.png'))
+        plt.savefig(os.path.join(outputDir, f'{well}.png'))
         plt.close()
     print("Done")
     return None
+
 
 def read_model_grid():
     """
@@ -144,11 +158,44 @@ def read_model_grid():
     print('reading grid file')
     grid = gpd.read_file(os.path.join(root, 'gis', 'shp', 'grid_with_centroids.shp'))
     print('finished reading grid file')
+    print(grid.crs)
     return grid
+
 
 def get_wells_coords(wells, grid):
     print("Getting coords info for each row, col")
-    df = pd.merge(wells, grid, left_on = ["Row", "Column"], right_on = ['I', 'J'])
+    df = pd.merge(wells, grid, left_on=["Row", "Column"], right_on=['I', 'J'])
+    return df
+
+def find_100HSources():
+    # dictionaries to relate waste site groups to source zone areas:
+    wastesiteDict = {1: '100-D-100 Sidewall', 2: '100-D-56-2 Pipeline', 3: '100-H-46-WS',
+                     5: '107-H-RB', 4: '183-H-SEB'}
+    grpDict = {3: 1, 4: 1, 14: 1, 19: 2, 6: 2, 18: 2, 9: 3, 10: 4, 13: 5, 25: 5, 12: 5}
+
+    ssmDir = os.path.join("..", 'model_packages', 'hist_2014_2023', 'ssm')
+    df_zon = pd.read_csv(os.path.join(ssmDir, "cr6_source_zones.dat"), delim_whitespace=True)
+    df_src = df_zon.loc[df_zon['Zone'].isin(
+        [9, 10, 12, 13, 25])]  # 100-H Waste Sites
+    df_src['Group'] = df_src['Zone'].map(grpDict)  # group source zones into 5 groups based on waste site location
+    df_src['R_C'] = df_src.Row.map(str) + '_' + df_src['Column'].map(str)
+    df_src["WasteSite"] = df_src['Group'].map(wastesiteDict)
+
+    sources = pd.DataFrame()
+    df_src["NAME"] = ""
+    for ws in df_src.WasteSite.unique():
+        print(ws)
+        mydf = df_src.loc[df_src.WasteSite == ws]
+        for idx in range(len(mydf)):
+            mydf.reset_index(drop=True, inplace=True)
+            # print(idx)
+            mydf["NAME"].iloc[idx] = mydf.WasteSite.map(str).iloc[idx] + '_' + str(idx)
+        sources = sources.append(mydf)
+
+    ### Used to get COORDS for ROW, COL 100-H SOURCES:
+    grid = read_model_grid()
+    well_list = pd.read_csv(os.path.join(cwd, "input", f"100H_sources.csv"))  # getting list of 100H Sources
+    df = get_wells_coords(well_list, grid)  # getting XY info using GRID
     df.to_csv(os.path.join(cwd, "input", f"100H_sources_XY.csv"), index=False)
     return df
 
@@ -158,48 +205,18 @@ if __name__ == "__main__":
     sce = 'calib_2014_2023'
     root = os.path.join(os.path.dirname(cwd))
 
-    ### DON'T NEED TO RE-RUN THIS ANYMORE. Already got the 100-H sources output file:
-    find_100HSources = False
-    if find_100HSources:
-        # dictionaries to relate waste site groups to source zone areas:
-        wastesiteDict = {1: '100-D-100 Sidewall', 2: '100-D-56-2 Pipeline', 3: '100-H-46-WS',
-                         5: '107-H-RB', 4: '183-H-SEB'}
-        grpDict = {3: 1, 4: 1, 14: 1, 19: 2, 6: 2, 18: 2, 9: 3, 10: 4, 13: 5, 25: 5, 12: 5}
-
-        ssmDir = os.path.join("..", 'model_packages', 'hist_2014_2023', 'ssm')
-        df_zon = pd.read_csv(os.path.join(ssmDir, "cr6_source_zones.dat"), delim_whitespace=True)
-        df_src = df_zon.loc[df_zon['Zone'].isin(
-            [9, 10, 12, 13, 25])]  # 100-H Waste Sites
-        df_src['Group'] = df_src['Zone'].map(grpDict)  # group source zones into 5 groups based on waste site location
-        df_src['R_C'] = df_src.Row.map(str) + '_' + df_src['Column'].map(str)
-        df_src["WasteSite"] = df_src['Group'].map(wastesiteDict)
-
-        sources = pd.DataFrame()
-        df_src["NAME"] = ""
-        for ws in df_src.WasteSite.unique():
-            print(ws)
-            mydf = df_src.loc[df_src.WasteSite == ws]
-            for idx in range(len(mydf)):
-                mydf.reset_index(drop=True, inplace=True)
-                # print(idx)
-                mydf["NAME"].iloc[idx] = mydf.WasteSite.map(str).iloc[idx] + '_' + str(idx)
-            sources = sources.append(mydf)
-
-        ### Used to get COORDS for ROW, COL 100-H SOURCES:
-        grid = read_model_grid()
-        well_list = pd.read_csv(os.path.join(cwd, "input", f"100H_sources.csv"))  # getting list of 100H Sources
-        df = get_wells_coords(well_list, grid)  # getting XY info using GRID
-
-    else:
-        pass
-
-
-    mode = "plot_sources" #"plot_wells"
+#%%
+    mode = "plot_cells_near_wells"  # "plot_sources" #"plot_wells"
 
     if mode == "plot_sources":
+        find_100HSources = False ### DON'T NEED TO RE-RUN THIS ANYMORE. Already got the 100-H sources output file:
+        if find_100HSources:
+            df = find_100HSources()
         mywells = pd.read_csv(os.path.join(cwd, "input", f"100H_sources.csv"))
-        myHds = pd.read_csv(os.path.join('output', 'water_level_data', f'{sce}', "sim_hds_flopy_100H_sources.csv")) ###If you already have the output, no need to re-run flopy
-        myConcs = pd.read_csv(os.path.join('output', 'concentration_data', '2014to2023', "sim_conc_flopy_100H_sources.csv")) ###If you already have the output, no need to re-run flopy
+        myHds = pd.read_csv(os.path.join('output', 'water_level_data', f'{sce}',
+                                         "sim_hds_flopy_100H_sources.csv"))  ###If you already have the output, no need to re-run flopy
+        myConcs = pd.read_csv(os.path.join('output', 'concentration_data', '2014to2023',
+                                           "sim_conc_flopy_100H_sources.csv"))  ###If you already have the output, no need to re-run flopy
         oname = "sources"
     elif mode == "plot_wells":
         mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
@@ -209,7 +226,57 @@ if __name__ == "__main__":
         ucn_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN')
         myConcs = read_ucn(ucn_file, mywells, precision="double", all_lays="True")
         oname = 'flopy_monitoring_wells'
+    elif mode == "plot_cells_near_wells":  ##GET SIX NEAREST CELLS TO WELLS OF INTEREST
+        mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
+        mywells.rename(columns={"Col": "Column"}, inplace=True)
+        mydict = {}
+        for well in mywells.NAME.unique():
+            if well in ["199-H4-64", "199-H4-86", "199-H4-84", "199-H4-88"]:
+                print(well)
+                mydf = mywells.loc[mywells.NAME == well] #example using model cell 199,616 (represents H4-84)
+                for n in range(8):
+                    NAME = f"{well}_{n}"
+                    if NAME not in mydict.keys():
+                        if n == 0: #199,617
+                            ROW = mydf.Row.iloc[0]
+                            COL = mydf.Column.iloc[0] + 1
+                        if n == 1: #199,615
+                            ROW = mydf.Row.iloc[0]
+                            COL = mydf.Column.iloc[0] - 1
+                        if n == 2: #200,616
+                            ROW = mydf.Row.iloc[0] + 1
+                            COL = mydf.Column.iloc[0]
+                        if n == 3: #198,616
+                            ROW = mydf.Row.iloc[0] - 1
+                            COL = mydf.Column.iloc[0]
+                        if n == 4: #198,617
+                            ROW = mydf.Row.iloc[0] - 1
+                            COL = mydf.Column.iloc[0] + 1
+                        if n == 5: #198,615
+                            ROW = mydf.Row.iloc[0] - 1
+                            COL = mydf.Column.iloc[0] - 1
+                        if n == 6: #200,617
+                            ROW = mydf.Row.iloc[0] + 1
+                            COL = mydf.Column.iloc[0] + 1
+                        if n == 7: #200,615
+                            ROW = mydf.Row.iloc[0] + 1
+                            COL = mydf.Column.iloc[0] - 1
+                        mydict[f"{NAME}"] = [ROW, COL]
+        mynewdf = pd.DataFrame.from_dict(mydict, orient= "index", columns= ["Row", "Column"])
+        mynewdf.reset_index(inplace=True)
+        mynewdf.rename(columns={"index":"NAME"}, inplace=True)
+        hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
+        myHds = read_head(hds_file, mynewdf, all_lays=True)
+        ucn_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN')
+        myConcs = read_ucn(ucn_file, mynewdf, precision="double", all_lays="True")
+        oname = 'neighboring_cells_to_wells'
+        get_coords = False
+        if get_coords:
+            grid = read_model_grid()
+            df = get_wells_coords(mynewdf, grid)  # getting XY info using GRID
+            df.to_csv(os.path.join(cwd, "input", f"Cells_Near_Wells_XY.csv"), index=False)
 
-    ### Plot WLs and CONCs:
-    plot_WL_vs_conc(myHds, myConcs, oname, nlays = 9) #UPDATE OUTPUT DIR INSIDE THIS FUNCTION!
+    #%% Plot WLs and CONCs:
+    plot_WL_vs_conc(myHds, myConcs, oname, nlays=9)  # UPDATE OUTPUT DIR INSIDE THIS FUNCTION!
 
+    #
