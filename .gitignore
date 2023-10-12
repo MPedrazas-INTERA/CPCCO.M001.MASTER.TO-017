@@ -1,4 +1,5 @@
 *.idea
+*.lock
 *.hds
 *.cbb
 *.ftl

@@ -75,9 +75,9 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
                  "darkviolet"]
     concColors = ["rosybrown", "lightcoral", "indianred", "brown", "firebrick", "maroon", "red", "orangered",
                   "chocolate"]
+    # hdsColors = ["dodgerblue", "darkviolet"]
+    # concColors = ["firebrick", "maroon"]
 
-    hdsColors = ["dodgerblue", "darkviolet"]
-    concColors = ["firebrick", "maroon"]
     lsLst = ["-", "--"] * 9
     for well in wl_df['NAME'].unique():
         print(well)
@@ -94,7 +94,7 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
         plt.rc('ytick', labelsize=14)
         ax2 = ax.twinx()
 
-        for n, lay in enumerate(["Unconfined Aq.", "RUM-2"]):
+        for n, lay in enumerate([1,2,3,4,9]):#enumerate(["Unconfined Aq.", "RUM-2"]):
             mycrvi, mywl = pd.DataFrame(), pd.DataFrame()
             if lay == "Unconfined Aq.":
                 crvi = toplot_crvi.loc[toplot_crvi.Layer <= 4]  ###GET MAXIMUM CONCENTRATION FROM UNCONFINED LAYERS
@@ -119,7 +119,10 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
             elif lay == "RUM-2":
                 mycrvi = toplot_crvi.loc[toplot_crvi.Layer == 9]  # max Cr(VI) for lay 9 is just lay 9
                 mywl = toplot_wl.loc[toplot_wl.Layer == 9]
-            if mywl.NAME.unique()[0].startswith("183-H-SEB"):
+            elif type(lay) == int:
+                mycrvi = toplot_crvi.loc[toplot_crvi.Layer == lay]  # max Cr(VI) for lay 9 is just lay 9
+                mywl = toplot_wl.loc[toplot_wl.Layer == lay]
+            if (mywl.NAME.unique()[0].startswith("183-H-SEB")) or (mywl.NAME.unique()[0].startswith("199-H4-84")):
                 ax2.axvline(pd.to_datetime("6/8/2023"), lw=2, zorder=1, label="H4-84 Peak", color="k", ls="-",
                             alpha=0.5)  # H4-84 peak
             ax.plot(pd.to_datetime(mywl['Date']), mywl['Head'], label=f'Sim WL - {lay}', c=hdsColors[n], ls=lsLst[n],
@@ -141,10 +144,12 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
         ## combined legend
         lines, labels = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
-        ax2.legend(lines + lines2, labels + labels2, loc=0)
+        ax2.legend(lines + lines2, labels + labels2, loc="upper left")
+        # ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        # ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
         ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
         ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}.png'))
+        plt.savefig(os.path.join(outputDir, f'{well}_v2.png'))
         plt.close()
     print("Done")
     return None
@@ -206,9 +211,10 @@ if __name__ == "__main__":
     root = os.path.join(os.path.dirname(cwd))
 
 #%%
-    mode = "plot_cells_near_wells"  # "plot_sources" #"plot_wells"
+    mode = "plot_wells" #"plot_cells_near_wells"  # "plot_sources" #"plot_wells"
 
     if mode == "plot_sources":
+        print(f"**{mode}**")
         find_100HSources = False ### DON'T NEED TO RE-RUN THIS ANYMORE. Already got the 100-H sources output file:
         if find_100HSources:
             df = find_100HSources()
@@ -219,14 +225,17 @@ if __name__ == "__main__":
                                            "sim_conc_flopy_100H_sources.csv"))  ###If you already have the output, no need to re-run flopy
         oname = "sources"
     elif mode == "plot_wells":
-        mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
+        print(f"**{mode}**")
+        mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv')) #wells of interest in 100-H
+        # mywells = pd.DataFrame(columns=["NAME", "Row", "Col"], data = [["199-D8-97", 275, 211]]) #TEST well in 100-D
         mywells.rename(columns={"Col": "Column"}, inplace=True)
         hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
         myHds = read_head(hds_file, mywells, all_lays=True)
         ucn_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN')
         myConcs = read_ucn(ucn_file, mywells, precision="double", all_lays="True")
-        oname = 'flopy_monitoring_wells'
+        oname = 'flopy_monitoring_wells_qc'
     elif mode == "plot_cells_near_wells":  ##GET SIX NEAREST CELLS TO WELLS OF INTEREST
+        print(f"**{mode}**")
         mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
         mywells.rename(columns={"Col": "Column"}, inplace=True)
         mydict = {}
@@ -277,6 +286,6 @@ if __name__ == "__main__":
             df.to_csv(os.path.join(cwd, "input", f"Cells_Near_Wells_XY.csv"), index=False)
 
     #%% Plot WLs and CONCs:
-    plot_WL_vs_conc(myHds, myConcs, oname, nlays=9)  # UPDATE OUTPUT DIR INSIDE THIS FUNCTION!
+    plot_WL_vs_conc(myHds, myConcs, oname, nlays=9)
 
     #
