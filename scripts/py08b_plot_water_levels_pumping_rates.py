@@ -7,10 +7,9 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import flopy.utils.binaryfile as bf
 
+"Author: RWeatherl, modified by MPedrazas"
 cwd = os.getcwd()
 wdir = os.path.dirname(cwd)
-
-"Author: RWeatherl, modified by MPedrazas"
 
 ### --- 1. Import and structure all data --- ###
 def import_WL_data():
@@ -134,8 +133,7 @@ def get_wells_ij(df, coordscsv):
     return mywells
 
 ## import data from calibration period 2014 - 2020.
-## for now this is after get_wells_ij b/c it depends on output from that function.
-def import_prior_data():
+def import_prior_data(rebound_wells):   ## wells input can be any list of well names to be fed into function when called
 
     path2data = "S:/AUS/CHPRC.C003.HANOFF/Rel.044/045_100AreaPT/d01_CY2021_datapack/0_Data/Water_Level_Data/DataPull_020222"
     prior_data_files = ['qryAWLNAWLN_2.txt', 'qryManAWLN.txt', 'qryManHEIS.txt']
@@ -145,18 +143,17 @@ def import_prior_data():
        # print(file.split("\\")[-1].split('.')[0]) ## extract filename directory and use as dict key
         k = file.split('.')[0]
         all_prior_data[k] = pd.read_csv(os.path.join(path2data, file), sep = '|', parse_dates=['EVENT']) #, index_col = 0, parse_dates=True)
-    #data_file = pd.read_csv(os.path.join(path2data, 'qryAWLNAWLN_2.txt'), sep = '|') singular file import
+
     rebound_wells = {}
     for k in all_prior_data.keys():
-        rebound_wells[k] = all_prior_data[k].loc[all_prior_data[k]['NAME'].isin(list(mywells['NAME'].unique()))]
+        rebound_wells[k] = all_prior_data[k].loc[all_prior_data[k]['NAME'].isin(list(rebound_wells['NAME'].unique()))]
         rebound_wells[k] = rebound_wells[k].loc[(rebound_wells[k]['EVENT'].dt.year.astype(str) >= '2014') &
                                                 (rebound_wells[k]['EVENT'].dt.year.astype(str) <= '2020')]
         # rebound_wells[k] = rebound_wells[k].loc[rebound_wells[k]['EVENT'].dt.year.astype(str) <= '2020']
 
     prior_data = pd.concat([v for k, v in rebound_wells.items()])
-    # prior_data.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'measured_WLs_2014to2020_daily.csv'), index = False)
 
-    ## QA ts plots. Note that IF plotting thru 2022, 2 outlier manual measurements are present. Can be dropped
+    ### QA ts plots. Note that IF plotting thru 2022, 2 outlier manual measurements are present. Can be ignored.
     # for well in list(prior_data['NAME'].unique()):
     #     toplot = prior_data[prior_data['NAME'] == well]
     #     fig, ax = plt.subplots(figsize = (5,3))
@@ -164,8 +161,48 @@ def import_prior_data():
     #     ax.legend(ncol = 2)
     #     plt.grid(True)
 
+    return prior_data
 
-def generate_plots():
+def import_pumping_data():
+#%%
+    wellinfo = pd.read_csv(os.path.join(cwd, 'output', 'well_info', 'calib_2014_2023', 'allwells_master.csv'))
+    wellinfo[['Short', 'Function', 'System']] = wellinfo['ID'].str.split('_', 2, expand=True)
+
+    rumwells = wellinfo.loc[wellinfo['Aquifer'] == 'RUM']['Short']
+
+    pumping_data = pd.read_csv(os.path.join(wdir, 'model_packages', 'hist_2014_2023', 'mnw2',
+                                            'wellratesdxhx_cy2014_jul2023_v02.csv'))
+    times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
+    cols = ['ID'] + list(times['start_date'])
+    pumping_data.columns = cols
+    pumping_data[['Short', 'Function', 'System']] = pumping_data['ID'].str.split('_', 2, expand=True)
+
+    subset = 'HX_RUM'  ## name any subset of interest (HX_RUM, HX_UNC, etc...)
+    if subset == 'HX_RUM':
+        hxrum = pumping_data.loc[pumping_data['System'] == 'HX'].loc[pumping_data['Short'].isin(list(rumwells))]
+        hxrum.set_index('ID', inplace=True)
+
+    start_date = '1/1/2014'
+    end_date = '7/1/2023'
+    total = hxrum.loc[:,start_date:end_date].sum()
+    total.index = pd.to_datetime(total.index)
+
+    fig, ax = plt.subplots(figsize=(8,3))
+    ax.plot(total.index, abs(total))
+    plt.title("Total Extraction in 100-H RUM-2 Wells")
+    plt.grid()
+    plt.ylabel('Pumping Rate (m3/d)')
+    # plt.savefig(os.path.join(cwd, 'output', 'pumping_plots', 'total_hx_rum.png'), bbox_inches='tight', dpi=400)
+
+
+#%%
+
+    return None
+
+def generate_plots(df_sp, myHds):
+
+    ## calib wells used in plotting to identify which wells were used for model calibration
+    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
     for well in df_sp.index.get_level_values('ID').unique():
         toplot = df_sp.xs(well, level='ID')
@@ -203,22 +240,20 @@ def generate_plots():
 
 if __name__ == "__main__":
 
-    cwd = os.getcwd()
-
-    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
-
     df, df_sp, df_sp_m = import_WL_data() ## run once at beginning of workflow
-    #df.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'all.csv'))
     # df_sp.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'obs_2021_2023', 'measured_WLs_daily.csv'))
 
-    coordscsv = os.path.join(os.path.dirname(cwd), 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
-    mywells = get_wells_ij(df, coordscsv)
+    coordscsv = os.path.join(wdir, 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
+    monitoring_wells = get_wells_ij(df, coordscsv)
+
+    prior_data = import_prior_data(monitoring_wells)
+    # prior_data.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'measured_WLs_2014to2020_daily.csv'), index = False)
 
     sce = 'calib_2014_2023'
     hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
-    myHds = read_head(hds_file, mywells)
+    # myHds = read_head(hds_file, monitoring_wells)
 
-    # generate_plots()
+    # generate_plots(df_sp, myHds)
 
 ### --- QC --- ###
 ##quick check for overlapping occurences##

@@ -15,7 +15,7 @@ def read_model_grid():
     :return: grid <-- geopandas dataframe for model grid
     """
     print('reading grid file')
-    grid = gpd.read_file(os.path.join(root, 'gis', 'shp', 'grid_with_centroids', 'grid_with_centroids.shp'))
+    grid = gpd.read_file(os.path.join(root, 'gis', 'shp', 'grid_with_centroids.shp'))
     print('finished reading grid file')
     return grid
 
@@ -276,20 +276,20 @@ if __name__ == "__main__":
     # root = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(cwd))))
     root = os.path.join(os.path.dirname(cwd))
     grid = read_model_grid()
-    #case = "mnw2_sce3a"
+
     cluster = False
     if cluster:
         case = sys.argv[1]
     else:
-        case = 'mnw2_sce2_rr1'
+        case = 'calib_2014_2023'
 
     output_dir = os.path.join(root, "scripts", "output", "well_info", f"{case}")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    wellcsv = os.path.join(root, "model_packages", "pred_2023_2125", f"{case}", "wellinfodxhx_cy2023_2125.csv")
-    rates = os.path.join(root, "model_packages", "pred_2023_2125", f"{case}","wellinfodxhx_cy2023_2125.csv")
-    types = ['extractionwells','allwells']
+    wellcsv = os.path.join(root, "model_packages", "hist_2014_2023", "mnw2", "wellinfodxhx_cy2014_jul2023_v02.csv")
+    rates = os.path.join(root, "model_packages", "hist_2014_2023", "mnw2","wellratesdxhx_cy2014_jul2023_v02.csv")
+    types = ['allwells'] #['extractionwells','allwells']
     for type in types:
         df = get_wells_ij(wellcsv, rates)  #getting row-col for well coords
         gen_scrn_fracs(df, type, output_dir) #calculating fraction of scrn interval in each lay for each well
