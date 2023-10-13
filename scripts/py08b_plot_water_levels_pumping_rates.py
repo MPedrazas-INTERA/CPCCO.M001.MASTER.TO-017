@@ -164,7 +164,7 @@ def import_prior_data(rebound_wells):   ## wells input can be any list of well n
     return prior_data
 
 def import_pumping_data():
-#%%
+
     wellinfo = pd.read_csv(os.path.join(cwd, 'output', 'well_info', 'calib_2014_2023', 'allwells_master.csv'))
     wellinfo[['Short', 'Function', 'System']] = wellinfo['ID'].str.split('_', 2, expand=True)
 
@@ -182,22 +182,43 @@ def import_pumping_data():
         hxrum = pumping_data.loc[pumping_data['System'] == 'HX'].loc[pumping_data['Short'].isin(list(rumwells))]
         hxrum.set_index('ID', inplace=True)
 
+    ## calculate total hx rum pumping rates
     start_date = '1/1/2014'
     end_date = '7/1/2023'
     total = hxrum.loc[:,start_date:end_date].sum()
     total.index = pd.to_datetime(total.index)
 
-    fig, ax = plt.subplots(figsize=(8,3))
-    ax.plot(total.index, abs(total))
-    plt.title("Total Extraction in 100-H RUM-2 Wells")
-    plt.grid()
-    plt.ylabel('Pumping Rate (m3/d)')
-    # plt.savefig(os.path.join(cwd, 'output', 'pumping_plots', 'total_hx_rum.png'), bbox_inches='tight', dpi=400)
+
+    total_plot = False
+    if total_plot:
+        fig, ax = plt.subplots(figsize=(8,3))
+        ax.plot(total.index, abs(total))
+        plt.title("Total Extraction in 100-H RUM-2 Wells")
+        plt.grid()
+        plt.ylabel('Pumping Rate (m3/d)')
+        # plt.savefig(os.path.join(cwd, 'output', 'pumping_plots', 'total_hx_rum.png'), bbox_inches='tight', dpi=400)
+    else:
+        pass
 
 
-#%%
+    individual_plots = True
+    if individual_plots:
+        tran = hxrum.iloc[:,:-3].transpose()  ## clip to timeseries data and transpose
+        tran.index = pd.to_datetime(tran.index)
+        df = tran.loc['2019-01-01':]
+        for well in df.columns:
+            print(well)
+            toplot = df[well]
+            fig, ax = plt.subplots(figsize=(9, 4))
+            ax.plot(df.index, abs(toplot))
+            plt.title(f"Extraction in {well}")
+            plt.grid()
+            plt.ylabel('Pumping Rate (m3/d)')
+            plt.savefig(os.path.join(cwd, 'output', 'pumping_plots', f'{well}_rum_pumping_2019_2023.png'), bbox_inches='tight', dpi=400)
+    else:
+        pass
 
-    return None
+    return hxrum
 
 def generate_plots(df_sp, myHds):
 
@@ -252,6 +273,8 @@ if __name__ == "__main__":
     sce = 'calib_2014_2023'
     hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
     # myHds = read_head(hds_file, monitoring_wells)
+
+    hxrum = import_pumping_data()
 
     # generate_plots(df_sp, myHds)
 

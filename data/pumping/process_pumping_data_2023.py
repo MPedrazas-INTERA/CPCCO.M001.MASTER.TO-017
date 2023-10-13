@@ -31,8 +31,6 @@ for k, v in namesdict.items():
     else:
         pass
 
-
-
 ### --- 2. Import new well details to update wellinfo file --- ###
 # wellinfo_prior = pd.read_csv(
 #     os.path.join(wdir, '..', 'model_packages', 'hist_2014_2022', 'mnw2', 'wellinfodxhx_cy2014_2022.csv'),
@@ -99,8 +97,7 @@ wrates_d.drop(missing.index, inplace=True)
 wrates_d.replace(np.nan, 0, inplace=True)
 
 ## write wellrates output for allocateqwell
-wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_2023', 'mnw2', 'wellratesdxhx_cy2014_jul2023_v02.csv'))
-
+#wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_2023', 'mnw2', 'wellratesdxhx_cy2014_jul2023_v02.csv'))
 
 
 
