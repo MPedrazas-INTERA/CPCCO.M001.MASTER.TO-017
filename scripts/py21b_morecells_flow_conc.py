@@ -71,12 +71,12 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
     outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', 'sim_2014_2023', oname)
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
-    hdsColors = ["seagreen", "green", "lawngreen", "dodgerblue", "darkblue", "slateblue", "midnightblue", "cyan",
-                 "darkviolet"]
-    concColors = ["rosybrown", "lightcoral", "indianred", "brown", "firebrick", "maroon", "red", "orangered",
-                  "chocolate"]
-    # hdsColors = ["dodgerblue", "darkviolet"]
-    # concColors = ["firebrick", "maroon"]
+    # hdsColors = ["seagreen", "green", "lawngreen", "dodgerblue", "darkblue", "slateblue", "midnightblue", "cyan",
+    #              "darkviolet"]
+    # concColors = ["rosybrown", "lightcoral", "indianred", "brown", "firebrick", "maroon", "red", "orangered",
+    #               "chocolate"]
+    hdsColors = ["dodgerblue", "darkviolet"]
+    concColors = ["firebrick", "maroon"]
 
     lsLst = ["-", "--"] * 9
     for well in wl_df['NAME'].unique():
@@ -94,7 +94,7 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
         plt.rc('ytick', labelsize=14)
         ax2 = ax.twinx()
 
-        for n, lay in enumerate([1,2,3,4,9]):#enumerate(["Unconfined Aq.", "RUM-2"]):
+        for n, lay in enumerate(["Unconfined Aq.", "RUM-2"]): #enumerate([1,2,3,4,9]):
             mycrvi, mywl = pd.DataFrame(), pd.DataFrame()
             if lay == "Unconfined Aq.":
                 crvi = toplot_crvi.loc[toplot_crvi.Layer <= 4]  ###GET MAXIMUM CONCENTRATION FROM UNCONFINED LAYERS
@@ -137,7 +137,7 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
                 linewidth='0.1', color='black')
         plt.xticks(rotation=45)
 
-        ax.set_title(f'{well}', color='black', fontsize=14)
+        ax.set_title(f'{well} ({mywells.Aq.loc[mywells.NAME == well].iloc[0]})', color='black', fontsize=15)
         ax.set_ylabel('Water Level (m.asl)', fontsize=14)
         ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
@@ -145,11 +145,11 @@ def plot_WL_vs_conc(wl_df, conc_df, oname, nlays=9):
         lines, labels = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         ax2.legend(lines + lines2, labels + labels2, loc="upper left")
-        # ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        # ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
-        ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_v2.png'))
+        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        # ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        # ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        plt.savefig(os.path.join(outputDir, f'{well}_v4.png'))
         plt.close()
     print("Done")
     return None
@@ -226,14 +226,14 @@ if __name__ == "__main__":
         oname = "sources"
     elif mode == "plot_wells":
         print(f"**{mode}**")
-        mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv')) #wells of interest in 100-H
+        mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_V2.csv')) #wells of interest in 100-H
         # mywells = pd.DataFrame(columns=["NAME", "Row", "Col"], data = [["199-D8-97", 275, 211]]) #TEST well in 100-D
         mywells.rename(columns={"Col": "Column"}, inplace=True)
         hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
         myHds = read_head(hds_file, mywells, all_lays=True)
         ucn_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'tran_{sce[-9:]}', 'MT3D001.UCN')
         myConcs = read_ucn(ucn_file, mywells, precision="double", all_lays="True")
-        oname = 'flopy_monitoring_wells_qc'
+        oname = 'flopy_monitoring_wells'
     elif mode == "plot_cells_near_wells":  ##GET SIX NEAREST CELLS TO WELLS OF INTEREST
         print(f"**{mode}**")
         mywells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))

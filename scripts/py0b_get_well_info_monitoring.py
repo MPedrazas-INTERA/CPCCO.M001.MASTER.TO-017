@@ -2,7 +2,7 @@
 This script creates a DB of well info including geographic coordinates AND model coordinates
 
 """
-
+#%%
 import glob, os
 import pandas as pd
 import geopandas as gpd
@@ -56,9 +56,9 @@ def read_model_grid():
     print('finished reading grid file')
     return grid
 
-def get_wells_ijk(well_list):
+def get_wells_xy_ijk(well_list):
     print("Getting row and column info for each monitoring well")
-    screens = pd.read_excel(os.path.join(root, 'data', 'well_info', 'Well Screen8-29-2023version-3.3.xlsx'),
+    screens = pd.read_excel(os.path.join(root, 'data', 'well_info', 'Well Screen10-12-2023version-3.3.xlsx'),
                             usecols=['WELL_NAME', 'STD_SCREEN_DEPTH_TOP_M', 'STD_SCREEN_DEPTH_BOTTOM_M'], engine = 'openpyxl')
     screens.drop_duplicates('WELL_NAME', keep='first', inplace=True)
 
@@ -81,6 +81,11 @@ def get_wells_ijk(well_list):
     df['Zbot'] = df['ZCOORDS'] - df['STD_SCREEN_DEPTH_BOTTOM_M']
     df2 = df[['NAME', 'I', 'J', 'centroid_x', 'centroid_y', 'YCOORDS', 'XCOORDS', 'Ztop', 'Zbot']].copy()
     df2.rename(columns={"NAME": "ID", "I": "Row", "J": "Col"}, inplace=True)
+    save_info = False #True
+    if save_info:
+        df3 = df2.copy()
+        df3.rename(columns={"XCOORDS":"X", "YCOORDS":"Y", "ID":"NAME"}, inplace=True)
+        df3[["NAME", "X", "Y", "Row", "Col"]].to_csv(os.path.join(cwd, "input", f"{type}_coords_ij_V2.csv"), index=False)
     return df2
 
 def gen_scrn_fracs(nlays, df, type, dfbot, output_dir):
@@ -298,7 +303,7 @@ if __name__ == "__main__":
     root = os.path.join(os.path.dirname(cwd))
     grid = read_model_grid()
 
-    case = 'calib_2014_2020'#'calib_2014_2023'
+    case = 'calib_2014_2023' #'calib_2014_2020'#'calib_2014_2023'
     flow_model_ws = os.path.join(root, "mruns", f"{case}", f"flow_{case[-9:]}")
 
     cluster = False
@@ -311,11 +316,12 @@ if __name__ == "__main__":
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+#%%
     types = ['monitoring_wells']
     for type in types:
         nlays, dfbot = load_mf(flow_model_ws, grid)
-        well_list = pd.read_csv(os.path.join(cwd, "input", f"{type}_coords_ij.csv"), usecols=[0])  #getting list of monitoring wells (NAME)
-        df = get_wells_ijk(well_list) #getting IJK, screen interval (Ztop, Zbot) and XY information
+        well_list = pd.read_csv(os.path.join(cwd, "input", f"{type}_list_V2.csv"), usecols=[0])  #f"{type}_coords_ij.csv" #getting list of monitoring wells (NAME)
+        df = get_wells_xy_ijk(well_list) #getting XY information, IJK, and screen interval (Ztop, Zbot)
         gen_scrn_fracs(nlays, df, type, dfbot, output_dir) #calculating fraction of scrn interval in each lay for each well
         fracs = cleanup_screen_fracs(nlays, type, output_dir) #cleanup previous fn + more layer info
         ptracks = get_layer_forPT(nlays, fracs) #choosing layers to set particles for PT
