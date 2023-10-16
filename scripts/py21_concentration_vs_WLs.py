@@ -19,7 +19,7 @@ from sklearn.metrics import mean_absolute_error,  mean_squared_error, r2_score
 plt.rc('xtick', labelsize=14)
 plt.rc('ytick', labelsize=14)
 
-def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, conc_df):
+def plot_WL_vs_conc(wl_meas, wl_meas2, crvi_meas_2014, crvi_meas_2021, wl_df, conc_df):
 
     """
     Plot concentration data of interest against water levels in one graph.
@@ -45,6 +45,7 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, conc_df):
         except:
             pass
         wl1 = wl_meas[wl_meas['ID'] == well]
+        wl2 = wl_meas2[wl_meas2['Well'] == well]
 
         ## create figure instance and set specs
         fig, ax = plt.subplots(figsize=(15, 5))
@@ -57,24 +58,27 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, conc_df):
         ## conditional title color
         is_in_calibwells = well in calibwells['Well_ID'].values
         if is_in_calibwells:
-            ax.set_title(f'{well}', color = 'red')
+            ax.set_title(f'{well} ({wellDict[well]})', color = 'navy', fontsize=16)
         else:
-            ax.set_title(f'{well}', color = 'black')
-        ax.set_ylabel('Water Level (m.asl)')
+            ax.set_title(f'{well} ({wellDict[well]})', color = 'black', fontsize=16)
+        ax.set_ylabel('Water Level (m.asl)', fontsize=14)
         ## create secondary axis and specs
         ax2 = ax.twinx()
-        ax2.set_ylabel('Cr(VI) (μg/L)')
+        ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
-        ax.plot(toplot_wl['DATE'], toplot_wl['Head'], label='Simulated WL')
+        ax.plot(toplot_wl.index, toplot_wl['Head'], label='Simulated WL', color="darkgreen")
         ax2.plot(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], zorder=10,
                  c="darkred", label='Simulated Cr(VI)')
-        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Measured WL', c="navy", s=15)
+        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Measured WL (New)', c="navy", s=15)
         ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--")
 
-        ax2.scatter(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], c='grey', s=15, zorder=1,
+        ax.scatter(pd.to_datetime(wl2.Time), wl2['Observed'], label='Measured WL', c="cornflowerblue", s=15, zorder=3,)
+        ax.plot(pd.to_datetime(wl2.Time), wl2['Observed'], c="navy", ls="--")
+
+        ax2.scatter(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], c='purple', s=15, zorder=1,
                     label='Measured Cr(VI)')  #
-        ax2.plot(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], zorder=10, c="grey",
-                 ls="--", alpha=0.7)
+        ax2.plot(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], zorder=10, c="purple",
+                 ls="--", alpha=0.4)
         try:
             ax2.scatter(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], c='magenta', s=15, zorder=1,
                         label='Measured Cr(VI) New')  #
@@ -85,10 +89,12 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, conc_df):
         ## combined legend
         lines, labels = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
-        ax2.legend(lines + lines2, labels + labels2, loc=0)
-        ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
-        ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_V3.png'))
+        ax2.legend(lines + lines2, labels + labels2, loc='upper left')
+        # ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        # ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        plt.savefig(os.path.join(outputDir, f'{well}_V4_2014to2023.png'), bbox_inches='tight')
         plt.close()
     print("Done")
 
@@ -527,7 +533,7 @@ if __name__ == "__main__":
     crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
     crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs.csv'), index_col = 'DATE', parse_dates = True)
 
-    mode = "daily"
+    mode = "monthly"
     if mode == "monthly":
         wls_obs = wl_meas_monthly #averaged by SP = monthly
         wls_obs2 = wl_meas_2014
@@ -563,7 +569,7 @@ if __name__ == "__main__":
     ### PLOTTING
 
     ## Plot WLs and CONCs:
-    # plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wls_sim_SP, crvi_sim)
+    plot_WL_vs_conc(wls_obs, wls_obs2, crvi_meas_2014, crvi_meas_2021, wls_sim, crvi_sim) #rum flag don't work for this one.
 
     ### Plot WLs scatterplots:
     #crossplots_WL_individual(wls_obs, wls_obs2, wls_sim, mode)
