@@ -40,6 +40,7 @@ def generate_plots(newWL, newWL_raw, mywells, SimHeads, TargetHeads, CalibHeads,
     for w in mywells.NAME.unique():
         print(w)
 
+
         obs_new = newWL.loc[newWL.ID == w]
         dates_new = pd.to_datetime(obs_new.Date)
 
