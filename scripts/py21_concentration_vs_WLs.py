@@ -1,3 +1,4 @@
+#%%
 """
 Plotting functions:
 Simulated and observed water levels + simulated and observed Cr(VI) concentrations timeseries
@@ -19,7 +20,35 @@ from sklearn.metrics import mean_absolute_error,  mean_squared_error, r2_score
 plt.rc('xtick', labelsize=14)
 plt.rc('ytick', labelsize=14)
 
-def plot_WL_vs_conc(wl_meas, wl_meas2, crvi_meas_2014, crvi_meas_2021, wl_df, conc_df):
+def read_head(sce, ifile_hds, df, all_lays=False):
+
+    """
+       This fn will take in a data frame to loop through Rows, Columns, Times, Layers and extract Heads
+       Input:  dataframe
+               all_lays = False if you only want the 1st Layer OR
+               all_lays = True if you want ALL the model layers
+       """
+    # import model heads
+    hds_obj = bf.HeadFile(ifile_hds, verbose=False)
+    times = hds_obj.get_times()
+    data = hds_obj.get_alldata(mflay=None)
+    ntimes, nlay, nr, nc = data.shape
+
+    if all_lays:
+        nlays = range(nlay)
+    else:
+        nlays = [0]
+    vals = []
+    for idx, row, col in zip(range(len(df)), df.Row, df.Col):
+        for t_idx, t in enumerate(times):
+            for lay in nlays:
+                vals.append([data[t_idx][lay][row][col], t, lay + 1, row, col, df.NAME.iloc[idx]])  # 237 nodes * 84 times = 19908 vals for L1
+    df_return = pd.DataFrame(vals, columns=['Head', 'Time', 'Layer', 'Row', 'Column', 'NAME'])
+    df_return.drop_duplicates(inplace=True)
+    df_return.to_csv(os.path.join('output', 'water_level_data', f'{sce}', "simulated_heads_monthly_flopy.csv"), index=False)
+    return df_return
+
+def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, conc_df, plot_calib_model = True):
 
     """
     Plot concentration data of interest against water levels in one graph.
@@ -33,10 +62,18 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, crvi_meas_2014, crvi_meas_2021, wl_df, co
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
-    for well in wells['NAME']:
+    for well in wells['NAME']:  #["199-H3-10"]: #
         print(well)
         ## set data to be plotted
-        toplot_wl = wl_df[wl_df['NAME'] == well]  ## match to the correct input when function is called
+        if simulated_heads_mode == "mod2obs":
+            toplot_wl = wl_df.loc[(wl_df['NAME'] == well)]  ## Simulated Monthly WLs from EXTENDED MODEL
+        elif simulated_heads_mode == "flopy":
+            toplot_wl = wl_df.loc[(wl_df['NAME'] == well) & (wl_df['Layer'] == (wells.Aq.loc[wells.NAME == well].iloc[0]))]  ## Simulated Monthly WLs from EXTENDED MODEL
+
+        if plot_calib_model:
+            # toplot_wl2 = wl_df_2014[wl_df_2014['Well'] == well]  ## Simulated Monthly WLs from CALIBRATED MODEL from an SSPA xlsx
+            toplot_wl2 = wl_df_2014.loc[(wl_df_2014['NAME'] == well) & (wl_df_2014['Layer'] == (wells.Aq.loc[wells.NAME == well].iloc[0]))]  ## Simulated Monthly WLs from CALIBRATED MODEL from FLOPY
+
         toplot_crvi = conc_df[conc_df['NAME'] == well] ## match to the correct input when function is called
 
         cr1 = crvi_meas_2014.loc[crvi_meas_2014['SAMP_SITE_NAME'] == well]  ## match to the correct input when function is called
@@ -46,6 +83,7 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, crvi_meas_2014, crvi_meas_2021, wl_df, co
             pass
         wl1 = wl_meas[wl_meas['ID'] == well]
         wl2 = wl_meas2[wl_meas2['Well'] == well]
+        wl3 = wl_meas2022[wl_meas2022['ID'] == well]
 
         ## create figure instance and set specs
         fig, ax = plt.subplots(figsize=(15, 5))
@@ -67,21 +105,26 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, crvi_meas_2014, crvi_meas_2021, wl_df, co
         ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
         ax.plot(toplot_wl.index, toplot_wl['Head'], label='Simulated WL', color="darkgreen")
+        if plot_calib_model:
+            # ax.plot(pd.to_datetime(toplot_wl2.Time), toplot_wl2['Simulated'], label='Simulated WL (Calib)', color="orange", ls='--', zorder=20)
+            ax.plot(toplot_wl2.index, toplot_wl2['Head'], label='Simulated WL (Calib)', color="orange", ls='--', zorder=20)
         ax2.plot(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], zorder=10,
                  c="darkred", label='Simulated Cr(VI)')
-        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Measured WL (New)', c="navy", s=15)
+        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Obs WL (New)', c="navy", s=15)
+        ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=15)
         ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--")
+        ax.plot(wl3.index, wl3['Water Level (m)'], c="navy", ls="--")
 
-        ax.scatter(pd.to_datetime(wl2.Time), wl2['Observed'], label='Measured WL', c="cornflowerblue", s=15, zorder=3,)
+        ax.scatter(pd.to_datetime(wl2.Time), wl2['Observed'], label='Obs WL (SSPA Calib)', c="cornflowerblue", s=15, zorder=3,)
         ax.plot(pd.to_datetime(wl2.Time), wl2['Observed'], c="cornflowerblue", ls="--")
 
         ax2.scatter(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], c='purple', s=15, zorder=1,
-                    label='Measured Cr(VI)')  #
+                    label='Obs Cr(VI)')  #
         ax2.plot(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], zorder=10, c="purple",
                  ls="--", alpha=0.4)
         try:
             ax2.scatter(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], c='magenta', s=15, zorder=1,
-                        label='Measured Cr(VI) New')  #
+                        label='New Obs Cr(VI)')  #
             ax2.plot(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], zorder=10, c="magenta", ls="--", alpha=1)
         except:
             pass
@@ -89,12 +132,79 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, crvi_meas_2014, crvi_meas_2021, wl_df, co
         ## combined legend
         lines, labels = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
-        ax2.legend(lines + lines2, labels + labels2, loc='upper left')
+        # ax2.legend(lines + lines2, labels + labels2, loc='best')
         # ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
         # ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
         ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
         ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
-        plt.savefig(os.path.join(outputDir, f'{well}_V4_2014to2023.png'), bbox_inches='tight')
+        plt.savefig(os.path.join(outputDir, f'{well}_V6_flopy_2014to2023_noLegend.png'), bbox_inches='tight')
+        plt.close()
+    print("Done")
+
+    return None
+
+def plot_WL(wl_meas, wl_meas2, wl_meas2022, wl_df, wl_df_2014, plot_calib_model = True):
+
+    """
+    Plot concentration data of interest against water levels in one graph.
+    May be used to plot either measured data or simulation results.
+    Inputs: water level dataframe, concentration dataframe, data type
+    dtype options: simulated, measured, or both. Simply to control style.
+    Common errors: double check column names (e.g. "NAME" vs "ID", "time" vs "Date", etc.)
+        rename columns outside of function for consistency.
+    """
+    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'calib_2014_2023')
+    if not os.path.isdir(outputDir):
+        os.makedirs(outputDir)
+
+    for well in wells['NAME']:  #["199-H3-10"]: #
+        print(well)
+        ## set data to be plotted
+        if simulated_heads_mode == "mod2obs":
+            toplot_wl = wl_df.loc[(wl_df['NAME'] == well)]  ## Simulated Monthly WLs from EXTENDED MODEL
+        elif simulated_heads_mode == "flopy":
+            toplot_wl = wl_df.loc[(wl_df['NAME'] == well) & (wl_df['Layer'] == (wells.Aq.loc[wells.NAME == well].iloc[0]))]  ## Simulated Monthly WLs from EXTENDED MODEL
+
+        if plot_calib_model:
+            # toplot_wl2 = wl_df_2014[wl_df_2014['Well'] == well]  ## Simulated Monthly WLs from CALIBRATED MODEL from an SSPA xlsx
+            toplot_wl2 = wl_df_2014.loc[(wl_df_2014['NAME'] == well) & (wl_df_2014['Layer'] == (wells.Aq.loc[wells.NAME == well].iloc[0]))]  ## Simulated Monthly WLs from CALIBRATED MODEL from FLOPY
+
+        wl1 = wl_meas[wl_meas['ID'] == well]
+        wl2 = wl_meas2[wl_meas2['Well'] == well]
+        wl3 = wl_meas2022[wl_meas2022['ID'] == well]
+
+        ## create figure instance and set specs
+        fig, ax = plt.subplots(figsize=(15, 5))
+        ax.minorticks_on()
+        ax.grid(which='major', linestyle='-',
+                linewidth='0.1', color='red')
+        ax.grid(which='minor', linestyle=':',
+                linewidth='0.1', color='black')
+        plt.xticks(rotation=45)
+        ## conditional title color
+        is_in_calibwells = well in calibwells['Well_ID'].values
+        if is_in_calibwells:
+            ax.set_title(f'{well} ({wellDict[well]})', color = 'navy', fontsize=16)
+        else:
+            ax.set_title(f'{well} ({wellDict[well]})', color = 'black', fontsize=16)
+        ax.set_ylabel('Water Level (m.asl)', fontsize=14)
+
+        ax.plot(toplot_wl.index, toplot_wl['Head'], label='Simulated WL', color="darkgreen")
+        if plot_calib_model:
+            # ax.plot(pd.to_datetime(toplot_wl2.Time), toplot_wl2['Simulated'], label='Simulated WL (Calib)', color="orange", ls='--', zorder=20)
+            ax.plot(toplot_wl2.index, toplot_wl2['Head'], label='Simulated WL (Calib)', color="orange", ls='--', zorder=20)
+        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Obs WL (New)', c="navy", s=15)
+        ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=15)
+        ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--")
+        ax.plot(wl3.index, wl3['Water Level (m)'], c="navy", ls="--")
+
+        ax.scatter(pd.to_datetime(wl2.Time), wl2['Observed'], label='Obs WL (SSPA Calib)', c="cornflowerblue", s=15, zorder=3,)
+        ax.plot(pd.to_datetime(wl2.Time), wl2['Observed'], c="cornflowerblue", ls="--")
+
+        ax.legend(loc='best')
+        ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-07-31"))
+        # ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-07-31"))
+        plt.savefig(os.path.join(outputDir, f'{well}_flopy_2021to2023_Legend.png'), bbox_inches='tight')
         plt.close()
     print("Done")
 
@@ -466,25 +576,24 @@ def residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim):
     return None
 
 if __name__ == "__main__":
-
     ### SET FILE DIRECTORIES ###
     cwd = os.getcwd()
-
     mdir = os.path.join(os.path.dirname(cwd), 'mruns')
     wldir = os.path.join(cwd, 'output', 'water_level_data')
     chemdir = os.path.join(cwd, 'output', 'concentration_data')
 
     times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
-    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
+    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_v2.csv'))
     calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
     ### SET WELL NAME ASSOCIATIONS ###
     wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
      '199-H4-15A': "North Manual", '199-H4-17': "North PT Sensor Data", '199-H4-18': "North Manual", '199-H4-4': "North PT Sensor Data", '199-H4-5': "North AWLN",
      '199-H4-64': "North Manual", '199-H4-65': "North Manual", '199-H4-8': "North AWLN", '199-H4-84': "North AWLN", '199-H4-85': "North Manual",
-     '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual"}
+     '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual",
+     '199-H3-10': "RUM-2", '199-H3-12': "RUM-2", '199-H3-13': "RUM-2", '199-H3-30': "RUM-2", '199-H3-32': "RUM-2", '199-H4-90': "RUM-2"}
 
-    ### IMPORT FILES ###
+    #%%   ### IMPORT FILES ###
 
     ### WATER LEVELS
     ### Observed WL for 2021 to 2023:
@@ -494,7 +603,12 @@ if __name__ == "__main__":
     ### Monthly WL (obs and sim) for 2014 to 2020, from original calibration model:
     wl_2014 = pd.read_csv(os.path.join(wldir, "calib_2014_2020", "calib_2014to2020_obs_sim.csv")) ###monthly/SP-averaged
     wl_meas_2014 = wl_2014[["Well", "Time", "Observed"]]
-    wl_sim_2014 = wl_2014[["Well", "Time", "Simulated"]]
+    #wl_sim_2014 = wl_2014[["Well", "Time", "Simulated"]]
+    # sce = "calib_2014_2020"
+    # hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', 'DHmodel_2014to2020.hds')
+    # read_head(sce, hds_file, wells, all_lays=True)
+    wl_sim_2014 = pd.read_csv(os.path.join(wldir, 'calib_2014_2020', 'simulated_heads_monthly_flopy.csv'))
+    wl_sim_2014['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wl_sim_2014.Time, unit="days")
 
     ### Daily obs raw WL data for 2014 to 2020
     ### extracted from S:\AUS\CHPRC.C003.HANOFF\Rel.044\045_100AreaPT\d01_CY2021_datapack\0_Data\Water_Level_Data\DataPull_020222
@@ -503,23 +617,44 @@ if __name__ == "__main__":
     wl_meas_2014_daily.rename(columns={'EVENT':'DATE'}, inplace=True)
     wl_meas_2014_daily.set_index('DATE', inplace=True)
 
-    ## MOD2OBS simulated WL monthly extended model:
-    wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly.dat'),
-                             delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
-    wls_sim_SP["NAME"] = "199-" + wls_sim_SP["ID"].str.strip().str[:-3]  # monitoring wells
-    wls_sim_SP["Layer"] = wls_sim_SP["ID"].str.strip().str[-1].astype(int)
-    # wls_sim_SP = wls_sim_SP.loc[wls_sim_SP.Layer == 1]
-    wls_sim_SP['Date'] = pd.to_datetime(wls_sim_SP['Date'])
-    wls_sim_SP.rename(columns={"Date": "DATE"}, inplace=True)
+    ### MORE DATA....
+    rum_2022 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'data', 'water_levels', 'WaterLevel_CY2022', 'AllData_RUM_2022.csv')) #monthly OBS for CY2022 from HPham
+    rum_2022 = rum_2022.loc[rum_2022.TYPE != "CP"]
+    rum_2022.rename(columns = {"NAME": "ID", "VAL":"Water Level (m)"}, inplace=True)
+    rum_2022["Datestring"] = "2022-" + rum_2022["EVENT"].astype(str) + "-01"
+    rum_2022["DATE"] = pd.to_datetime(rum_2022["Datestring"])
+    rum_2022.sort_values(by="DATE", inplace=True)
+    wls_obs_2022 = rum_2022.copy()
+    wls_obs_2022.set_index('DATE', inplace=True)
 
-    ### MOD2OBS simulated WL daily extended model:
-    wls_sim_daily = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_daily.dat'), delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
-    wls_sim_daily["NAME"] = "199-" + wls_sim_daily["ID"].str.strip().str[:-3]  # monitoring wells
-    wls_sim_daily["Layer"] = wls_sim_daily["ID"].str.strip().str[-1].astype(int)
-    # wls_sim_daily = wls_sim_daily.loc[wls_sim_daily.Layer == 1]
-    wls_sim_daily['Date'] = pd.to_datetime(wls_sim_daily['Date'])
-    wls_sim_daily.rename(columns={"Date": "DATE"}, inplace=True)
-    # wls_sim_daily.set_index('DATE', inplace=True)
+    ###Will add the rest later...
+
+
+    ## MOD2OBS simulated WL monthly (extended model):
+    simulated_heads_mode = "flopy"
+    if simulated_heads_mode == 'mod2obs':
+        wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly.dat'),
+                                 delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
+        wls_sim_SP["NAME"] = "199-" + wls_sim_SP["ID"].str.strip().str[:-3]  # monitoring wells
+        wls_sim_SP["Layer"] = wls_sim_SP["ID"].str.strip().str[-1].astype(int)
+        wls_sim_SP['Date'] = pd.to_datetime(wls_sim_SP['Date'])
+        wls_sim_SP.rename(columns={"Date": "DATE"}, inplace=True)
+    elif simulated_heads_mode == 'flopy':
+        # sce = "calib_2014_2023"
+        # hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
+        # read_head(sce, hds_file, wells, all_lays=True)
+        wls_sim_SP = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly_flopy.csv'))
+        wls_sim_SP['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wls_sim_SP.Time, unit="days")
+
+    ### MOD2OBS simulated WL DAILY (extended model):
+    if simulated_heads_mode == 'mod2obs':
+        wls_sim_daily = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_daily.dat'), delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
+        wls_sim_daily["NAME"] = "199-" + wls_sim_daily["ID"].str.strip().str[:-3]  # monitoring wells
+        wls_sim_daily["Layer"] = wls_sim_daily["ID"].str.strip().str[-1].astype(int)
+        # wls_sim_daily = wls_sim_daily.loc[wls_sim_daily.Layer == 1]
+        wls_sim_daily['Date'] = pd.to_datetime(wls_sim_daily['Date'])
+        wls_sim_daily.rename(columns={"Date": "DATE"}, inplace=True)
+        # wls_sim_daily.set_index('DATE', inplace=True)
 
     ### CONCENTRATIONS ###
     
@@ -548,28 +683,45 @@ if __name__ == "__main__":
     ## If we want to use average WL or max concentration of layers, group here:
     group = True
     ## + when rum2 wells are included in analysis
-    rum2 = False
+    rum2 = True
     if group:
         if rum2:
             temp = wls_sim[wls_sim['Layer'] <= 4]
             mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
-            mywell_sim['Layer'] = 'Unconfined Aq.'
+            mywell_sim['Layer'] = 'Unconfined'
             mywell_sim2 = wls_sim[wls_sim['Layer'] == 9]
             mywell_sim2['Layer'] = 'RUM-2'
             wls_sim = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
+
+            if mode == "monthly":
+                temp = wls_sim2[wls_sim2['Layer'] <= 4] ###FloPy 2014-2020 model
+                mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
+                mywell_sim['Layer'] = 'Unconfined Aq.'
+                mywell_sim2 = wls_sim2[wls_sim2['Layer'] == 6] #2014-2020 model is 6-layered
+                mywell_sim2['Layer'] = 'RUM-2'
+                wls_sim2 = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
         else:
             temp = wls_sim[wls_sim['Layer'] <= 4]
             mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
-            mywell_sim['Layer'] = 'Unconfined Aq.'
+            mywell_sim['Layer'] = 'Unconfined'
             wls_sim = mywell_sim
+            if mode == "monthly":
+                temp = wls_sim2[wls_sim2['Layer'] <= 4] ###FloPy 2014-2020 model
+                mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
+                mywell_sim['Layer'] = 'Unconfined'
+                wls_sim2 = mywell_sim
     else:
-        wls_sim = wls_sim
-    wls_sim.set_index('DATE', inplace=True)
+        pass
 
-    ### PLOTTING
+    wls_sim.set_index('DATE', inplace=True)
+    wls_sim2.set_index('DATE', inplace=True)
+
+    #%% ### PLOTTING
 
     ## Plot WLs and CONCs:
-    plot_WL_vs_conc(wls_obs, wls_obs2, crvi_meas_2014, crvi_meas_2021, wls_sim, crvi_sim) #rum flag don't work for this one.
+    # plot_WL_vs_conc(wls_obs, wls_obs2, wls_obs_2022, crvi_meas_2014, crvi_meas_2021, wls_sim, wls_sim2, crvi_sim, plot_calib_model=True) #rum flag don't work for this one.
+
+    plot_WL(wls_obs, wls_obs2, wls_obs_2022, wls_sim, wls_sim2, plot_calib_model=True) #rum flag don't work for this one.
 
     ### Plot WLs scatterplots:
     #crossplots_WL_individual(wls_obs, wls_obs2, wls_sim, mode)
@@ -580,10 +732,8 @@ if __name__ == "__main__":
     # residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim)
 
 
-
-### QA
-    ### compare wls from flopy to mod2obs
-
+#%%
+### QA: Compare wls from flopy to mod2obs
     ### Simulated WL, 2014 to 2023 [MONTHLY/SPs], using FLOPY
     # wls_sim_flopy = pd.read_csv(os.path.join(wldir, 'calib_2014_2023', 'simulated_heads_monthly_flopy.csv'))
     # wls_sim_flopy['DATE'] = pd.to_datetime("2014-01-01") + pd.to_timedelta(wls_sim_flopy.Time, unit="days")
