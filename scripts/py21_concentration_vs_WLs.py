@@ -73,7 +73,7 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, crvi_meas_2014, crvi_meas_2021, wl_df, co
         ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--")
 
         ax.scatter(pd.to_datetime(wl2.Time), wl2['Observed'], label='Measured WL', c="cornflowerblue", s=15, zorder=3,)
-        ax.plot(pd.to_datetime(wl2.Time), wl2['Observed'], c="navy", ls="--")
+        ax.plot(pd.to_datetime(wl2.Time), wl2['Observed'], c="cornflowerblue", ls="--")
 
         ax2.scatter(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], c='purple', s=15, zorder=1,
                     label='Measured Cr(VI)')  #
