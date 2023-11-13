@@ -133,7 +133,7 @@ def get_wells_ij(df, coordscsv):
     return mywells
 
 ## import data from calibration period 2014 - 2020.
-def import_prior_data(rebound_wells):   ## wells input can be any list of well names to be fed into function when called
+def import_prior_data(mywells):   ## wells input can be any list of well names to be fed into function when called
 
     path2data = "S:/AUS/CHPRC.C003.HANOFF/Rel.044/045_100AreaPT/d01_CY2021_datapack/0_Data/Water_Level_Data/DataPull_020222"
     prior_data_files = ['qryAWLNAWLN_2.txt', 'qryManAWLN.txt', 'qryManHEIS.txt']
@@ -146,7 +146,7 @@ def import_prior_data(rebound_wells):   ## wells input can be any list of well n
 
     rebound_wells = {}
     for k in all_prior_data.keys():
-        rebound_wells[k] = all_prior_data[k].loc[all_prior_data[k]['NAME'].isin(list(rebound_wells['NAME'].unique()))]
+        rebound_wells[k] = all_prior_data[k].loc[all_prior_data[k]['NAME'].isin(list(mywells['NAME'].unique()))]
         rebound_wells[k] = rebound_wells[k].loc[(rebound_wells[k]['EVENT'].dt.year.astype(str) >= '2014') &
                                                 (rebound_wells[k]['EVENT'].dt.year.astype(str) <= '2020')]
         # rebound_wells[k] = rebound_wells[k].loc[rebound_wells[k]['EVENT'].dt.year.astype(str) <= '2020']
@@ -261,14 +261,16 @@ def generate_plots(df_sp, myHds):
 
 if __name__ == "__main__":
 
-    df, df_sp, df_sp_m = import_WL_data() ## run once at beginning of workflow
+    cwd = os.getcwd()
+    # df, df_sp, df_sp_m = import_WL_data() ## run once at beginning of workflow
     # df_sp.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'obs_2021_2023', 'measured_WLs_daily.csv'))
 
-    coordscsv = os.path.join(wdir, 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
-    monitoring_wells = get_wells_ij(df, coordscsv)
+    # coordscsv = os.path.join(wdir, 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
+    # monitoring_wells = get_wells_ij(df, coordscsv)
+    monitoring_wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_v2.csv'))
 
     prior_data = import_prior_data(monitoring_wells)
-    # prior_data.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'measured_WLs_2014to2020_daily.csv'), index = False)
+    prior_data.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'obs_2014_2020', 'measured_WLs_2014to2020_daily_V2.csv'), index = False)
 
     sce = 'calib_2014_2023'
     hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
