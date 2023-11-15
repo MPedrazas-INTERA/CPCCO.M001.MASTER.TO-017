@@ -53,6 +53,7 @@ def import_well_details():
 
 ### Generate updated wellrates file: import new files to be combined with existing --- ###
 
+## currently not in use -- replaced by process_all_pumping_data function below
 def process_raw_data_jan_jul(ifile):
 
     """
@@ -80,7 +81,7 @@ def process_raw_data_jan_jul(ifile):
     df_m.index.name = 'ID'
 
     return df_m
-
+## currently not in use -- replaced by process_all_pumping_data function below
 def process_raw_data_aug_oct():
     """
     Process second data dump that was provided in separate spreadsheets per month
@@ -131,13 +132,16 @@ def process_all_pumping_data():
 
     pumping = pd.concat(pumping_dict.values())
     pumping.sort_index(inplace=True)
+    ## upsampling from daily or hourly to monthly. check this.
     pumping_m = pumping.resample('M').first().diff().shift(freq='-1M')
     diff = pumping_m.index.to_series().diff()
     days_per_month = diff.dt.days
     for row in pumping_m.index:             # Convert from total gallon in a month to gpm
         pumping_m.loc[row] = pumping_m.loc[row] / days_per_month[row] / 24 / 60
 
-    pumping_m = pumping_m.iloc[2:]*gpm2m3d  # Drop empty first row, drop july 2023 (already present in available data), and convert from gpm to m3/d
+    # drop empty first row and convert from gpm to m3/d
+    pumping_m = pumping_m.iloc[1:]*gpm2m3d                  ## Check here that correct rows are being selected
+    # set extraction rates as negative
     pumping_m[pumping_m.filter(like='_E_').columns] = -1*pumping_m[pumping_m.filter(like='_E_').columns]
 
     pumping_m.reset_index(inplace=True, drop=True)
@@ -152,17 +156,19 @@ if __name__ == "__main__":
     namesdict = import_well_names()
 
     ### --- 2. Generate updated wellrates file: import new files to be combined with existing --- ###
-    ### Import existing wellrates
+
+    ## Import existing wellrates
     wrates_prior = pd.read_csv(
         os.path.join(wdir, '..', 'model_packages', 'hist_2014_2022', 'mnw2', 'wellratedxhx_cy2014_2022.csv'),
         index_col='ID')
-
+    ## process new raw pumping data
     pumping = process_all_pumping_data()
 
-    ## updated well rates file
+    ## update wellrates file
     wrates = wrates_prior.join(pumping, how = 'outer', rsuffix = '_new')
     wrates_d = wrates[~wrates.index.duplicated(keep='first')] ## drop rows with duplicate indices
     wrates_d.columns = list(range(1,len(wrates.columns)+1)) ##column headers correspond to stress periods
+
 
     ## investigate missing well names
     # ## MJ15 is a recirculation well!! HJ25 can be ignored.
@@ -173,7 +179,7 @@ if __name__ == "__main__":
     wrates_d.replace(np.nan, 0, inplace=True)
 
     ## write wellrates output for allocateqwell
-    # wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023.csv'))
+    # wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_Oct2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023.csv'))
 
 
 
