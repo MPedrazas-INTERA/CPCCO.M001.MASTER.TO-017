@@ -272,7 +272,7 @@ if __name__ == "__main__":
         df.sp = df.sp.astype(int)
         mydf = df.loc[df.sp > 108] #Appending to existing recharge package, extending from Dec 2022 (sp 108) to Jul 2023 (sp 115)
         start_year = 2014
-        ofile = os.path.join(rch_ws, "output", "2022toJul2023.rch")
+        ofile = os.path.join(rch_ws, "output", "2022toOct2023.rch")
         extend_recharge_package(mydf, ref_path, nr, nc, start_year)
 
     ### [4]  QA/QC: Load model in flopy, convert recharge to shapefiles:
