@@ -119,14 +119,14 @@ if __name__ == "__main__":
     cwd = os.getcwd()
 
     df = pd.read_csv(os.path.join(cwd, "input", "sp_2014_2023.csv"))
-    df['start_date']=pd.to_datetime(df['SPstart'])
-    df['end_date']=pd.to_datetime(df['SPend'])
+    df['start_date']=pd.to_datetime(df['start_date'])
+    df['end_date']=pd.to_datetime(df['end_date'])
 
     outputdir = os.path.join(cwd, "output")
 
-    runList = ['2014_2023']
+    runList = ['2014_Oct2023']
     for run in runList:
         print(run)
         gen_DIS(outputdir, df, run)
-        gen_BTN(outputdir, df, run) # MP, for calib 2014_2023
+       # gen_BTN(outputdir, df, run) # MP, for calib 2014_2023
         # gen_BTN_NPRS2(outputdir, df, run) # HP, for BTN 2023_2125  ###not recommended because UCN needs to have data for every SP.
