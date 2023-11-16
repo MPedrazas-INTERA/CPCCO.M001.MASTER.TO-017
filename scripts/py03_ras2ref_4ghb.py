@@ -38,7 +38,7 @@ def extract_raster(raster_path, xy):
             value = list(raster.sample([xyi]))[0][0]
         except:
             value = np.nan
-        if value == nodata:  # if value is nodata from rasdter, set to nan
+        if value == nodata:  # if value is nodata from raster, set to nan
             value = np.nan
         values.append(value)
     return values
@@ -47,9 +47,9 @@ if __name__ == "__main__":
 
     # [1] Load input files ----------------------------------------------------
     cwd = os.getcwd()
-    wdir = os.path.join(os.path.dirname(cwd),'model_packages','hist_2014_2023','ghb')
+    wdir = os.path.join(os.path.dirname(cwd),'model_packages','hist_2014_Oct2023','ghb')
     ifile_ghb_shp = f'{wdir}/Shapefile/GHB_with_offset_Heads.shp' # offset of GHB cell locations
-    ifile_conductance = f'../scripts/input/ghb_cell_locations_exported_from_GMS.csv' # sp=1
+    ifile_conductance = f'{cwd}/input/ghb_cell_locations_exported_from_GMS.csv' # sp=1
     ifile_grid_centroid = f'input/grid_with_centroids.csv'
             
     flow_model_ws = os.path.join(os.path.dirname(cwd),'model_files','flow_2014_2023')
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     ml = flopy.modflow.Modflow.load(
         "100hr3.nam",
         model_ws=flow_model_ws,
-        #load_only=["dis", "bas6", "ghb"],
+        load_only=["dis", "bas6"], #, "ghb"],
         verbose=True,
         check=False,
         exe_name=os.path.join(exe_dir,"mf2k-mst-chprc08dpl")
@@ -69,9 +69,9 @@ if __name__ == "__main__":
     print(bot[1-1,433-1, 741-1])
 
     # Read bot elev from sspa
-    dfbot14 = pd.read_csv(f'../model_packages/hist_2014_2023/ghb/BottomCSV/Layers1to4.csv')
-    dfbot58 = pd.read_csv(f'../model_packages/hist_2014_2023/ghb/BottomCSV/Layers5to8.csv')
-    dfbot9 = pd.read_csv(f'../model_packages/hist_2014_2023/ghb/BottomCSV/Layers9.csv')
+    dfbot14 = pd.read_csv(f'{wdir}/BottomCSV/Layers1to4.csv')
+    dfbot58 = pd.read_csv(f'{wdir}/BottomCSV/Layers5to8.csv')
+    dfbot9 = pd.read_csv(f'{wdir}/BottomCSV/Layers9.csv')
     dfbot_sspa = pd.concat([dfbot14, dfbot58, dfbot9], axis=0)
     dfbot_sspa=dfbot_sspa.rename(columns={'col':'column', 'Layer':'layer', 'Bottom':'bot'})
 
@@ -99,7 +99,6 @@ if __name__ == "__main__":
     list_yr = range(2014, 2023+1, 1)
     sp_of_start_yr = 97 # sp97 in ghb: start year 2014
     ofile = f'{wdir}/raster_files/interpolated_wl_2014_2023_at_GHB_offset.csv'
-    ofile_shp = f'{wdir}/Shapefile/GHB_CY2023.shp'
     list_months = range(1,12+1,1)
 
     count = 97
@@ -127,6 +126,7 @@ if __name__ == "__main__":
     # Saving to polygon grid file for checking -------------------      
     opt_exp_shp_file = False
     if opt_exp_shp_file:
+        ofile_shp = f'{wdir}/Shapefile/GHB_CY2023.shp'
         gdf.to_file(ofile_shp)
         print(f'Saved {ofile_shp} \n')    
 
@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     # Prepare data for GW Vistas
     dfghb_final = pd.DataFrame()
-    for sp in range(97, 97+115, 1): #July 2023 is SP 115, which is head211.
+    for sp in range(97, 97+118, 1): #July 2023 is SP 115, which is head211. #Oct 2023 is SP 118
         dfWL = gdf[['row','column',f'head{sp}']]
         # Merge to get GHB stage values
         dftmp = dfghb[['row', 'column', 'layer', 'cond', 'bot']].copy()
@@ -156,18 +156,18 @@ if __name__ == "__main__":
     flag = dfghb_final['row'] != 433
     dfghb_final['head'].loc[flag] = 120
 
-    dfghb_final.to_csv(f'../model_packages/hist_2014_2023/ghb/GHB_2014_toJul2023_all.csv', index=False)
+    dfghb_final.to_csv(f'{wdir}/GHB_2014_toOct2023_all.csv', index=False)
     dfghb_final2 = dfghb_final[dfghb_final['check']=='good']
     dfghb_final2["SP"] = dfghb_final2["SP"] - 96 #Make stress periods start at SP 1, instead of 97.
-    dfghb_final2.to_csv(f'../model_packages/hist_2014_2023/ghb/GHB_2014_toJul2023_good_V2.csv', index=False)
+    dfghb_final2.to_csv(f'{wdir}/GHB_2014_toOct2023_good_V2.csv', index=False)
 
     ### Instead of loading to GWV to generate GHB, you can generate GHB here:
     gen_ghb_package = True
-    dfghb_final2 = pd.read_csv(f'../model_packages/hist_2014_2023/ghb/GHB_2014_toJul2023_good_V2.csv') ###2014-2023 dataset
+    dfghb_final2 = pd.read_csv(f'{wdir}/GHB_2014_toOct2023_good.csv') ###2014-2023 dataset
     # dfghb_final2 = pd.read_csv(f'../model_packages/hist_2014_2023/ghb/GH_2014_2022_good_check.csv') ###2014-2022 dataset (QC/QA)
     if gen_ghb_package:
         # template = "         1       433       685 115.59502 800.00000         0" #got this from old GHB
-        fout = open(os.path.join(wdir, "100hr3_2023_MP_v4.ghb"), 'w')
+        fout = open(os.path.join(wdir, "100hr3_Oct2023_MP.ghb"), 'w')
         fout.write("# MODFLOW2000 General Head Boundary Package\n")
         fout.write("PARAMETER  0  0\n")
         fout.write("      7333         0\n") #MAXIMUM NUMBER OF GHB CELLS FOR ANY GIVEN SP
