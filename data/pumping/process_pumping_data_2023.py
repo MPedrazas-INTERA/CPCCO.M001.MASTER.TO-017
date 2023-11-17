@@ -123,22 +123,40 @@ def process_all_pumping_data():
 
     pumping_dict = {}
 
-    files_list = glob.glob(os.path.join(cwd, '*2023*.csv'))
-    for k in files_list:
-        # k = pathlib.PurePath(file).parts[-1].split(sep='_')[1]  ## obtain month from path to use as key
-        pumping_dict[k] = pd.read_csv(k, skiprows=1, index_col='Date', parse_dates= True, infer_datetime_format=True)
-        pumping_dict[k] = pumping_dict[k].filter(regex='Date|Volume')
-        pumping_dict[k].rename(columns=namesdict, inplace=True)
+    files_list = glob.glob(os.path.join(cwd, '*2023*.csv'))     #list of files to be imported
 
-    pumping = pd.concat(pumping_dict.values())
+    ## condition created to exceptionally handle poor formatting of DX_2023Aug file
+    for file in files_list:
+        if 'DX_2023Aug_Hourly.csv' in file:
+            augdx = pd.read_csv('DX_2023Aug_Hourly.csv', index_col = 0)
+            augdx = augdx[~augdx.index.str.contains('"')]
+            augdx.index = pd.to_datetime(augdx.index)
+        else:                       ## read files in list and store in dictionary
+            # for k in files_list:
+                    # k = pathlib.PurePath(file).parts[-1].split(sep='_')[1]  ## obtain month from path to use as key
+            pumping_dict[file] = pd.read_csv(file, index_col='Date', parse_dates= True, infer_datetime_format=True, skiprows=1)   ##
+            # pumping_dict[file] = pumping_dict[file].filter(regex='Date|Volume')
+            # pumping_dict[file].rename(columns=namesdict, inplace=True)
+
+    ## concatenate all dataframes in dictionary
+    pumping_0 = pd.concat(pumping_dict.values())
+    #concatenate resulting dataframe with august dx data
+    pumping = pd.concat([pumping_0, augdx])
     pumping.sort_index(inplace=True)
-    ## upsampling from daily or hourly to monthly. check this.
+    pumping = pumping.filter(regex='Date|Volume')
+    pumping.rename(columns=namesdict, inplace=True)
+    # pumping.to_csv('pumping_concat_QA.csv')
+    pumping = pumping.resample('D').first() ## resample to daily to fill gaps due to hourly differences in measurement times
+    # pumping = pumping.loc[:'2023-10-31']
+    pumping.ffill(inplace=True)  ## fill missing dates with previous date value (missing data gaps are small)
+    # pumping['199-D5-151_E_DX'].plot()  ## individual QA plots
+
+    ## upsampling from daily or hourly to monthly and converting units -- this is where the magic happens. Check this!!
     pumping_m = pumping.resample('M').first().diff().shift(freq='-1M')
     diff = pumping_m.index.to_series().diff()
     days_per_month = diff.dt.days
     for row in pumping_m.index:             # Convert from total gallon in a month to gpm
         pumping_m.loc[row] = pumping_m.loc[row] / days_per_month[row] / 24 / 60
-
     # drop empty first row and convert from gpm to m3/d
     pumping_m = pumping_m.iloc[1:]*gpm2m3d                  ## Check here that correct rows are being selected
     # set extraction rates as negative
@@ -179,7 +197,7 @@ if __name__ == "__main__":
     wrates_d.replace(np.nan, 0, inplace=True)
 
     ## write wellrates output for allocateqwell
-    # wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_Oct2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023.csv'))
+    wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_Oct2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023_v02.csv'))
 
 
 
