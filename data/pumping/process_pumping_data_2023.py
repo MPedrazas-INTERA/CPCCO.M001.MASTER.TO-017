@@ -135,6 +135,7 @@ def process_all_pumping_data():
             # for k in files_list:
                     # k = pathlib.PurePath(file).parts[-1].split(sep='_')[1]  ## obtain month from path to use as key
             pumping_dict[file] = pd.read_csv(file, index_col='Date', parse_dates= True, infer_datetime_format=True, skiprows=1)   ##
+            # pumping_dict[file].index = pumping_dict[file].index.astype('datetime64[s]')
             # pumping_dict[file] = pumping_dict[file].filter(regex='Date|Volume')
             # pumping_dict[file].rename(columns=namesdict, inplace=True)
 
@@ -144,9 +145,9 @@ def process_all_pumping_data():
     pumping = pd.concat([pumping_0, augdx])
     pumping.sort_index(inplace=True)
     pumping = pumping.filter(regex='Date|Volume')
-    pumping.rename(columns=namesdict, inplace=True)
     # pumping.to_csv('pumping_concat_QA.csv')
     pumping = pumping.resample('D').first() ## resample to daily to fill gaps due to hourly differences in measurement times
+    pumping.rename(columns=namesdict, inplace=True)
     # pumping = pumping.loc[:'2023-10-31']
     pumping.ffill(inplace=True)  ## fill missing dates with previous date value (missing data gaps are small)
     # pumping['199-D5-151_E_DX'].plot()  ## individual QA plots
@@ -167,6 +168,14 @@ def process_all_pumping_data():
     pumping_T.index.name = 'ID'
 
     return pumping_T
+
+def integrate_midyear_realignments():
+
+    ts = pd.date_range(start='01/01/2014', end='10/31/2023', freq = 'M')
+    wrates_copy = wrates_d.copy()
+    wrates_copy.columns = ts
+
+    return None
 
 if __name__ == "__main__":
 
@@ -196,8 +205,9 @@ if __name__ == "__main__":
     wrates_d.drop(missing.index, inplace=True)
     wrates_d.replace(np.nan, 0, inplace=True)
 
+
     ## write wellrates output for allocateqwell
-    wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_Oct2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023_v02.csv'))
+  #  wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_Oct2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023_v02.csv'))
 
 
 
