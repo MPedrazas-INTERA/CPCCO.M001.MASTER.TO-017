@@ -16,7 +16,7 @@ matplotlib.use('Qt5Agg')
 
 
 ##user define case##
-case = 'flow_2014_2023'
+case = 'flow_2014_Oct2023'
 
 cwd = os.getcwd()
 ws = os.path.join(os.path.dirname(cwd), case, 'ssm', 'cr6')
@@ -156,7 +156,7 @@ def plot_release_rates(rrs2, wts):
 
             plt.tight_layout()
             # plt.show()
-            plt.savefig(os.path.join(outputDir, f'{bore}_2014_2023.png'))
+            plt.savefig(os.path.join(outputDir, f'{bore}_2014_OCt2023.png'))
 
     return None
 
@@ -167,7 +167,7 @@ if __name__ == '__main__':
     ## 598 stress periods in the 2023 - 2125 predictive end-of-simulation model
     year = '2023'
     if year == '2023':
-        sps = range(1, 114)
+        sps = range(1, 118)
     elif year == '2032':
         sps = range(1,121)
     elif year == '2125':
