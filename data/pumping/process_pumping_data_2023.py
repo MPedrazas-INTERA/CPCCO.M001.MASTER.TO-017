@@ -1,3 +1,8 @@
+"""
+Always keep in mind that mid-year well realignments must be accounted for!
+The first step of name-matching here only accounts for the latest well name, regardless of when it was connected.
+"""
+
 import os
 import pandas as pd
 import numpy as np
@@ -169,11 +174,34 @@ def process_all_pumping_data():
 
     return pumping_T
 
-def integrate_midyear_realignments():
+def midyear_realignments(wrates_d):
+    """
+    This function handles mid-year well realignments using the comments in file P&T_Well_to_PLC-ID_HXDX_072023.xlsx.
+    Requires manual definition of dates and row_list.
+    row_list is list of paired rows/wells whose values are to be switched    .
+    """
 
+    ## convert stress periods to dates
     ts = pd.date_range(start='01/01/2014', end='10/31/2023', freq = 'M')
     wrates_copy = wrates_d.copy()
     wrates_copy.columns = ts
+
+
+    ## slice of dates where values will be swapped
+    cols = wrates_copy.loc[:,'2022-01-31':'2022-08-31'].columns
+    def swap(row_list):
+        for i,well in enumerate(row_list):
+            print(well[0])
+            temp = wrates_copy.loc[well[0],cols]
+            wrates_copy.loc[well[0], cols] = wrates_copy.loc[well[1], cols]
+            wrates_copy.loc[well[1], cols] = temp
+        return wrates_copy
+
+    ## list of row pairs with values to be swapped for x months
+    row_list = [['199-H4-15A_E_HX','199-H3-35_E_HX'],['199-H4-69_E_HX', '199-H3-38_E_HX'],
+                ['199-H4-63_E_HX', '199-H3-37_E_HX'],['199-H4-63_E_HX', '199-H3-37_E_HX']]
+    wrates_copy = swap(row_list)
+    # wrates_copy.to_csv('test.csv')
 
     return None
 
@@ -196,18 +224,20 @@ if __name__ == "__main__":
     wrates_d = wrates[~wrates.index.duplicated(keep='first')] ## drop rows with duplicate indices
     wrates_d.columns = list(range(1,len(wrates.columns)+1)) ##column headers correspond to stress periods
 
+    ## targeted function to switch values between specific rows to account for well changes mid-year
+    # wrates_d = midyear_realignments(wrates_d)
 
     ## investigate missing well names
     # ## MJ15 is a recirculation well!! HJ25 can be ignored.
     ## cpcco: "There is no well hooked up to HJ25... ignore that column with data for HJ25 and don't include it"
+    ## See PLC - Well Name file for more notes
     missing = wrates_d.filter(like = 'FIT', axis=0)
     ## once all questions on missing wells are answered, treat accordingly. In this case, we can drop.
     wrates_d.drop(missing.index, inplace=True)
     wrates_d.replace(np.nan, 0, inplace=True)
 
-
     ## write wellrates output for allocateqwell
-  #  wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_Oct2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023_v02.csv'))
+    # wrates_d.to_csv(os.path.join(wdir, '..', 'model_packages', 'hist_2014_Oct2023', 'mnw2', 'wellratesdxhx_cy2014_oct2023_test.csv'))
 
 
 
