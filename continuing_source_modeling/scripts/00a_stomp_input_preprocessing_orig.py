@@ -20,7 +20,7 @@ wdir = os.path.dirname(os.getcwd())
 calib_dir = os.path.join(wdir, 'flow_2014_2023', 'stomp', 'cr6')
 
 ## set destination directory
-sc = 'flow_2014_2023'
+sc = 'flow_2014_Oct2023'
 dest_dir = os.path.join(wdir, sc, 'stomp', 'cr6')
 
 source_zones = os.listdir(calib_dir)  ## source zones are equiv for all scenarios, so this just creates a list that can be used across the board
@@ -66,31 +66,31 @@ def edit_tpl_file():
         with open(os.path.join(dest_dir, zone, 'input_cycle2.tpl'), 'r') as template_file:
             lines = template_file.readlines()
             ## Header lines. Good general practice to change editor name and dates for traceability
-            lines[5] = 'August 25, 2023,\n'
-            lines[6] = '16:00 CST,\n'
-            lines[15] = '2014.,yr,2023.581,yr,1.0e-06,d,1,d,1.25,8,1.e-6,\n'
+            lines[5] = 'November 21, 2023,\n'
+            lines[6] = '10:00 CST,\n'
+            lines[15] = '2014.,yr,2023.748,yr,1.0e-06,d,1,d,1.25,8,1.e-6,\n'
 
             ## changes based on string patterns -- line numbers for specific info change as we go further down the file
 
             for i in range(len(lines)):
                 # if lines[i].startswith('1,1,1,1,1, 24,109,\n'): ## changing BC header for water levels -- number of SPs + 1
-                if lines[i] == '1,1,1,1,1, 24,109,\n':
-                    lines[i] = '1,1,1,1,1, 24,116,\n'
+                if lines[i] == '1,1,1,1,1, 24,116,\n':
+                    lines[i] = '1,1,1,1,1, 24,119,\n'
                 # if lines[i].startswith('2012.0,yr,-46.00000000,mm/yr,,,,,,,,,,,\n'): ## changing BC header for recharge
                 #     lines[i] = '2014.0,yr,-46.00000000,mm/yr,,,,,,,,,,,\n'
                 # if lines[i].startswith('2023.0,yr,-46.00000000,mm/yr,,,,,,,,,,,\n'):
                 #     lines[i] = '2024.0,yr,-46.00000000,mm/yr,,,,,,,,,,,\n'
 
             ## shave off conditions that are no longer needed/outside of simulation period. Can be a list of strings.
-            strings_to_remove = ['2012.100000,yr,']
-            lines = [line for line in lines if not any(string in line for string in strings_to_remove)]
-
-            ## insert lines after line string_to_find
-            string_to_find = '2022.000000,yr,'
-            index = next((i for i, line in enumerate(lines) if string_to_find in line), None)
-            if index is not None:
-                new_line = '2023.581000,yr,\n'
-                lines.insert(index + 1, new_line)
+            # strings_to_remove = ['2012.100000,yr,']
+            # lines = [line for line in lines if not any(string in line for string in strings_to_remove)]
+            #
+            # ## insert lines after line string_to_find
+            # string_to_find = '2022.000000,yr,'
+            # index = next((i for i, line in enumerate(lines) if string_to_find in line), None)
+            # if index is not None:
+            #     new_line = '2023.581000,yr,\n'
+            #     lines.insert(index + 1, new_line)
 
             ## --- extra snippets -- ##
             # ## adjust number of entries for recharge boundary conditions -- will be 207 instead of 211

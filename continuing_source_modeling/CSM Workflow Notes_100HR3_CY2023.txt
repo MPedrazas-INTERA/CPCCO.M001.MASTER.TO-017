@@ -30,9 +30,9 @@ STEP 1: RUN MOD2OBS ON BORE/SOIL CORE LOCATIONS
 1.4 MOD2OBS is run on flow model results (see batch file for command) -- double check inputs and paths in mod2obs_d_cell.in
 	-in .in file: make sure that the .hds file used and the saving location for output are consistent
 
-((1.5 Resulting .dat file can be moved to windows into BC_mod2obs subdirectory for csm scenario of interest if needed)) now runs on cluster
+((1.5 Resulting .dat file can be moved to windows into bc_mod2obs subdirectory for csm scenario of interest if needed)) now runs on cluster
 
-1.6 .dat file is manipulated to be STOMP-input friendly in the script 01b_split_mod2obs_results.py (in CSM contained scripts directory)
+1.6 .dat file is manipulated to be STOMP-input friendly in the script py01_split_mod2obs_results.py (within BC_mod2obs directory)
 	- For FY 2023: calibration first sp is set to 2014-01-01 and last sp is set to 2023-01-01; predictive first sp is 2023-01-01, last sp is 01-01-2026
 	- Resulting .dat file is split into separate files for each soil core used in STOMP. All written into BC_mod2obs subdir.
 	- Average water table is also calculated for each soil core 
@@ -49,8 +49,7 @@ STEP 2: RUN STOMP. For details into program function visit https://stomp-usergui
 	- The number directly below "~Boundary Conditions Card" corresponds to the number of BCs that will be defined (currently 3 - 
 	  recharge, east gradient, west gradient). BE SURE that the last number in the row directly above the start of the east AND west gradient timeseries
 	  equals the length of the timeseries for each boundary condition.
-	- if years of model run are changed (i.e. for a 2021 - 2032 case), the Solution Control Card, Boundary Conditions Card, and Output Control Card
-	  will need to be changed to reflect change in years
+	- if years of model run are changed (i.e. for a 2021 - 2032 case, or updated calibration model), the Solution Control Card, Boundary Conditions Card, and Output Control Card will need to be changed to reflect change in years
 		-when number of years are changed, the number directly above the list of years should change to reflect length of list
 	- All steady state and initial conditions are set from previous calibration runs (./ss_flow/restart for calib case, ./calib_restart/restart for predictive case).
 	- ~Output Control Card can be used to define how often to save results for checking, etc.
@@ -58,6 +57,8 @@ STEP 2: RUN STOMP. For details into program function visit https://stomp-usergui
 
 2.2 When .tpl file is set up, run script 01_flow_to_stomp.py is run in order to populate input file "input_cycle2" 
 	with east and west hydraulic gradient boundary conditions. Detailed instructions on this script are provided within the script
+	COMMON ISSUES: make sure upper case/lower case names of files are properly accounted for (for example BC_mod2obs vs bc_mod2obs).
+		When in doubt, make directory names lower case!
 
 ((2.3 Once input_cycle2 is generated, copy stomp directory and all subdirectories to linux cluster)) now runs on cluster
 

@@ -1,0 +1,13 @@
+model.spc
+../../input/Bore_coordinates.csv
+../../input/Bore_coordinates.csv
+../../input/Bore_Sample_File_in_model_calib.csv
+../../../mruns/calib_2014_Oct2023/flow_2014_2023/100hr3.hds
+f
+9.9999e+04
+d
+01/01/2014
+00:00:00
+9
+5
+bore_sample_output.dat
