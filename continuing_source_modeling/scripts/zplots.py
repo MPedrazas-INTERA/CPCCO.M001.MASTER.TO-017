@@ -5,12 +5,12 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Qt5Agg')
 
-column = '100-D-100_slope'
-sce = 'flow_2014_2022' #'sce4b_rr1_to2125'
+column = '100-H-46'
+sce = 'flow_2014_Oct2023' #'sce4b_rr1_to2125'
 
 cwd = os.path.dirname(os.getcwd())
-scenario = pd.read_csv(os.path.join(cwd, 'scenarios', sce, 'stomp', 'cr6',
-                                            column, 'cr6-concs-2023.csv'), skiprows = 3, index_col = None)
+scenario = pd.read_csv(os.path.join(cwd, sce, 'stomp', 'cr6',
+                                    column, 'cr6-concs-2023.csv'), skiprows = 3, index_col = None)
 
 
 calib_files = glob.glob(os.path.join(cwd, 'scenarios', 'flow_2014_2022', 'stomp', 'cr6', column, '*.csv'))
