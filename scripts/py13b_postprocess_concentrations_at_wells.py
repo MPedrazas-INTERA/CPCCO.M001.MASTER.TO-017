@@ -15,23 +15,6 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 
 
-## Read in observation data
-def read_chemdata(chemfile):
-
-    chemdata_raw = pd.read_excel(chemfile, engine='openpyxl')
-    chemdata_raw.insert(0, 'NAME', chemdata_raw['SAMP_SITE_NAME_ID'].str.split('(', expand=True)[0])
-    chemdata_raw['NAME'] = chemdata_raw['NAME'].str.strip()  ## remove hidden spaces
-
-    chemdata = chemdata_raw[chemdata_raw['NAME'].isin(list(wells['NAME']))]
-
-    crvi = chemdata[chemdata['STD_CON_LONG_NAME'] == 'Hexavalent Chromium']
-
-    flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR'] #what is G for 199-H3-84
-    crvi_filt = crvi[~crvi['REVIEW_QUALIFIER'].isin(flags)]
-    crvi_filt.insert(1, 'DATE', pd.to_datetime(crvi_filt['SAMP_DATE_TIME']).dt.date)
-
-    return chemdata, crvi_filt
-
 ## read in UCN file, extract results at wells
 def process_ucn_file(ucnfile, all_lays = False):
 
@@ -184,9 +167,7 @@ if __name__ == "__main__":
     for sce in sces:
         if sce == 'calib_2014_2023':
             times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
-            chemfile = os.path.join(os.path.dirname(cwd), 'data', 'hydrochemistry', 'H-North Rebound Study Sampling_DATA.xlsx')
-            chemdata, crvi_filt = read_chemdata(chemfile)
-            # crvi_filt[['NAME', 'DATE', 'STD_VALUE_RPTD']].to_csv(os.path.join("output", "concentration_data", "2021to2023", "Cr_obs.csv"), index = False)
+            crvi_filt = pd.read_csv(os.path.join('output', 'concentration_data', '2021to2023', 'Cr_obs.csv'))
         if sce == "calib_2014_2020":
             crvi_filt = pd.read_csv(os.path.join("output", "concentration_data", "2014to2020", "Cr_obs_avg_bySPs.csv")) #chem data used to calibrate 2014-2020 model
             crvi_filt.rename(columns={"SAMP_SITE_NAME":"NAME", "SAMP_DATE":"SAMP_DATE_TIME"}, inplace=True)
