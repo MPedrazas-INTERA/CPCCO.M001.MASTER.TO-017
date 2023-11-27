@@ -127,6 +127,6 @@ if __name__ == "__main__":
     runList = ['2014_Oct2023']
     for run in runList:
         print(run)
-        gen_DIS(outputdir, df, run)
-       # gen_BTN(outputdir, df, run) # MP, for calib 2014_2023
+        # gen_DIS(outputdir, df, run)
+        gen_BTN(outputdir, df, run) # MP, for calib 2014_2023
         # gen_BTN_NPRS2(outputdir, df, run) # HP, for BTN 2023_2125  ###not recommended because UCN needs to have data for every SP.

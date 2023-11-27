@@ -42,7 +42,7 @@ def gen_ifile_mod2obs_coords(inputDir, wells, lays = 'all'):
             df = df_wells_all[df_wells_all.ID == well]
             df_wells = df_wells.append(df)
 
-    ### Add layer column for all layers to run mod2obs transport
+    ### Add layer column for all layers to run mod2obs transport (nickname bc character limit in mod2obs)
     df_return = pd.DataFrame()
 
     structure = 'NAME'
@@ -66,15 +66,17 @@ def gen_ifile_mod2obs_coords(inputDir, wells, lays = 'all'):
                 df_return = df_return.append(df_temp)
     elif structure == 'NAME':
         for wellid in df_wells['NAME'].unique():
+            print(wellid)
             df_temp = df_wells.loc[df_wells['NAME'] == wellid]
             for lay in range(lays):
                 df_temp['LAYER'] = lay + 1
-                df_temp["NICK_NAME"] = f"{df_temp['NAME']}-L{lay + 1}"
+                df_temp["NICK_NAME"] = f"{df_temp['NAME'].iloc[0][4:]}-L{lay + 1}"
+                # df_temp["NICK_NAME"] = f"{df_temp['NAME']}-L{lay + 1}"
                 df_return = df_return.append(df_temp)
     else:
         pass
 
-    df_return[['NICK_NAME','X','Y',"LAYER"]].to_csv(os.path.join(outputDir, 'Bore_coordinates_wRUM.csv'), index=False, header=False)
+    df_return[['NICK_NAME','X','Y',"LAYER"]].to_csv(os.path.join(outputDir, 'Bore_coordinates.csv'), index=False, header=False)
 
     return df_return
 
@@ -88,7 +90,7 @@ def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
     # sp_daily = pd.date_range(start = '2014-01-01', end = '2023-08-01')
 
     dfs = []
-    df_wells = pd.read_csv(os.path.join(outputDir, 'flow_2014_2023', "Bore_coordinates_wRUM.csv"), header= None)
+    df_wells = pd.read_csv(os.path.join(outputDir, "Bore_coordinates.csv"), header= None)
 
     wells = list(df_wells[0].unique())
 
@@ -103,7 +105,7 @@ def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
         dfs.append(df_new)
     df_final = pd.concat(dfs)
     df_final.Date = df_final.Date.dt.strftime("%m/%d/%Y")
-    df_final.to_csv(os.path.join(outputDir, 'Bore_Sample_File_in_model_daily_wRUM.csv'), index=False, header=False)
+    df_final.to_csv(os.path.join(outputDir, 'Bore_Sample_File_in_model.csv'), index=False, header=False)
 
     print('Saved {}'.format('Bore_Sample_File_in_model.csv'))
     return None
@@ -111,7 +113,7 @@ def gen_ifile_mod2obs_sample_file(times, timeDir, outputDir, sce):
 
 if __name__ == "__main__":
 
-    sce = 'calib_2014_2023'
+    sce = 'calib_2014_Oct2023'
 
     cwd = os.getcwd()
     # inputDir = os.path.join(cwd, 'output', 'well_info', sce)
@@ -127,7 +129,7 @@ if __name__ == "__main__":
 
     # [STEP 1] run this function to get Bore_coordinates.csv ifile for wells for all layers (transport)
     # or lays = 1 for dummy layer value (flow)
-   bore_coords = gen_ifile_mod2obs_coords(inputDir, wells) #, lays=1) #output is Bore_coordinates.csv
+    bore_coords = gen_ifile_mod2obs_coords(inputDir, wells) #, lays=1) #output is Bore_coordinates.csv
 
     ### [STEP 2] Generate mod2obs input file based on Bore_coordinates.csv and times.xlsx
     #Note. Remember to change date format in excel.
