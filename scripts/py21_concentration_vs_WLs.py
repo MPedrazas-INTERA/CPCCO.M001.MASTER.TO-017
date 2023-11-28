@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import flopy
 import geopandas as gpd
 import matplotlib
+import matplotlib.patheffects as pe
 matplotlib.use('Qt5Agg')
 from sklearn.metrics import mean_absolute_error,  mean_squared_error, r2_score
 
@@ -81,7 +82,7 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
-    for well in wells['NAME']:  #["199-H3-10"]:
+    for well in wells['NAME']: #["199-H3-10"]:
         print(well)
         toplot_wl = wl_df.loc[(wl_df['NAME'] == well) & (wl_df['Layer'] == (wells.Aq.loc[wells.NAME == well].iloc[0]))]  ## Simulated Monthly WLs from EXTENDED MODEL
 
@@ -101,12 +102,12 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
         wl3 = wl_meas2022[wl_meas2022['ID'] == well]
 
         ## create figure instance and set specs
-        fig, ax = plt.subplots(figsize=(15, 5))
+        fig, ax = plt.subplots(figsize=(16, 5))
         ax.minorticks_on()
         ax.grid(which='major', linestyle='-',
-                linewidth='0.1', color='red')
+                linewidth='0.1', color='k', alpha=0.85)
         ax.grid(which='minor', linestyle=':',
-                linewidth='0.1', color='black')
+                linewidth='0.1', color='k', alpha=0.65)
         plt.xticks(rotation=45)
         ## conditional title color
         is_in_calibwells = well in calibwells['Well_ID'].values
@@ -119,59 +120,68 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
         ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
         ###HEADS
-        ax.plot(toplot_wl.index, toplot_wl['Head'], label='Simulated WL', color="cornflowerblue")
+        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Obs WL', c="navy", s=20, zorder=5)
+        ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
+
+        ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=20, zorder=5)
+        ax.plot(wl3.index, wl3['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
+
+        ax.scatter(wl2.index, wl2['Water Level (m)'], c="navy", s=20, zorder=5)
+        ax.plot(wl2.index, wl2['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
+
+        ax.plot(toplot_wl.index, toplot_wl['Head'], label='Simulated WL', color="cornflowerblue", zorder=4)
         if plot_calib_model:
-            ax.plot(toplot_wl2.index, toplot_wl2['Head'], label='2014-2020 Model', color="orange", ls='--', zorder=1, alpha=0.4)
+            ax.plot(toplot_wl2.index, toplot_wl2['Head'], label='2014-2020 Model', color="orange", ls='--', zorder=5, alpha=0.25)
 
-        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Obs WL', c="navy", s=20)
-        ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--", alpha=0.4)
+        ax.set_ylim([112.8,118])
 
-        ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=20)
-        ax.plot(wl3.index, wl3['Water Level (m)'], c="navy", ls="--", alpha=0.4)
-
-        ax.scatter(wl2.index, wl2['Water Level (m)'], c="navy", s=20)
-        ax.plot(wl2.index, wl2['Water Level (m)'], c="navy", ls="--", alpha=0.4)
         ###CONCENTRATION
-        ax2.plot(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], zorder=1,
-                 c="red", label='Simulated Cr(VI)')
-
-        ax2.scatter(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], c='darkred', s=20, zorder=1,
+        ax2.scatter(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], c='crimson', s=20, zorder=5,
                     label='Obs Cr(VI)')  #
-        ax2.plot(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], zorder=10, c="darkred",
-                 ls="--", alpha=0.4)
+        ax2.plot(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], zorder=10, c="crimson",
+                 ls="--", alpha=0.25)
         try:
-            ax2.scatter(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], c='darkred', s=20, zorder=1)
-                        #label='New Obs Cr(VI)')  #
-            ax2.plot(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], zorder=10, c="darkred", ls="--", alpha=0.4)
+            ax2.scatter(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], c='crimson', s=20, zorder=5) #label='New Obs Cr(VI)')  #
+            ax2.plot(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], zorder=5, c="crimson", ls="--", alpha=0.25)
         except:
             pass
 
-        ## combined legend
-        lines, labels = ax.get_legend_handles_labels()
-        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax2.plot(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], zorder=4,
+                 c="darkred", alpha = 0.75,  label='Simulated Cr(VI)')
 
         # Add vertical lines at specified dates
-        ax.axvline(pd.Timestamp('2021-01-01'), color='gray', linestyle='-', linewidth=1, label='01-01-2021', zorder=1)
-        ax.axvline(pd.Timestamp('2022-07-31'), color='gray', linestyle='-', linewidth=1, label='07-31-2022', zorder=1)
-        text_y = ax.get_ylim()[1] - 0.035 * (ax.get_ylim()[1] - ax.get_ylim()[0]) # for text annotations
+        ax.axvline(pd.to_datetime('2021-01-01'), color='gray', linestyle='-', linewidth=1, zorder=2)
+        ax.axvline(pd.to_datetime('2022-10-04'), color='gray', linestyle='-', linewidth=1, zorder=2)
+
+        # Add horizontal lines at specified dates
+        ax2.axhline(10, color='gray', alpha = 1, linestyle='-.', linewidth=1, label='10 μg/L', zorder=1)
+        ax2.axhline(48, color='gray', alpha = 1, linestyle='-.', linewidth=1, label='48 μg/L', zorder=1)
+
+        ## combined legend (+ fix order)
+        lines, labels = ax.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        index_10_ug = labels2.index('10 μg/L') # Legend items in wrong order - manual fix
+        index_48_ug = labels2.index('48 μg/L') # Legend items in wrong order - manual fix
+        reordered_labels2 = [l for l in labels2 if l not in ['10 μg/L', '48 μg/L']] + ['10 μg/L','48 μg/L']
+        reordered_lines2 = [lines2[index] for index in range(len(lines2)) if
+                           labels2[index] not in ['10 μg/L', '48 μg/L']] + [lines2[index_10_ug],lines2[index_48_ug]]
+        ax2.legend(lines + reordered_lines2, labels + reordered_labels2, bbox_to_anchor=(1.2, 1), framealpha=1)
 
         ## date range to plot (TOGGLE):
-        date_range = "short" #"short" #"full
-
+        date_range = "full" #"short" #"full
+        text_y = ax2.get_ylim()[1] - 0.035 * (ax2.get_ylim()[1] - ax2.get_ylim()[0]) # for text annotations
         if date_range == "full": #set x-limit
             ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
             ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
-            ax2.legend(lines + lines2, labels + labels2, loc='lower left', framealpha=0.7)
-            ax.text(pd.Timestamp('2021-02-01'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='grey')
-            ax.text(pd.Timestamp('2022-10-15'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='grey')
-            ax.text(pd.Timestamp('2020-12-01'), text_y, 'Calibration Period', ha='right', va='top', rotation=90, color='grey')
+            ax2.text(pd.to_datetime('2021-02-01'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
+            ax2.text(pd.to_datetime('2022-09-20'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
+            ax2.text(pd.to_datetime('2020-12-01'), text_y, 'Calibration Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2014to2023.png'), bbox_inches='tight')
         elif date_range == "short":
             ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-10-31"))
             ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-10-31"))
-            ax2.legend(lines + lines2, labels + labels2, loc='upper left', framealpha=0.7)
-            ax.text(pd.to_datetime('2022-07-15'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='grey')
-            ax.text(pd.to_datetime('2022-08-31'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='grey')
+            ax2.text(pd.to_datetime('2022-09-15'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
+            ax2.text(pd.to_datetime('2022-10-25'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2021to2023.png'), bbox_inches='tight')
 
         plt.close()
@@ -454,33 +464,58 @@ def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
 
 def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
 
-    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residual_plots')
+    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residual_plots', f"{sce}")
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
-    for well in wells.NAME.unique():
-        # print(well)
+    for well in wells.NAME.unique(): #["199-H4-84"]: # #["199-H4-84"]:#:
+        aq = wells.Aq.loc[(wells.NAME == well)].iloc[0]
+        print(well, aq)
         ## set data to be plotted
-        mywell_obs = wls_obs[wls_obs['ID'] == well]  ## 2021 - 2023
-        mywell_obs2 = wls_obs2[wls_obs2['NAME'] == well]  ## 2014 -2020
-        mywell_sim = wls_sim[wls_sim['NAME'] == well]
+        rebound = wls_obs.loc[wls_obs['ID'] == well]  ## 10/4/22 to 10/31/23
+        postcalib = wls_obs.loc[wls_obs['ID'] == well]  ## 01/01/2021 to 10/3/22
+        calib = wls_obs2.loc[wls_obs2['ID'] == well]  ## 01/01/14 -12/31/2020
+        simulated = wls_sim.loc[(wls_sim['NAME'] == well) & (wls_sim['Layer'] == aq)]
 
-        toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
-        toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
-        toplot.dropna(subset=["Observed"], inplace=True)
-        toplot['Error'] = toplot['Observed'] - toplot['Simulated']
-        # try:
-        toplot2 = pd.merge(mywell_obs2, mywell_sim, left_index=True, right_index=True, how="inner")
-        toplot2.rename(columns={"Head": "Simulated", "VAL": "Observed"}, inplace=True)
-        toplot2.dropna(subset=["Observed"], inplace=True)
-        toplot2['Residual'] = toplot2['Observed'] - toplot2['Simulated']
+        #Rebound Data
+        rebound = rebound.loc[(rebound.index >= pd.to_datetime("10-04-2022"))]
+        plot_rebound = pd.merge(rebound, simulated, left_index=True, right_index=True, how="inner")
+        plot_rebound.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
+        plot_rebound.dropna(subset=["Observed"], inplace=True)
+        plot_rebound['Residual'] = plot_rebound['Observed'] - plot_rebound['Simulated']
 
-        fig, ax = plt.subplots(figsize=(10, 10))
-        ax.plot(toplot['Observed'], toplot['Error'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
-                markeredgewidth=1, markersize=10, alpha=0.5, zorder = 2, label="2021 to 2023")
-        ax.plot(toplot2['Observed'], toplot2['Residual'], 'o', markerfacecolor="olive",
-                    markeredgecolor='darkgreen',
-                    markeredgewidth=1, markersize=8, alpha=0.3, zorder = 2, label="2014 to 2020")
+        #Post-Calib Data
+        postcalib = postcalib.loc[(postcalib.index >= pd.to_datetime("01-01-2021")) & (postcalib.index < pd.to_datetime("10-04-2022"))]
+        plot_postcalib = pd.merge(postcalib, simulated, left_index=True, right_index=True, how="inner")
+        plot_postcalib.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
+        plot_postcalib.dropna(subset=["Observed"], inplace=True)
+        plot_postcalib['Residual'] = plot_postcalib['Observed'] - plot_postcalib['Simulated']
+
+        #Calib Data:
+        calib = calib.loc[(calib.index >= pd.to_datetime("01-01-2014")) & (calib.index < pd.to_datetime("01-01-2021"))]
+        plot_calib = pd.merge(calib, simulated, left_index=True, right_index=True, how="inner")
+        plot_calib.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
+        plot_calib.dropna(subset=["Observed"], inplace=True)
+        plot_calib['Residual'] = plot_calib['Observed'] - plot_calib['Simulated']
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+        try:
+            ax.plot(plot_rebound['Observed'], plot_rebound['Residual'], 'o', markerfacecolor="steelblue", markeredgecolor='blue',
+                    markeredgewidth=1, markersize=10, alpha=0.5, zorder = 2, label="Rebound Study")
+        except:
+            pass
+        try:
+            ax.plot(plot_postcalib['Observed'], plot_postcalib['Residual'], 'o', markerfacecolor="mediumorchid",
+                        markeredgecolor='purple',
+                        markeredgewidth=1, markersize=8, alpha=0.3, zorder = 2, label="Post-Calibration")
+        except:
+            pass
+        try:
+            ax.plot(plot_calib['Observed'], plot_calib['Residual'], 'o', markerfacecolor="olive",
+                        markeredgecolor='darkgreen',
+                        markeredgewidth=1, markersize=8, alpha=0.3, zorder = 2, label="Calibration")
+        except:
+            pass
         ax.axhline(y=0, color='r', linestyle='-', zorder = 1)
 
         ## conditional title color
@@ -502,7 +537,14 @@ def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
                 linewidth='0.1', color='black')
         ax.legend(loc="lower right")
 
-        plt.savefig(os.path.join(outputDir, f'{well}_daily.png'), bbox_inches='tight', dpi=600)
+        if mode == "monthly":
+            plt.savefig(os.path.join(outputDir, f'{well}.png'), bbox_inches='tight', dpi=600)
+        elif mode == "daily":
+            plt.savefig(os.path.join(outputDir, f'{well}_daily.png'), bbox_inches='tight', dpi=600)
+        plt.close()
+
+    print("Done")
+    return None
 
 def residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim):
 
@@ -705,6 +747,7 @@ if __name__ == "__main__":
     wls_obs_2022.set_index('DATE', inplace=True)
 
     ###Will add Kirsten's data + Jose's manual data LATER...
+    #S:\PSC\CPCCO.M001.MASTER\TO - 017\data\water_levels\fromJose
 
     ## MOD2OBS simulated WL monthly (extended model):
     simulated_heads_mode = "mod2obs"
@@ -742,7 +785,7 @@ if __name__ == "__main__":
 
     ### Observed CONC for 2014 to 2021, and 2021 - 2023:
     crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
-    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs_V2.csv'), index_col = 'DATE', parse_dates = True) #NEEDS UPDATING UNTIL OCT 2023
+    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs_v2.csv'), index_col = 'DATE', parse_dates = True) #NEEDS UPDATING UNTIL OCT 2023
 
     if mode == "monthly":
         wls_obs = wl_meas_monthly #averaged by SP = monthly, client data
@@ -795,14 +838,13 @@ if __name__ == "__main__":
 
     ## Plot WLs and CONCs:
     plot_WL_vs_conc(wls_obs, wls_obs2, wls_obs_2022, crvi_meas_2014, crvi_meas_2021, wls_sim, wls_sim2, crvi_sim, plot_calib_model=False) #rum flag don't work for this one.
-
     # plot_WL(wls_obs, wls_obs2, wls_obs_2022, wls_sim, wls_sim2, plot_calib_model=True) #plot_calib_model flag should be FALSE if simulated_heads_mode == "mod2obs"
+
+    ## Plot deviations
+    residualplots_WL_individual(wls_obs, wls_obs2, wls_sim)
+    # residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim)
 
     ### Plot WLs scatterplots:
     #crossplots_WL_individual(wls_obs, wls_obs2, wls_sim, mode)
     # crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2)
-
-    ## Plot deviations
-    # residualplots_WL_individual(wls_obs, wls_obs2, wls_sim)
-    # residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim)
 
