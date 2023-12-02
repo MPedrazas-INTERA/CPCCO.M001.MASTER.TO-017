@@ -1,7 +1,6 @@
 MNW2 package for updated 100-D/H calibration model: Jan 2014 - Oct 2023
 
-** build9 of modflow program uses different formatting than previous builds. After running allocateqwell.exe, modify .mnw2 output file:
-	- in 4th line under each well name, replace string "     0.000" with "         0"
+** build9 of modflow program uses different formatting than previous builds. After running allocateqwell.exe, run modify_allocateq_output.py to update format
 
 - previous calibration model version run through Dec 2022 used as baseline for updates.
 
