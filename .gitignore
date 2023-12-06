@@ -27,6 +27,7 @@ model_packages/hist_2014_2023/riv/archive
 executables/linux/*
 *.lock
 /data/water_levels/fromJose/*
+/data/water_levels/WaterLevel_CY2022/*
 gis/ArcGISPro/100HR3/GpMessages/*
 *.RData
 .Rhistory
