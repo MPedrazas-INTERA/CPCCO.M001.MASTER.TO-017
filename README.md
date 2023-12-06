@@ -17,3 +17,4 @@ Principal outputs
 - scripts/output/water_level_plots/residual_plots for residual plots
 - scripts/output/concentration_vs_WL_plots/calib_2014_Oct2023 for timeseries plots at wells
 - scripts/output/concentration_vs_WL_plots/sim_2014_2023/sources for timeseries plots at source cells
+- mruns/calib_2014_Oct2023/tran_2014_2023/post_process/ucn2png/output/png/conc_CrVI_100H for plume maps
