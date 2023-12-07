@@ -87,7 +87,7 @@ def get_wells_xy_ijk(well_list):
     if save_info:
         df3 = df2.copy()
         df3.rename(columns={"XCOORDS":"X", "YCOORDS":"Y", "ID":"NAME"}, inplace=True)
-        df3[["NAME", "X", "Y", "Row", "Col"]].to_csv(os.path.join(cwd, "input", f"{type}_coords_ij_V2.csv"), index=False)
+        df3[["NAME", "X", "Y", "Row", "Col"]].to_csv(os.path.join(cwd, "input", f"{type}_coords_ij_100D.csv"), index=False)
     return df2
 
 def gen_scrn_fracs(nlays, df, type, dfbot, output_dir):
@@ -106,7 +106,7 @@ def gen_scrn_fracs(nlays, df, type, dfbot, output_dir):
 
     dfbot = dfmerge.filter(regex='botm')
 
-    outf = open(os.path.join(output_dir, f'{type}_screen_summary_draft.csv'), 'w')
+    outf = open(os.path.join(output_dir, f'{type}_screen_summary_draft_100D.csv'), 'w')
     if nlays == 9:
         outf.write(
             "wellID,scnLen,scnLenL1,scnLenL2,scnLenL3,scnLenL4,"
@@ -204,14 +204,14 @@ def cleanup_screen_fracs(nlays, type, output_dir):
     print("Cleaning up screen fractions")
     #  read in screen lengths and fractions by layer:
     if nlays == 9:
-        df = pd.read_csv(os.path.join(output_dir, f'{type}_screen_summary_draft.csv'), sep=',',skiprows=1, header=None,
+        df = pd.read_csv(os.path.join(output_dir, f'{type}_screen_summary_draft_100D.csv'), sep=',',skiprows=1, header=None,
                        names=['ID','scLen','lenL1','lenL2','lenL3','lenL4','lenL5','lenL6','lenL7','lenL8','lenL9',
                               'fL1','fL2','fL3','fL4','fL5','fL6','fL7','fL8','fL9'], index_col=False)
         ## reorder columns
         df = df[['ID', 'scLen', 'lenL1', 'lenL2', 'lenL3', 'lenL4', 'lenL5', 'lenL6', 'lenL7', 'lenL8', 'lenL9',
                    'fL1', 'fL2', 'fL3', 'fL4', 'fL5', 'fL6', 'fL7', 'fL8', 'fL9']]
     elif nlays ==6:
-        df = pd.read_csv(os.path.join(output_dir, f'{type}_screen_summary_draft.csv'), sep=',',skiprows=1, header=None,
+        df = pd.read_csv(os.path.join(output_dir, f'{type}_screen_summary_draft_100D.csv'), sep=',',skiprows=1, header=None,
                        names=['ID','scLen','lenL1','lenL2','lenL3','lenL4','lenL5','lenL6',
                               'fL1','fL2','fL3','fL4','fL5','fL6'], index_col=False)
         ## reorder columns
@@ -268,7 +268,7 @@ def cleanup_screen_fracs(nlays, type, output_dir):
     filterRUM2 = pd.notna(fracs[f'fL{nlays}'])
     fracs.loc[filterRUM2, 'Deepest_Lay'] = int(nlays)
 
-    fracs.to_csv(os.path.join(output_dir, f'{type}_screen_summary.csv'), index=False)
+    fracs.to_csv(os.path.join(output_dir, f'{type}_screen_summary_100D.csv'), index=False)
     print(f"Saved '{type}_screen_summary' in {output_dir}")
     return fracs
 
@@ -290,10 +290,10 @@ def get_layer_forPT(nlays, fracs): ## determines layer K based on filter screen 
 def gen_master_csv(nlays, df, fracs, ptracks, type, output_dir):
     masterDF = pd.merge(df, fracs, on="ID")
     masterDF['Aquifer'] = np.where(masterDF['Deepest_Lay'].isin([nlays]), 'RUM', 'Unconfined')
-    masterDF.to_csv(os.path.join(output_dir, f'{type}_master.csv'), index=False)  # master_spreadsheet
+    masterDF.to_csv(os.path.join(output_dir, f'{type}_master_100D.csv'), index=False)  # master_spreadsheet
 
     ptracksDF = pd.merge(df[["ID", "Row","Col"]], ptracks, on="ID", how="right")
-    ptracksDF.to_csv(os.path.join(output_dir, f'{type}_ptracks.csv'), index=False)
+    ptracksDF.to_csv(os.path.join(output_dir, f'{type}_ptracks_100D.csv'), index=False)
     #ptracksDF.to_csv(os.path.join(cwd, f'{type}_ptracks.csv'), index=False)
     print("finished master spreadsheet and ptracks CSV")
     return masterDF, ptracksDF
