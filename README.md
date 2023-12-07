@@ -2,7 +2,9 @@
 100HR3 Rebound Study
 S Drive Path - S:\PSC\CPCCO.M001.MASTER\TO-017 
 
-Billing code - cpcco.m001.MRA-TOR-017 
+Billing codes:
+- 100H North: cpcco.m001.MRA-TOR-017
+- 100D South "CPCCO.M001-TOR-25 something or other. I'm not sure if the tasks will be the same, but if they are charge Task 1 Data Review and Assessment"
 
 Most up-to-date model outputs as of December 2023: /mruns/calib_2014_Oct2023
 
