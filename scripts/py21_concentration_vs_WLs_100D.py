@@ -682,9 +682,9 @@ if __name__ == "__main__":
     wldir = os.path.join(cwd, 'output', 'water_level_data')
     chemdir = os.path.join(cwd, 'output', 'concentration_data')
 
-    times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
-    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_v2.csv'))
-    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
+    times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv')) # No changes
+    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_100D.csv')) # updated.
+    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv')) # Need to update? 
 
     ### SET WELL NAME ASSOCIATIONS ###
     wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
