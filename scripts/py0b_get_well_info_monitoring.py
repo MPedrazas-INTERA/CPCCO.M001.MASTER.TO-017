@@ -58,7 +58,9 @@ def read_model_grid():
 
 def get_wells_xy_ijk(well_list):
     print("Getting row and column info for each monitoring well")
-    screens = pd.read_excel(os.path.join(root, 'data', 'well_info', 'Well Screen10-12-2023version-3.3.xlsx'),
+    
+    #screens = pd.read_excel(os.path.join(root, 'data', 'well_info', 'Well Screen10-12-2023version-3.3.xlsx'), # 100H
+    screens = pd.read_excel(os.path.join(root, 'data', 'well_info', 'Well Screen12-7-2023version-3.3_100D.xlsx'), # 100D    
                             usecols=['WELL_NAME', 'STD_SCREEN_DEPTH_TOP_M', 'STD_SCREEN_DEPTH_BOTTOM_M'], engine = 'openpyxl')
     screens.drop_duplicates('WELL_NAME', keep='first', inplace=True)
 
@@ -320,7 +322,7 @@ if __name__ == "__main__":
     types = ['monitoring_wells']
     for type in types:
         nlays, dfbot = load_mf(flow_model_ws, grid)
-        well_list = pd.read_csv(os.path.join(cwd, "input", f"{type}_list_V2.csv"), usecols=[0])  #f"{type}_coords_ij.csv" #getting list of monitoring wells (NAME)
+        well_list = pd.read_csv(os.path.join(cwd, "input", f"{type}_list_100D.csv"), usecols=[0])  #f"{type}_coords_ij.csv" #getting list of monitoring wells (NAME)
         df = get_wells_xy_ijk(well_list) #getting XY information, IJK, and screen interval (Ztop, Zbot)
         gen_scrn_fracs(nlays, df, type, dfbot, output_dir) #calculating fraction of scrn interval in each lay for each well
         fracs = cleanup_screen_fracs(nlays, type, output_dir) #cleanup previous fn + more layer info
