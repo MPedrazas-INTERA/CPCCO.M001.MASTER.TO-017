@@ -25,7 +25,7 @@ def read_file(ifile, mode ='transport'):
     return df
 
 def calc_conc_fracs():
-    file = 'bore_sample_output.dat'
+    file = 'bore_sample_output_100D.dat'
     print(file)
     if nlays == 9:
         dff = pd.read_csv(os.path.join(cwd, 'screen_fracs.csv'), sep=',', skiprows=1, header=None,
@@ -88,7 +88,7 @@ def calc_conc_fracs():
     finalDF = pd.DataFrame(myList, columns=["SAMP_SITE_NAME", "SAMP_DATE", "WeightedConc"])
     finalDF["SAMP_DATE"] = pd.to_datetime(finalDF["SAMP_DATE"])
     print(finalDF.head())
-    finalDF.to_csv(os.path.join(cwd, "simulated_conc_mod2obs.csv"), index=False)
+    finalDF.to_csv(os.path.join(cwd, "simulated_conc_mod2obs_100D.csv"), index=False)
     return None
 
 if __name__ == "__main__":
