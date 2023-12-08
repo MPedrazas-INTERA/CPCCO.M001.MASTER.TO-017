@@ -305,14 +305,16 @@ if __name__ == "__main__":
     root = os.path.join(os.path.dirname(cwd))
     grid = read_model_grid()
 
-    case = 'calib_2014_2023' #'calib_2014_2020'#'calib_2014_2023'
-    flow_model_ws = os.path.join(root, "mruns", f"{case}", f"flow_{case[-9:]}")
+    case = 'calib_2014_Oct2023' #'calib_2014_2020'#'calib_2014_2023' 'calib_2014_Oct2023'
+    #flow_model_ws = os.path.join(root, "mruns", f"{case}", f"flow_{case[-9:]}")
+    flow_model_ws = os.path.join(root, "mruns", f"{case}", f"flow_2014_2023")
+    print(f'Flow model: {flow_model_ws}')
 
-    cluster = False
-    if cluster:
-        case = sys.argv[1]
-    else:
-        case = case
+    #cluster = True
+    #if cluster:
+    #    case = sys.argv[1]
+    #else:
+    #    case = case
 
     output_dir = os.path.join(root, "scripts", "output", "well_info", f"{case}")
     if not os.path.exists(output_dir):
