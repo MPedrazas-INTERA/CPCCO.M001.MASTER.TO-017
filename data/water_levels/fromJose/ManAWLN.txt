@@ -1,0 +1,864 @@
+"NAME"|"EVENT"|"VAL_ORG"|"VAL_FINAL"|"TYPE"|"ADJ"|"ADJ_TYPE"|"QUALIFIER"|"MAP_USE"
+"199-D2-11"|2/11/2022 14:19:00|119.069|119.069|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|11/18/2022 10:45:00|119.081|119.081|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|2/10/2023 14:55:00|118.889|118.889|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D2-11"|6/9/2023 8:11:00|118.319|118.319|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D3-2"|2/11/2022 14:54:00|118.493|118.493|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|11/18/2022 10:08:00|117.996|117.996|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|2/10/2023 10:14:00|117.850|117.850|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D3-2"|6/9/2023 6:53:00|118.450|118.450|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D3-5"|2/11/2022 14:59:00|118.565|118.565|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|11/18/2022 9:44:00|117.979|117.979|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|2/10/2023 9:58:00|117.931|117.931|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D3-5"|6/9/2023 6:20:00|118.549|118.549|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-15"|2/11/2022 14:36:00|118.132|118.132|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|11/18/2022 10:42:00|117.702|117.702|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|2/10/2023 14:52:00|117.736|117.736|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-15"|6/9/2023 6:43:00|117.864|117.864|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-19"|4/25/2023 7:39:00|117.320|117.320|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-20"|2/11/2022 15:00:00|118.553|118.553|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|11/18/2022 10:00:00|118.056|118.056|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|2/10/2023 10:10:00|118.035|118.035|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-20"|6/9/2023 6:37:00|118.422|118.422|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-21"|2/11/2022 14:38:00|117.665|117.665|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|9/8/2022 12:03:00|117.583|117.583|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|11/18/2022 10:15:00|117.284|117.284|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|2/10/2023 10:23:00|117.312|117.312|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-21"|6/9/2023 7:08:00|117.741|117.741|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-23"|2/11/2022 14:43:00|117.934|117.934|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|11/18/2022 10:15:00|117.620|117.620|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|2/10/2023 10:24:00|117.370|117.370|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-23"|6/9/2023 6:07:00|117.913|117.913|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-86"|2/11/2022 14:48:00|118.507|118.507|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|11/18/2022 10:02:00|118.056|118.056|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|2/10/2023 10:08:00|117.861|117.861|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-86"|6/9/2023 6:46:00|118.471|118.471|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-106"|2/11/2022 13:55:00|118.635|118.635|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|11/18/2022 15:15:00|118.751|118.751|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|2/10/2023 13:40:00|118.687|118.687|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-106"|6/9/2023 7:22:00|117.977|117.977|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-126"|2/11/2022 13:31:00|117.845|117.845|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|11/18/2022 14:46:00|117.793|117.793|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|2/10/2023 14:10:00|117.821|117.821|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-126"|6/9/2023 8:44:00|117.513|117.513|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-13"|2/11/2022 13:32:00|117.162|117.162|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|11/18/2022 14:47:00|116.909|116.909|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|2/10/2023 14:11:00|116.948|116.948|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-13"|6/9/2023 8:54:00|117.095|117.095|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-133"|2/11/2022 13:42:00|118.861|118.861|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|11/18/2022 14:53:00|119.044|119.044|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|2/10/2023 14:16:00|118.946|118.946|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-133"|6/9/2023 8:39:00|118.016|118.016|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-14"|2/11/2022 13:42:00|118.082|118.082|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|11/18/2022 14:53:00|118.053|118.053|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|2/10/2023 14:17:00|118.019|118.019|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-14"|6/9/2023 11:04:00|117.717|117.717|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-160"|2/11/2022 13:50:00|118.513|118.513|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-160"|2/10/2023 14:41:00|118.669|118.669|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-160"|6/9/2023 7:56:00|118.102|118.102|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-17"|2/11/2022 13:48:00|118.912|118.912|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|11/18/2022 14:54:00|119.034|119.034|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|2/10/2023 14:25:00|118.954|118.954|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-17"|6/9/2023 8:23:00|118.183|118.183|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-19"|2/11/2022 13:56:00|118.828|118.828|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|11/18/2022 15:02:00|118.922|118.922|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|2/10/2023 14:35:00|118.837|118.837|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-19"|6/9/2023 8:25:00|118.273|118.273|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-33"|2/11/2022 13:13:00|118.221|118.221|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|11/18/2022 10:29:00|117.828|117.828|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|2/10/2023 13:54:00|117.840|117.840|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-33"|6/9/2023 7:27:00|117.950|117.950|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-36"|2/11/2022 14:41:00|117.934|117.934|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|11/18/2022 10:27:00|117.575|117.575|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|2/10/2023 10:35:00|117.538|117.538|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-36"|6/9/2023 7:23:00|117.825|117.825|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-37"|11/18/2022 14:24:00|117.516|117.516|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-37"|2/10/2023 13:51:00|117.522|117.522|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-37"|6/9/2023 8:57:00|117.891|117.891|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-38"|2/11/2022 14:33:00|118.060|118.060|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|11/18/2022 13:08:00|117.600|117.600|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|2/10/2023 14:39:00|117.649|117.649|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-38"|6/9/2023 6:39:00|117.774|117.774|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-41"|2/11/2022 13:21:00|117.873|117.873|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-41"|11/18/2022 14:35:00|117.522|117.522|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-41"|2/10/2023 13:59:00|117.595|117.595|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-41"|6/9/2023 7:36:00|117.726|117.726|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-43"|2/11/2022 14:34:00|118.654|118.654|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|9/27/2022 8:28:00|118.807|118.807|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|11/18/2022 10:54:00|118.484|118.484|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|2/10/2023 15:04:00|118.429|118.429|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-43"|6/9/2023 8:17:00|118.212|118.212|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-97"|2/11/2022 14:26:00|118.510|118.510|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|8/25/2022 8:14:00|118.821|118.821|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|11/18/2022 10:39:00|118.334|118.334|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|2/10/2023 14:49:00|118.324|118.324|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-97"|6/9/2023 8:00:00|118.123|118.123|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D6-3"|2/11/2022 13:25:00|118.423|118.423|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D6-3"|2/10/2023 14:08:00|118.334|118.334|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D6-3"|6/9/2023 9:33:00|118.261|118.261|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-101"|2/11/2022 10:18:00|117.775|117.775|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|11/18/2022 14:21:00|117.366|117.366|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|2/10/2023 13:35:00|117.260|117.260|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-101"|6/9/2023 9:47:00|117.909|117.909|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-5"|11/18/2022 14:38:00|116.880|116.880|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-5"|2/10/2023 13:57:00|116.932|116.932|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-5"|6/9/2023 9:19:00|117.148|117.148|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-54A"|2/11/2022 10:18:00|117.712|117.712|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54A"|11/18/2022 14:30:00|117.374|117.374|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54A"|2/10/2023 13:39:00|117.197|117.197|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-54A"|6/9/2023 9:13:00|117.767|117.767|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-54B"|2/11/2022 10:16:00|117.936|117.936|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|11/18/2022 14:29:00|117.592|117.592|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|2/10/2023 13:38:00|117.443|117.443|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-54B"|6/9/2023 9:14:00|117.815|117.815|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-70"|2/11/2022 10:08:00|117.739|117.739|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-70"|11/18/2022 14:12:00|117.373|117.373|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-70"|2/10/2023 13:28:00|117.200|117.200|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-70"|6/9/2023 9:30:00|117.773|117.773|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-71"|2/11/2022 10:07:00|117.709|117.709|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|11/18/2022 14:13:00|117.373|117.373|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|2/10/2023 13:27:00|117.190|117.190|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-71"|4/10/2023 13:05:00|116.642|116.642|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-71"|6/9/2023 9:20:00|117.770|117.770|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-93"|2/11/2022 9:55:00|117.712|117.712|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-93"|8/25/2022 8:50:00|117.867|117.867|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-93"|11/18/2022 14:03:00|117.569|117.569|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-93"|2/10/2023 13:17:00|117.233|117.233|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-93"|6/9/2023 10:06:00|117.666|117.666|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H1-50"|10/15/2021 9:04:00|115.384|115.384|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-50"|2/18/2022 15:24:00|116.000|116.000|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-50"|6/23/2023 8:09:00|115.987|115.987|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H1-7"|2/18/2022 15:27:00|115.467|115.467|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-7"|6/23/2023 8:44:00|115.409|115.409|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H2-1"|10/15/2021 8:28:00|114.452|114.452|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|2/18/2022 9:06:00|115.872|115.872|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|1/13/2023 14:44:00|114.860|114.860|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H2-1"|3/10/2023 10:13:00|114.744|114.744|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H2-1"|6/23/2023 8:37:00|115.113|115.113|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-10"|10/15/2021 9:19:00|114.544|114.544|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|9/8/2022 13:07:00|115.330|115.330|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|1/13/2023 14:21:00|114.842|114.842|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-10"|3/17/2023 12:14:00|114.675|114.675|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-10"|6/23/2023 9:46:00|114.766|114.766|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-12"|10/15/2021 8:01:00|113.040|113.040|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-12"|2/18/2022 8:03:00|113.680|113.680|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-12"|1/13/2023 13:41:00|114.012|114.012|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-12"|3/10/2023 9:51:00|114.000|114.000|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-12"|6/23/2023 8:57:00|114.149|114.149|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-13"|10/15/2021 7:54:00|112.786|112.786|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-13"|2/18/2022 8:00:00|113.703|113.703|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-13"|1/13/2023 14:04:00|113.779|113.779|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-13"|3/10/2023 9:52:00|113.761|113.761|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-13"|6/23/2023 9:07:00|113.953|113.953|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-2A"|10/26/2022 11:58:00|115.471|115.471|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2A"|1/13/2023 14:14:00|115.301|115.301|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-2A"|3/17/2023 12:13:00|115.182|115.182|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-2A"|6/23/2023 9:42:00|115.407|115.407|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-2B"|10/15/2021 9:18:00|114.951|114.951|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|2/18/2022 15:03:00|115.134|115.134|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|1/13/2023 14:13:00|115.304|115.304|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-2B"|3/17/2023 12:12:00|115.185|115.185|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-2B"|6/23/2023 9:44:00|115.414|115.414|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-30"|10/15/2021 7:23:00|114.136|114.136|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-30"|2/18/2022 14:46:00|115.349|115.349|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-30"|1/13/2023 13:19:00|114.657|114.657|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-30"|3/10/2023 9:40:00|114.505|114.505|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-30"|6/23/2023 9:08:00|114.892|114.892|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-32"|10/15/2021 8:06:00|114.465|114.465|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-32"|2/18/2022 15:09:00|115.327|115.327|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-32"|1/13/2023 14:23:00|114.870|114.870|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-32"|3/10/2023 12:16:00|114.730|114.730|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-32"|6/23/2023 8:23:00|115.047|115.047|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-10"|10/15/2021 8:22:00|114.397|114.397|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|2/18/2022 8:59:00|115.808|115.808|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|1/13/2023 14:42:00|114.812|114.812|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-10"|3/10/2023 10:07:00|114.696|114.696|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-10"|6/23/2023 8:34:00|115.031|115.031|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-11"|10/15/2021 7:40:00|114.129|114.129|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|2/18/2022 14:49:00|115.714|115.714|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|1/13/2023 13:21:00|114.705|114.705|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-11"|3/10/2023 9:42:00|114.497|114.497|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-12B"|10/15/2021 7:48:00|114.198|114.198|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|2/18/2022 8:51:00|115.738|115.738|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|1/13/2023 13:29:00|114.604|114.604|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-13"|10/15/2021 7:35:00|114.129|114.129|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|2/18/2022 14:30:00|115.720|115.720|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|1/13/2023 13:13:00|114.705|114.705|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-13"|3/10/2023 9:35:00|114.470|114.470|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-13"|6/23/2023 9:16:00|114.946|114.946|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-15B"|10/15/2021 8:20:00|114.367|114.367|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|2/18/2022 8:58:00|115.702|115.702|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|1/13/2023 14:49:00|114.751|114.751|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-15B"|3/10/2023 10:09:00|114.644|114.644|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-15B"|6/23/2023 8:42:00|114.973|114.973|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-47"|10/15/2021 9:33:00|114.827|114.827|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|2/18/2022 7:47:00|115.065|115.065|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|1/13/2023 14:01:00|115.230|115.230|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-47"|3/17/2023 12:23:00|115.111|115.111|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-5"|10/15/2021 7:48:00|114.168|114.168|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|1/13/2023 13:29:00|114.640|114.640|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-5"|3/10/2023 10:06:00|114.524|114.524|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-8"|2/18/2022 14:53:00|115.029|115.029|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-8"|1/13/2023 13:30:00|114.642|114.642|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-8"|3/10/2023 9:54:00|114.548|114.548|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-8"|6/23/2023 8:47:00|115.057|115.057|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-83"|10/15/2021 7:28:00|114.133|114.133|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|9/8/2022 13:41:00|115.157|115.157|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|1/13/2023 13:20:00|114.785|114.785|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-83"|3/10/2023 9:41:00|114.654|114.654|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-83"|6/23/2023 9:10:00|115.008|115.008|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-84"|2/18/2022 8:14:00|114.909|114.909|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-84"|1/13/2023 14:01:00|114.809|114.809|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-84"|3/10/2023 10:01:00|114.696|114.696|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-84"|6/23/2023 9:06:00|115.135|115.135|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-88"|10/26/2022 12:29:00|114.994|114.994|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-88"|1/13/2023 13:41:00|114.949|114.949|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-88"|3/10/2023 9:54:00|114.876|114.876|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-90"|10/15/2021 9:30:00|114.589|114.589|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-90"|2/18/2022 7:51:00|114.976|114.976|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-90"|1/13/2023 14:00:00|115.037|115.037|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-90"|3/17/2023 12:22:00|114.909|114.909|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-90"|6/23/2023 9:31:00|115.208|115.208|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-91"|10/15/2021 7:21:00|114.461|114.461|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-91"|2/18/2022 14:37:00|115.302|115.302|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-91"|1/13/2023 13:14:00|114.912|114.912|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-91"|3/10/2023 9:36:00|114.772|114.772|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H4-91"|6/23/2023 9:23:00|115.141|115.141|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H5-1A"|2/18/2022 14:50:00|115.392|115.392|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H5-1A"|1/13/2023 14:09:00|115.581|115.581|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H5-1A"|3/17/2023 12:05:00|115.502|115.502|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H5-1A"|6/23/2023 9:51:00|115.602|115.602|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H6-3"|2/18/2022 10:13:00|115.166|115.166|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H6-3"|12/16/2022 14:50:00|115.272|115.272|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H6-3"|3/10/2023 9:33:00|114.986|114.986|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H6-3"|6/23/2023 9:29:00|115.327|115.327|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H7-1"|10/15/2021 12:04:00|116.897|116.897|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H7-1"|3/4/2022 13:12:00|117.333|117.333|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H7-1"|11/18/2022 13:30:00|117.043|117.043|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H7-1"|6/9/2023 10:20:00|117.366|117.366|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-N-50"|2/11/2022 8:31:00|118.608|118.608|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|11/18/2022 8:39:00|118.188|118.188|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|2/10/2023 9:00:00|118.011|118.011|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-N-50"|5/12/2023 13:12:00|118.502|118.502|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-N-92A"|11/18/2022 8:50:00|118.303|118.303|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|2/10/2023 9:12:00|118.151|118.151|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-N-92A"|5/12/2023 12:53:00|119.376|119.376|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-100-43B"|10/15/2021 8:44:00|115.220|115.220|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|2/18/2022 9:45:00|116.634|116.634|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|12/16/2022 13:47:00|115.890|115.890|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|3/10/2023 10:37:00|115.403|115.403|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-100-43B"|6/23/2023 7:56:00|115.634|115.634|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-101-45"|10/15/2021 8:56:00|115.428|115.428|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|2/18/2022 10:05:00|116.842|116.842|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|12/16/2022 14:04:00|116.135|116.135|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|3/10/2023 10:52:00|115.632|115.632|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-101-45"|6/23/2023 7:57:00|116.095|116.095|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-88-41A"|10/15/2021 6:48:00|116.990|116.990|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|2/18/2022 7:38:00|116.938|116.938|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|12/16/2022 14:46:00|116.926|116.926|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|1/13/2023 12:58:00|116.926|116.926|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-88-41A"|3/17/2023 11:53:00|116.910|116.910|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-88-41A"|6/23/2023 6:49:00|116.874|116.874|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-93-37A"|10/15/2021 7:05:00|114.582|114.582|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|2/18/2022 10:07:00|115.045|115.045|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|12/16/2022 14:41:00|115.091|115.091|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|3/10/2023 9:24:00|114.737|114.737|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-93-37A"|6/23/2023 9:28:00|115.225|115.225|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-94-41"|10/15/2021 9:25:00|115.985|115.985|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|3/4/2022 13:38:00|115.960|115.960|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|12/16/2022 13:18:00|116.140|116.140|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|3/10/2023 9:19:00|116.058|116.058|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-94-41"|6/23/2023 7:02:00|115.957|115.957|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-94-43"|9/21/2022 12:54:00|117.117|117.117|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-43"|12/16/2022 14:10:00|117.233|117.233|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-43"|1/30/2023 13:52:00|117.248|117.248|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-94-43"|6/23/2023 8:11:00|116.947|116.947|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-95-45"|3/4/2022 12:55:00|117.773|117.773|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-45"|12/16/2022 14:08:00|117.682|117.682|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-45"|3/10/2023 8:43:00|117.627|117.627|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-95-45"|6/23/2023 7:17:00|117.572|117.572|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-95-45C"|10/15/2021 12:30:00|116.868|116.868|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-45C"|3/4/2022 12:53:00|117.109|117.109|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-45C"|12/16/2022 14:07:00|116.993|116.993|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-45C"|3/10/2023 8:42:00|116.917|116.917|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-95-51"|2/11/2022 10:01:00|118.067|118.067|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|11/18/2022 14:07:00|117.778|117.778|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|2/10/2023 13:22:00|117.708|117.708|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-95-51"|6/9/2023 9:44:00|118.092|118.092|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-96-52B"|2/11/2022 10:06:00|117.671|117.671|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|11/18/2022 14:11:00|117.268|117.268|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|2/10/2023 13:26:00|117.104|117.104|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-96-52B"|6/9/2023 9:37:00|117.674|117.674|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-41"|10/15/2021 12:51:00|114.933|114.933|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|2/18/2022 15:27:00|115.195|115.195|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|12/16/2022 13:30:00|115.436|115.436|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|6/23/2023 8:30:00|115.445|115.445|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-45"|10/15/2021 12:18:00|117.462|117.462|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|3/4/2022 13:27:00|117.568|117.568|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|12/16/2022 14:29:00|117.443|117.443|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|3/10/2023 8:05:00|117.370|117.370|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-45"|6/9/2023 10:34:00|117.413|117.413|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-47B"|10/15/2021 12:06:00|117.592|117.592|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-47B"|3/4/2022 13:13:00|117.766|117.766|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-47B"|11/18/2022 13:45:00|117.567|117.567|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-47B"|2/10/2023 12:50:00|117.449|117.449|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-47B"|6/9/2023 10:26:00|117.699|117.699|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-48B"|10/15/2021 11:54:00|117.797|117.797|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|3/4/2022 13:14:00|117.922|117.922|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|12/16/2022 14:06:00|117.736|117.736|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|2/10/2023 13:01:00|117.635|117.635|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-48B"|6/9/2023 10:25:00|117.824|117.824|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-48C"|12/16/2022 14:06:00|117.438|117.438|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|2/10/2023 13:02:00|117.347|117.347|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-48C"|6/9/2023 10:24:00|117.639|117.639|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-60"|10/15/2021 12:12:00|117.227|117.227|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-60"|3/4/2022 13:20:00|117.495|117.495|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-60"|12/16/2022 14:21:00|117.303|117.303|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-60"|3/10/2023 7:57:00|117.218|117.218|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-60"|6/9/2023 10:38:00|117.452|117.452|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-98-43"|10/15/2021 9:10:00|115.501|115.501|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|2/18/2022 15:30:00|115.928|115.928|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|3/10/2023 8:35:00|115.715|115.715|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-98-43"|6/23/2023 8:18:00|116.105|116.105|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-98-49A"|10/15/2021 11:57:00|117.373|117.373|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|2/11/2022 9:42:00|117.754|117.754|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|9/21/2022 12:26:00|117.696|117.696|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|11/18/2022 13:47:00|117.474|117.474|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|2/10/2023 13:00:00|117.370|117.370|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-98-49A"|6/9/2023 10:08:00|117.861|117.861|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-98-51"|2/11/2022 9:49:00|117.737|117.737|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|9/21/2022 11:58:00|117.497|117.497|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|11/18/2022 13:54:00|117.652|117.652|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|2/10/2023 13:07:00|117.317|117.317|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-98-51"|6/9/2023 10:00:00|117.871|117.871|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-99-41"|10/15/2021 8:36:00|114.823|114.823|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|2/18/2022 9:14:00|116.070|116.070|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|12/16/2022 13:34:00|115.616|115.616|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|3/10/2023 10:24:00|115.171|115.171|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-99-41"|6/23/2023 8:01:00|115.622|115.622|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-99-42B"|12/16/2022 13:42:00|115.692|115.692|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-42B"|3/10/2023 10:32:00|115.439|115.439|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-99-42B"|6/7/2023 7:43:00|116.127|116.127|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-99-42B"|6/23/2023 7:54:00|115.756|115.756|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-99-44"|10/15/2021 8:59:00|115.767|115.767|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|2/18/2022 15:30:00|116.481|116.481|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|12/16/2022 10:36:00|116.084|116.084|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|3/3/2023 14:39:00|115.984|115.984|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-99-44"|6/23/2023 7:38:00|116.359|116.359|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D2-11"|1/21/2014 13:14:00|118.380|118.380|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|2/9/2015 9:55:00|119.334|119.334|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|5/22/2017 7:58:00|119.776|119.776|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|11/30/2018 10:09:00|119.038|119.038|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|3/29/2019 9:48:00|118.819|118.819|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|7/19/2019 12:35:00|119.020|119.020|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|10/11/2019 8:11:00|118.746|118.746|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D2-11"|9/10/2021 9:34:00|118.837|118.837|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D3-2"|4/11/2014 11:07:00|118.329|118.329|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|8/1/2014 9:30:00|118.825|118.825|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|9/12/2014 12:55:00|117.972|117.972|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|2/3/2015 8:31:00|118.557|118.557|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|5/19/2017 13:06:00|120.200|120.200|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|11/30/2018 9:04:00|117.917|117.917|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|3/29/2019 6:50:00|117.579|117.579|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|7/19/2019 8:28:00|118.015|118.015|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|10/11/2019 7:45:00|117.304|117.304|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-2"|9/10/2021 8:46:00|117.816|117.816|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D3-5"|3/22/2017 8:14:00|118.531|118.531|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|5/22/2017 7:52:00|119.781|119.781|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|8/28/2018 8:56:00|118.482|118.482|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|11/30/2018 8:51:00|118.001|118.001|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|3/29/2019 6:36:00|117.769|117.769|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|7/19/2019 8:14:00|118.117|118.117|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|10/11/2019 7:34:00|117.513|117.513|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D3-5"|9/10/2021 8:18:00|118.019|118.019|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-13"|7/2/2014 13:10:00|118.654|118.654|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-13"|2/10/2015 13:46:00|117.892|117.892|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|9/21/2014 14:08:00|117.934|117.934|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|2/4/2015 14:27:00|117.635|117.635|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|11/30/2018 9:50:00|117.675|117.675|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|3/29/2019 7:27:00|117.529|117.529|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|7/19/2019 8:51:00|117.556|117.556|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|10/11/2019 8:11:00|117.242|117.242|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-15"|9/10/2021 9:26:00|117.559|117.559|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-19"|9/9/2015 8:48:00|117.762|117.762|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|4/21/2014 12:20:00|117.885|117.885|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|9/12/2014 13:04:00|118.263|118.263|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|2/3/2015 9:59:00|118.038|118.038|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|5/19/2017 13:00:00|119.281|119.281|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|11/30/2018 8:56:00|118.007|118.007|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|3/29/2019 6:43:00|117.894|117.894|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|7/19/2019 8:21:00|118.083|118.083|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|10/11/2019 7:39:00|117.641|117.641|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-20"|9/10/2021 8:27:00|118.074|118.074|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-21"|9/12/2014 13:34:00|117.181|117.181|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|5/19/2017 13:18:00|118.671|118.671|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|11/30/2018 9:24:00|117.220|117.220|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|3/29/2019 7:06:00|117.037|117.037|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|10/11/2019 7:57:00|116.702|116.702|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-21"|9/10/2021 9:01:00|117.077|117.077|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-23"|7/2/2014 9:39:00|118.904|118.904|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|9/12/2014 13:11:00|117.133|117.133|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|2/3/2015 9:07:00|118.068|118.068|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|5/19/2017 13:16:00|119.656|119.656|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|11/30/2018 9:07:00|117.389|117.389|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|3/29/2019 6:55:00|117.053|117.053|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|7/19/2019 8:31:00|117.422|117.422|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|10/11/2019 7:54:00|116.712|116.712|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-23"|9/10/2021 8:57:00|117.096|117.096|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D4-86"|9/12/2014 12:21:00|117.962|117.962|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|2/3/2015 8:05:00|118.565|118.565|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|5/19/2017 13:04:00|119.998|119.998|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|11/30/2018 8:59:00|117.922|117.922|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|3/29/2019 6:46:00|117.581|117.581|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|7/19/2019 8:24:00|118.026|118.026|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|10/11/2019 7:41:00|117.297|117.297|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D4-86"|9/10/2021 8:41:00|117.806|117.806|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-103"|9/19/2014 13:01:00|119.122|119.122|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-103"|5/19/2017 13:49:00|119.551|119.551|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|9/19/2014 12:24:00|119.149|119.149|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|2/10/2015 8:49:00|119.395|119.395|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|5/19/2017 14:12:00|119.578|119.578|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|11/30/2018 14:48:00|118.804|118.804|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|3/29/2019 8:15:00|118.536|118.536|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|7/19/2019 9:34:00|118.783|118.783|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|10/11/2019 9:09:00|118.533|118.533|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-106"|9/10/2021 13:52:00|118.454|118.454|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-126"|12/12/2014 13:05:00|118.391|118.391|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|2/4/2015 11:31:00|118.342|118.342|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|5/19/2017 14:01:00|118.501|118.501|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|11/30/2018 14:05:00|117.787|117.787|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|3/29/2019 7:55:00|117.653|117.653|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|7/19/2019 9:23:00|117.793|117.793|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-126"|10/11/2019 8:44:00|117.595|117.595|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|3/23/2017 7:53:00|117.625|117.625|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|5/22/2017 8:11:00|118.213|118.213|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|11/30/2018 14:02:00|116.881|116.881|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|3/29/2019 8:06:00|116.753|116.753|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|7/19/2019 13:05:00|116.890|116.890|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|10/11/2019 8:50:00|116.552|116.552|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-13"|9/10/2021 13:23:00|116.814|116.814|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-133"|12/12/2014 14:20:00|119.531|119.531|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|4/9/2015 8:28:00|119.757|119.757|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|5/19/2017 13:55:00|119.924|119.924|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|11/30/2018 14:18:00|119.184|119.184|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|3/29/2019 7:46:00|118.909|118.909|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|7/19/2019 12:58:00|119.193|119.193|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|10/11/2019 8:34:00|118.836|118.836|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-133"|9/10/2021 13:33:00|118.727|118.727|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-134"|12/22/2014 15:35:00|117.998|117.998|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-134"|2/10/2015 13:23:00|118.354|118.354|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|7/2/2014 10:01:00|118.737|118.737|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|9/12/2014 9:14:00|118.630|118.630|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|2/10/2015 8:22:00|118.518|118.518|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|5/19/2017 14:00:00|118.746|118.746|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|11/30/2018 14:10:00|118.143|118.143|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|3/29/2019 7:54:00|117.978|117.978|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|7/19/2019 9:31:00|118.131|118.131|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|10/11/2019 8:40:00|117.926|117.926|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-14"|9/10/2021 13:33:00|117.975|117.975|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-160"|3/7/2019 14:51:00|118.336|118.336|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-160"|3/29/2019 7:41:00|118.300|118.300|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-160"|7/19/2019 12:32:00|118.519|118.519|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-160"|9/10/2021 13:52:00|118.309|118.309|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-17"|12/12/2014 14:42:00|119.317|119.317|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|4/9/2015 8:02:00|119.509|119.509|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|5/19/2017 13:51:00|119.717|119.717|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|11/30/2018 10:20:00|119.135|119.135|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|3/29/2019 7:42:00|118.857|118.857|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|7/19/2019 12:47:00|119.074|119.074|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|10/11/2019 8:19:00|118.869|118.869|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-17"|9/10/2021 13:34:00|118.760|118.760|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-19"|12/12/2014 15:06:00|119.135|119.135|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|2/10/2015 9:19:00|119.178|119.178|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|5/22/2017 8:04:00|119.525|119.525|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|11/30/2018 10:17:00|119.096|119.096|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|3/29/2019 9:45:00|118.836|118.836|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|7/19/2019 12:45:00|118.977|118.977|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-19"|10/11/2019 8:18:00|118.821|118.821|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|2/6/2015 14:03:00|118.024|118.024|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|5/19/2017 13:41:00|118.707|118.707|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|11/30/2018 9:36:00|117.765|117.765|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|3/29/2019 8:15:00|117.412|117.412|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|7/19/2019 9:06:00|117.461|117.461|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-33"|10/11/2019 9:04:00|117.077|117.077|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|4/11/2014 11:43:00|117.489|117.489|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|9/12/2014 13:42:00|117.547|117.547|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|5/19/2017 13:24:00|118.736|118.736|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|11/30/2018 9:30:00|117.495|117.495|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|3/29/2019 7:14:00|117.267|117.267|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|7/19/2019 9:02:00|117.331|117.331|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|10/11/2019 8:02:00|116.910|116.910|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-36"|9/10/2021 9:11:00|117.309|117.309|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-37"|7/2/2014 9:50:00|118.873|118.873|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-37"|9/12/2014 8:44:00|117.867|117.867|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-37"|11/30/2018 13:55:00|117.657|117.657|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-37"|3/29/2019 8:22:00|117.367|117.367|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-37"|7/19/2019 13:10:00|117.584|117.584|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-37"|10/11/2019 12:04:00|117.075|117.075|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|9/12/2014 14:05:00|117.764|117.764|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|9/11/2015 12:26:00|117.493|117.493|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|5/19/2017 13:29:00|118.481|118.481|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|11/30/2018 9:44:00|117.603|117.603|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|3/29/2019 7:21:00|117.420|117.420|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|7/19/2019 8:53:00|117.383|117.383|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|10/11/2019 8:05:00|117.085|117.085|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-38"|9/10/2021 9:17:00|117.405|117.405|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-41"|3/7/2019 14:19:00|117.306|117.306|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-41"|3/29/2019 8:11:00|117.196|117.196|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-41"|7/19/2019 9:14:00|117.300|117.300|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-41"|10/11/2019 9:03:00|116.943|116.943|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-41"|9/10/2021 13:16:00|117.327|117.327|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-43"|9/19/2014 11:57:00|118.688|118.688|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|2/9/2015 12:56:00|118.554|118.554|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|5/19/2017 13:33:00|119.273|119.273|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|11/30/2018 9:55:00|118.398|118.398|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|3/29/2019 7:33:00|118.188|118.188|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|7/19/2019 12:27:00|118.316|118.316|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|10/11/2019 9:18:00|118.087|118.087|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-43"|9/10/2021 9:40:00|118.264|118.264|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D5-97"|9/19/2014 9:03:00|118.489|118.489|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|2/10/2015 9:44:00|118.324|118.324|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|5/19/2017 13:34:00|118.964|118.964|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|11/30/2018 9:56:00|118.157|118.157|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|3/29/2019 7:33:00|117.907|117.907|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|7/19/2019 12:25:00|118.001|118.001|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|10/11/2019 9:16:00|117.779|117.779|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D5-97"|9/10/2021 9:27:00|117.977|117.977|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D6-3"|7/19/2019 12:50:00|117.845|117.845|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|3/22/2017 12:24:00|117.878|117.878|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|5/22/2017 8:25:00|119.131|119.131|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|11/30/2018 13:41:00|117.509|117.509|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|3/29/2019 9:36:00|117.113|117.113|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|7/19/2019 13:34:00|117.464|117.464|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|10/11/2019 13:19:00|116.848|116.848|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-101"|9/10/2021 12:55:00|117.177|117.177|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-5"|12/12/2014 13:45:00|117.163|117.163|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-5"|2/4/2015 13:24:00|117.514|117.514|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-5"|5/19/2017 14:18:00|118.516|118.516|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-5"|11/30/2018 13:55:00|116.733|116.733|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-5"|3/29/2019 8:33:00|116.554|116.554|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-5"|7/19/2019 13:19:00|116.819|116.819|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-5"|10/11/2019 12:14:00|116.230|116.230|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54A"|12/10/2014 8:16:00|116.548|116.548|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54A"|2/4/2015 12:25:00|117.006|117.006|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54A"|5/19/2017 14:22:00|118.295|118.295|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54A"|7/19/2019 13:21:00|116.247|116.247|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|9/12/2014 8:21:00|117.284|117.284|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|12/10/2014 8:16:00|118.344|118.344|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|2/4/2015 12:25:00|118.247|118.247|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|5/19/2017 14:20:00|119.448|119.448|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|11/30/2018 13:47:00|117.525|117.525|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|3/29/2019 8:35:00|117.141|117.141|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|7/19/2019 13:20:00|117.598|117.598|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|10/11/2019 12:11:00|116.912|116.912|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-54B"|9/10/2021 12:58:00|117.131|117.131|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-70"|9/12/2014 6:56:00|117.148|117.148|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-70"|5/19/2017 14:25:00|119.263|119.263|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-70"|11/30/2018 13:33:00|117.331|117.331|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-70"|7/19/2019 13:25:00|117.337|117.337|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-70"|10/11/2019 12:21:00|116.590|116.590|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-70"|2/3/2021 9:41:00|117.669|117.669|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-71"|9/12/2014 7:48:00|117.065|117.065|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|2/4/2015 12:58:00|118.093|118.093|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|5/19/2017 14:28:00|119.321|119.321|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|11/30/2018 13:34:00|117.254|117.254|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|3/29/2019 8:37:00|116.803|116.803|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|7/19/2019 13:26:00|117.279|117.279|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|10/11/2019 12:15:00|116.465|116.465|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-71"|9/10/2021 12:47:00|116.846|116.846|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-D8-93"|6/20/2018 7:20:00|118.392|118.392|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-93"|11/30/2018 13:19:00|117.377|117.377|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-93"|3/29/2019 9:03:00|116.968|116.968|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-93"|10/11/2019 12:35:00|116.795|116.795|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-D8-93"|9/10/2021 12:24:00|117.051|117.051|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-95-51"|8/29/2014 14:05:00|118.256|118.256|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|2/9/2015 14:23:00|118.220|118.220|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|12/1/2016 10:28:00|117.872|117.872|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|4/21/2017 13:19:00|118.424|118.424|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|11/30/2018 13:25:00|118.079|118.079|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|1/17/2019 14:38:00|118.037|118.037|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|3/29/2019 8:55:00|117.894|117.894|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|8/9/2019 7:01:00|118.052|118.052|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|10/11/2019 12:29:00|117.817|117.817|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-51"|9/10/2021 12:29:00|117.890|117.890|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-96-52B"|9/18/2014 13:23:00|117.003|117.003|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|2/9/2015 14:00:00|118.006|118.006|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|4/21/2017 13:25:00|118.582|118.582|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|6/8/2017 11:53:00|119.387|119.387|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|9/13/2017 12:26:00|117.250|117.250|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|11/30/2018 13:30:00|117.244|117.244|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|3/29/2019 8:51:00|116.842|116.842|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|8/9/2019 13:51:00|117.363|117.363|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|10/11/2019 12:26:00|116.518|116.518|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-52B"|9/10/2021 12:35:00|116.866|116.866|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-97-48B"|1/7/2015 14:43:00|117.638|117.638|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|2/2/2015 14:12:00|117.696|117.696|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|4/21/2017 9:54:00|117.900|117.900|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|11/30/2018 12:48:00|117.873|117.873|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|3/29/2019 9:24:00|117.730|117.730|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|8/9/2019 7:23:00|117.812|117.812|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48B"|10/11/2019 13:10:00|117.702|117.702|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|1/7/2015 14:42:00|117.251|117.251|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|2/2/2015 14:12:00|117.345|117.345|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|4/21/2017 9:55:00|117.507|117.507|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|11/30/2018 12:50:00|117.281|117.281|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|3/29/2019 9:24:00|117.095|117.095|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|8/9/2019 7:24:00|117.214|117.214|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-48C"|10/11/2019 13:11:00|117.050|117.050|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|3/23/2017 8:49:00|117.510|117.510|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|5/22/2017 8:37:00|118.635|118.635|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|11/30/2018 13:08:00|117.562|117.562|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|3/29/2019 9:06:00|117.373|117.373|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|8/9/2019 7:16:00|117.513|117.513|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-49A"|9/10/2021 12:08:00|117.547|117.547|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-98-51"|9/19/2014 13:53:00|117.369|117.369|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|2/10/2015 7:49:00|117.753|117.753|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|9/8/2015 13:05:00|117.362|117.362|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|4/21/2017 13:13:00|118.569|118.569|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|11/30/2018 13:15:00|117.576|117.576|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|3/29/2019 8:58:00|117.244|117.244|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|8/9/2019 7:06:00|117.484|117.484|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-51"|10/11/2019 12:51:00|117.036|117.036|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-50"|1/24/2020 9:07:00|115.302|115.302|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-7"|11/14/2014 10:17:00|115.403|115.403|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-7"|1/29/2015 10:18:00|115.793|115.793|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-7"|4/21/2017 8:46:00|116.509|116.509|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-7"|3/22/2019 13:23:00|114.921|114.921|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-7"|8/9/2019 12:54:00|115.144|115.144|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H1-7"|10/18/2019 8:12:00|115.037|115.037|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|11/18/2014 14:23:00|115.311|115.311|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|1/29/2015 14:59:00|115.902|115.902|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|9/8/2015 9:02:00|114.653|114.653|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|2/25/2016 9:38:00|115.384|115.384|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|4/21/2017 8:42:00|116.951|116.951|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|12/14/2018 13:03:00|115.064|115.064|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|3/22/2019 13:16:00|114.592|114.592|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|8/9/2019 13:00:00|115.171|115.171|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H2-1"|10/18/2019 8:10:00|114.308|114.308|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|11/14/2014 14:45:00|115.422|115.422|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|1/28/2015 14:29:00|115.400|115.400|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|2/25/2016 13:41:00|114.544|114.544|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|4/21/2017 9:01:00|116.190|116.190|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|6/21/2017 7:21:00|115.833|115.833|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|12/14/2018 9:31:00|114.385|114.385|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|3/22/2019 12:58:00|114.239|114.239|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|8/9/2019 12:36:00|114.242|114.242|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-10"|10/18/2019 7:52:00|113.946|113.946|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-12"|4/19/2019 9:07:00|114.500|114.500|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-12"|8/9/2019 9:12:00|113.409|113.409|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-12"|10/18/2019 8:20:00|112.836|112.836|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-13"|4/19/2019 9:25:00|114.633|114.633|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-13"|8/9/2019 9:08:00|113.441|113.441|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-13"|10/18/2019 8:26:00|112.655|112.655|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|1/28/2015 14:44:00|115.954|115.954|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|2/25/2016 14:04:00|114.798|114.798|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|4/21/2017 8:54:00|115.719|115.719|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|12/14/2018 9:33:00|115.030|115.030|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|3/22/2019 12:57:00|114.929|114.929|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|8/9/2019 12:26:00|114.957|114.957|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|10/18/2019 7:59:00|114.683|114.683|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-2B"|2/3/2021 13:29:00|114.969|114.969|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-H3-30"|5/24/2018 7:35:00|117.955|117.955|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-30"|12/14/2018 12:54:00|114.797|114.797|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-30"|3/22/2019 12:10:00|114.362|114.362|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-30"|8/9/2019 8:51:00|114.834|114.834|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-30"|10/18/2019 8:41:00|114.005|114.005|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-32"|4/19/2019 9:44:00|115.017|115.017|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-32"|8/9/2019 12:47:00|114.974|114.974|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H3-32"|10/18/2019 8:03:00|114.373|114.373|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|2/6/2015 13:05:00|116.055|116.055|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|4/21/2017 8:40:00|116.948|116.948|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|12/14/2018 13:05:00|115.007|115.007|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|3/22/2019 13:12:00|114.629|114.629|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|8/9/2019 12:56:00|115.217|115.217|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-10"|10/18/2019 8:10:00|114.324|114.324|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|1/28/2015 8:51:00|115.436|115.436|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|4/21/2017 8:14:00|116.802|116.802|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|6/8/2017 12:39:00|117.643|117.643|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|12/14/2018 12:57:00|114.683|114.683|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|3/22/2019 12:16:00|114.180|114.180|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|8/9/2019 8:53:00|114.949|114.949|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-11"|10/18/2019 8:46:00|113.982|113.982|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|7/2/2014 10:35:00|116.859|116.859|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|1/28/2015 9:22:00|115.488|115.488|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|2/25/2016 12:57:00|115.341|115.341|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|4/21/2017 8:21:00|116.893|116.893|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|12/14/2018 13:20:00|114.869|114.869|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|8/9/2019 9:03:00|115.079|115.079|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-12B"|10/18/2019 8:29:00|114.153|114.153|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|11/14/2014 13:05:00|115.156|115.156|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|1/28/2015 8:26:00|115.421|115.421|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|2/25/2016 14:39:00|115.229|115.229|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|4/21/2017 8:01:00|116.820|116.820|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|12/14/2018 12:43:00|114.659|114.659|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|3/22/2019 11:57:00|114.175|114.175|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|8/9/2019 8:43:00|114.924|114.924|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-13"|10/18/2019 8:48:00|113.989|113.989|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|8/29/2014 8:15:00|115.193|115.193|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|1/29/2015 14:41:00|115.668|115.668|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|4/21/2017 8:36:00|116.866|116.866|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|12/14/2018 13:10:00|114.854|114.854|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|3/22/2019 13:10:00|114.547|114.547|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|8/9/2019 12:55:00|115.083|115.083|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-15B"|10/18/2019 8:13:00|114.223|114.223|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|3/23/2017 14:13:00|115.269|115.269|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|4/21/2017 12:32:00|115.845|115.845|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|12/14/2018 13:23:00|115.092|115.092|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|3/22/2019 12:38:00|114.919|114.919|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|8/9/2019 12:13:00|114.943|114.943|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-47"|10/18/2019 9:04:00|114.660|114.660|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|1/28/2015 9:44:00|115.576|115.576|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|2/25/2016 10:35:00|115.250|115.250|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|4/21/2017 8:35:00|117.024|117.024|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|12/14/2018 9:48:00|114.945|114.945|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|3/22/2019 12:25:00|114.561|114.561|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|8/9/2019 9:00:00|115.091|115.091|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-5"|10/18/2019 8:16:00|114.143|114.143|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-8"|1/28/2015 13:53:00|115.739|115.739|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-8"|4/21/2017 8:27:00|116.480|116.480|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-8"|12/14/2018 13:14:00|114.932|114.932|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-8"|3/22/2019 13:00:00|114.721|114.721|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-8"|8/9/2019 12:19:00|114.868|114.868|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|1/7/2015 9:12:00|115.514|115.514|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|1/29/2015 14:20:00|115.672|115.672|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|9/8/2015 8:54:00|114.715|114.715|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|4/21/2017 8:08:00|116.581|116.581|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|12/14/2018 12:50:00|114.877|114.877|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|3/22/2019 12:07:00|114.404|114.404|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|8/9/2019 8:48:00|114.974|114.974|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-83"|10/18/2019 8:37:00|114.124|114.124|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-84"|1/7/2015 9:26:00|115.604|115.604|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-84"|1/29/2015 9:45:00|115.760|115.760|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-84"|4/21/2017 8:25:00|116.363|116.363|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-84"|12/14/2018 9:43:00|114.925|114.925|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-84"|3/22/2019 13:08:00|114.608|114.608|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-84"|8/9/2019 9:18:00|114.745|114.745|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-90"|5/24/2018 8:11:00|116.546|116.546|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-90"|12/14/2018 13:23:00|115.003|115.003|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-90"|3/22/2019 12:36:00|114.772|114.772|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-90"|8/9/2019 12:17:00|114.818|114.818|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-90"|10/18/2019 9:06:00|114.449|114.449|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-91"|5/24/2018 8:54:00|117.360|117.360|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-91"|12/14/2018 12:41:00|115.034|115.034|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-91"|3/22/2019 11:56:00|114.650|114.650|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-91"|8/9/2019 8:40:00|114.940|114.940|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H4-91"|10/18/2019 8:50:00|114.342|114.342|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H5-1A"|8/29/2014 7:32:00|116.215|116.215|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H5-1A"|1/28/2015 13:11:00|115.761|115.761|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H5-1A"|4/21/2017 9:04:00|115.557|115.557|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H5-1A"|12/14/2018 13:51:00|115.480|115.480|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H5-1A"|3/22/2019 12:47:00|115.215|115.215|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H5-1A"|10/18/2019 7:58:00|115.069|115.069|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-H7-1"|1/24/2020 8:49:00|116.934|116.934|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|8/29/2014 9:08:00|115.475|115.475|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|2/2/2015 13:02:00|116.557|116.557|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|4/21/2017 12:47:00|117.416|117.416|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|12/14/2018 10:23:00|115.396|115.396|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|3/22/2019 13:33:00|115.106|115.106|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|8/9/2019 13:17:00|115.673|115.673|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|10/18/2019 7:39:00|115.015|115.015|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-100-43B"|2/3/2021 10:29:00|116.130|116.130|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"699-101-45"|8/29/2014 9:14:00|116.233|116.233|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|9/19/2014 14:13:00|115.306|115.306|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|2/2/2015 10:18:00|116.979|116.979|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|9/8/2015 9:20:00|115.510|115.510|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|4/21/2017 12:56:00|117.744|117.744|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|3/12/2018 13:15:00|116.668|116.668|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|12/14/2018 10:32:00|115.833|115.833|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|3/22/2019 13:41:00|115.474|115.474|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|8/9/2019 13:25:00|116.175|116.175|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-101-45"|10/18/2019 7:47:00|115.300|115.300|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|3/8/2017 13:51:00|116.923|116.923|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|4/21/2017 12:15:00|116.932|116.932|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|12/14/2018 8:28:00|117.215|117.215|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|3/22/2019 11:37:00|117.176|117.176|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|8/9/2019 12:07:00|117.136|117.136|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-88-41A"|10/18/2019 6:43:00|117.124|117.124|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|3/31/2017 6:50:00|115.630|115.630|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|4/21/2017 7:57:00|115.996|115.996|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|12/14/2018 10:42:00|115.219|115.219|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|3/22/2019 11:45:00|114.817|114.817|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|8/9/2019 8:30:00|114.810|114.810|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-93-37A"|11/15/2019 10:12:00|114.661|114.661|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|3/23/2017 12:56:00|115.970|115.970|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|4/21/2017 9:30:00|115.973|115.973|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|3/12/2018 13:11:00|116.073|116.073|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|12/14/2018 8:36:00|116.226|116.226|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|3/22/2019 14:02:00|116.079|116.079|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|8/9/2019 13:37:00|116.024|116.024|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-94-41"|10/18/2019 6:50:00|115.970|115.970|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-95-45C"|1/24/2020 15:19:00|116.756|116.756|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-96-44"|2/13/2017 10:03:00|116.169|116.169|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|8/29/2014 12:35:00|116.192|116.192|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|2/2/2015 9:00:00|115.878|115.878|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|12/5/2016 13:04:00|114.875|114.875|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|4/21/2017 9:34:00|115.637|115.637|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|12/14/2018 9:01:00|115.055|115.055|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|3/22/2019 14:00:00|114.899|114.899|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|8/9/2019 12:42:00|114.860|114.860|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-41"|10/18/2019 7:53:00|114.512|114.512|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|8/29/2014 9:43:00|117.408|117.408|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|2/2/2015 13:54:00|117.182|117.182|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|4/21/2017 12:58:00|117.365|117.365|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|12/14/2018 9:08:00|117.508|117.508|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|5/3/2019 12:39:00|117.347|117.347|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|8/9/2019 8:08:00|117.374|117.374|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-45"|10/18/2019 7:13:00|117.310|117.310|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-47B"|3/7/2019 13:36:00|117.555|117.555|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-47B"|8/9/2019 7:29:00|117.607|117.607|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-47B"|10/11/2019 12:59:00|117.491|117.491|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-60"|5/22/2018 8:29:00|117.992|117.992|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-60"|11/30/2018 13:01:00|117.355|117.355|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-60"|8/9/2019 8:04:00|117.269|117.269|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-97-60"|10/18/2019 7:10:00|117.099|117.099|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|8/29/2014 13:16:00|116.178|116.178|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|2/2/2015 9:39:00|115.849|115.849|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|4/21/2017 9:39:00|116.422|116.422|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|12/14/2018 9:03:00|115.651|115.651|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|3/22/2019 13:52:00|115.517|115.517|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-98-43"|10/18/2019 7:25:00|115.178|115.178|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|8/29/2014 8:35:00|115.536|115.536|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|2/6/2015 12:45:00|116.116|116.116|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|4/21/2017 12:38:00|116.582|116.582|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|12/14/2018 10:14:00|115.110|115.110|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|3/22/2019 13:24:00|114.793|114.793|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|8/9/2019 13:05:00|115.488|115.488|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-41"|10/18/2019 7:31:00|114.616|114.616|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-42B"|8/29/2014 8:49:00|115.716|115.716|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-42B"|2/2/2015 12:42:00|116.118|116.118|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-42B"|4/21/2017 12:40:00|116.893|116.893|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-42B"|3/22/2019 13:28:00|115.100|115.100|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-42B"|8/9/2019 13:12:00|115.557|115.557|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-42B"|10/18/2019 7:35:00|114.808|114.808|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|8/29/2014 13:49:00|116.209|116.209|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|2/2/2015 13:35:00|116.298|116.298|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|4/21/2017 9:47:00|117.194|117.194|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|12/14/2018 9:17:00|115.935|115.935|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|3/22/2019 13:48:00|115.728|115.728|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|8/9/2019 7:39:00|116.014|116.014|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"699-99-44"|10/18/2019 7:22:00|115.588|115.588|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|6/10/2014 14:01:00|119.477|119.477|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|9/23/2015 8:18:00|117.916|117.916|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|1/31/2018 14:25:00|118.623|118.623|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|11/30/2018 7:52:00|118.145|118.145|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|3/29/2019 11:44:00|117.776|117.776|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|7/19/2019 7:10:00|118.224|118.224|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|10/11/2019 7:18:00|117.514|117.514|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-14"|2/21/2020 8:09:00|118.520|118.520|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|2/6/2015 8:40:00|118.831|118.831|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|2/26/2015 9:34:00|118.877|118.877|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|1/31/2018 14:35:00|118.584|118.584|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|11/30/2018 7:58:00|118.115|118.115|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|3/29/2019 11:50:00|117.767|117.767|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|7/19/2019 7:17:00|118.182|118.182|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|10/11/2019 7:14:00|117.536|117.536|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-50"|9/10/2021 7:47:00|117.996|117.996|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
+"199-N-92A"|1/12/2015 13:25:00|118.684|118.684|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|2/26/2015 9:58:00|118.891|118.891|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|9/13/2017 9:34:00|117.824|117.824|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|1/31/2018 15:00:00|118.769|118.769|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|11/30/2018 8:11:00|117.721|117.721|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|3/29/2019 12:39:00|117.343|117.343|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|7/19/2019 7:37:00|118.144|118.144|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|10/11/2019 7:11:00|116.937|116.937|"MAN"|0.000|"No Adjustment"|"Final, Approved"|
+"199-N-92A"|9/10/2021 7:46:00|117.038|117.038|"MAN"|0.000|"No Adjustment"|"Provisional, Approved for Use"|
