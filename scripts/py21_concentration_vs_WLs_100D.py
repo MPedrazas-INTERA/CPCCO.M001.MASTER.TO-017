@@ -15,7 +15,7 @@ import flopy
 import geopandas as gpd
 import matplotlib
 import matplotlib.patheffects as pe
-#matplotlib.use('Qt5Agg')
+matplotlib.use('Qt5Agg')
 from sklearn.metrics import mean_absolute_error,  mean_squared_error, r2_score
 
 plt.rc('xtick', labelsize=14)
@@ -68,7 +68,7 @@ def compare_flopy_mod2obs():
         plt.savefig(os.path.join(cwd, 'output', 'water_level_plots', 'flopy_vs_mod2obs', f'{well}_lyr1.png'), bbox_inches='tight', dpi=600)
     return None
 
-def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, conc_df, plot_calib_model = True):
+def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, conc_df, plot_calib_model = False):
 
     """
     Plot concentration data of interest against water levels in one graph.
@@ -81,6 +81,9 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
     outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', f'{sce}')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
+
+    ## date range to plot (TOGGLE):
+    date_range = "full" #"short" #"full
 
     for well in wells['NAME']: #["199-H3-10"]:
         print(well)
@@ -98,8 +101,9 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
             pass
 
         wl1 = wl_meas[wl_meas['ID'] == well]
-        wl2 = wl_meas2[wl_meas2['ID'] == well]
-        wl3 = wl_meas2022[wl_meas2022['ID'] == well]
+        if old_WL_sources:
+            wl2 = calib_WLdata[calib_WLdata['ID'] == well]
+            wl3 = wls_obs_2022[wls_obs_2022['ID'] == well]
 
         ## create figure instance and set specs
         fig, ax = plt.subplots(figsize=(16, 5))
@@ -115,7 +119,7 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
             ax.set_title(f'{well} ({wellDict[well]})', color = 'navy', fontsize=16)
         else:
             ax.set_title(f'{well} ({wellDict[well]})', color = 'black', fontsize=16)
-        ax.set_ylabel('Water Level (m.asl)', fontsize=14)
+        ax.set_ylabel('Water Level (m)', fontsize=14)
         ax2 = ax.twinx() ## create secondary axis
         ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
@@ -123,11 +127,12 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
         ax.scatter(wl1.index, wl1['Water Level (m)'], label='Obs WL', c="navy", s=20, zorder=5)
         ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
 
-        ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=20, zorder=5)
-        ax.plot(wl3.index, wl3['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
+        if old_WL_sources:
+            ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=20, zorder=5)
+            ax.plot(wl3.index, wl3['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
 
-        ax.scatter(wl2.index, wl2['Water Level (m)'], c="navy", s=20, zorder=5)
-        ax.plot(wl2.index, wl2['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
+            ax.scatter(wl2.index, wl2['Water Level (m)'], c="navy", s=20, zorder=5)
+            ax.plot(wl2.index, wl2['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
 
         ax.plot(toplot_wl.index, toplot_wl['Head'], label='Simulated WL', color="cornflowerblue", zorder=4)
         if plot_calib_model:
@@ -167,8 +172,6 @@ def plot_WL_vs_conc(wl_meas, wl_meas2, wl_meas2022, crvi_meas_2014, crvi_meas_20
                            labels2[index] not in ['10 μg/L', '48 μg/L']] + [lines2[index_10_ug],lines2[index_48_ug]]
         ax2.legend(lines + reordered_lines2, labels + reordered_labels2, bbox_to_anchor=(1.2, 1), framealpha=1)
 
-        ## date range to plot (TOGGLE):
-        date_range = "full" #"short" #"full
         text_y = ax2.get_ylim()[1] - 0.035 * (ax2.get_ylim()[1] - ax2.get_ylim()[0]) # for text annotations
         if date_range == "full": #set x-limit
             ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
@@ -390,11 +393,7 @@ def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
                     try:
                         mywell_sim = wls_sim2[wls_sim2['Well'] == well]
                         mywell_obs = wls_obs2.loc[wls_obs2['Well'] == well]
-                        #mywell_obs["Time1"] = mywell_obs.Time.apply(lambda x : x.replace(day=1)) #rounded down by 15 days
-                        # mywell_obs.index = pd.to_datetime(mywell_obs.Time1)
-                        # toplot = pd.merge(mywell_obs, mywell_sim, left_index=True, right_index=True, how="inner")
                         toplot = pd.merge(mywell_obs, mywell_sim, on="Time", how="inner")
-                        # toplot.rename(columns={"Head": "Simulated", "Water Level (m)": "Observed"}, inplace=True)
                         toplot.dropna(subset=["Observed"], inplace=True)
                         print("Found: ",idx, well, len(toplot))
                         if len(toplot) == 0:
@@ -472,9 +471,16 @@ def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
         aq = wells.Aq.loc[(wells.NAME == well)].iloc[0]
         print(well, aq)
         ## set data to be plotted
-        rebound = wls_obs.loc[wls_obs['ID'] == well]  ## 10/4/22 to 10/31/23
-        postcalib = wls_obs.loc[wls_obs['ID'] == well]  ## 01/01/2021 to 10/3/22
-        calib = wls_obs2.loc[wls_obs2['ID'] == well]  ## 01/01/14 -12/31/2020
+        if old_WL_sources:
+            rebound = wls_obs.loc[wls_obs['ID'] == well]  ## 10/4/22 to 10/31/23
+            postcalib = wls_obs.loc[wls_obs['ID'] == well]  ## 01/01/2021 to 10/3/22
+            calib = wls_obs2.loc[wls_obs2['ID'] == well]  ## 01/01/14 -12/31/2020
+
+        else:
+            rebound = wls_obs.loc[wls_obs['ID'] == well]
+            postcalib = rebound.copy()
+            calib = rebound.copy()
+
         simulated = wls_sim.loc[(wls_sim['NAME'] == well) & (wls_sim['Layer'] == aq)]
 
         #Rebound Data
@@ -662,10 +668,8 @@ def resample_to_monthly(wells, df):
     """
     df.rename(columns={"EVENT":"DATE", "NAME":"ID", "VAL": "Water Level (m)"}, inplace=True)
     df.DATE = pd.to_datetime(df.DATE)
-    print(df)
     df_monthly = pd.DataFrame()
     for well in wells.NAME.unique():
-        print(well)
         try:
             mywell = df.loc[df.ID == well]
             mywell2 = mywell.resample('MS', on='DATE').mean() #MS is first day of month, M is last day of month.
@@ -673,21 +677,20 @@ def resample_to_monthly(wells, df):
             df_monthly = df_monthly.append(mywell2)
         except:
             pass
-    print(df_monthly)
     df_monthly.dropna(subset=["Water Level (m)"], inplace=True)
     return df_monthly
 
 if __name__ == "__main__":
-    ### SET FILE DIRECTORIES ###
+
     cwd = os.getcwd()
     sce = "calib_2014_Oct2023"
     mdir = os.path.join(os.path.dirname(cwd), 'mruns')
     wldir = os.path.join(cwd, 'output', 'water_level_data')
     chemdir = os.path.join(cwd, 'output', 'concentration_data')
 
-    times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv')) # No changes
-    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_100D.csv')) # updated.
-    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv')) # Need to update? 
+    times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
+    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_100D.csv')) # hpham updated
+    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv')) # hpham? 
 
     ### SET WELL NAME ASSOCIATIONS ###
     wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
@@ -699,66 +702,71 @@ if __name__ == "__main__":
     #%%   ### IMPORT FILES ###
 
     ### WATER LEVELS
-    ### Observed WL for 2021 to 2023: #This comes from script py08a_plot_water_levels.py
-    wl_meas_monthly = pd.read_csv(os.path.join(wldir, 'obs_2021_2023', 'measured_WLs_monthly.csv'), index_col='Date', parse_dates=True)
-    wl_meas_daily = pd.read_csv(os.path.join(wldir, 'obs_2021_2023', 'measured_WLs_daily.csv'), index_col='Date', parse_dates=True)
+    old_WL_sources = False
 
     ### Monthly WL (obs and sim) for 2014 to 2020, from original calibration model:
-    wl_2014 = pd.read_csv(os.path.join(wldir, "calib_2014_2020", "calib_2014to2020_obs_sim.csv")) ###monthly/SP-averaged
+    wl_2014 = pd.read_csv(
+        os.path.join(wldir, "calib_2014_2020", "calib_2014to2020_obs_sim.csv"))  ###monthly/SP-averaged
     wl_meas_2014 = wl_2014[["Well", "Time", "Observed"]]
     wl_sim_2014 = pd.read_csv(os.path.join(wldir, 'calib_2014_2020', 'simulated_heads_monthly_flopy.csv'))
-    wl_sim_2014['DATE'] = pd.to_datetime("2013-12-01") + pd.to_timedelta(wl_sim_2014.Time, unit="days") #subtracted one month to match how we resample to monthly using MS, which is first day of the month.
+    wl_sim_2014['DATE'] = pd.to_datetime("2013-12-01") + pd.to_timedelta(wl_sim_2014.Time,
+                                                                         unit="days")  # subtracted one month to match how we resample to monthly using MS, which is first day of the month.
+    if old_WL_sources:
+        ### Observed WL for 2021 to Oct 2023: #This comes from script py08a_plot_water_levels.py
+        new_wl_meas_monthly = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_monthly.csv'), index_col='Date', parse_dates=True)
+        new_wl_meas_daily = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_daily.csv'), index_col='Date', parse_dates=True)
 
-    ### Daily obs raw WL data for 2014 to 2020
-    ### [A] extracted from S:\AUS\CHPRC.C003.HANOFF\Rel.044\045_100AreaPT\d01_CY2021_datapack\0_Data\Water_Level_Data\DataPull_020222
-    wl_meas_2014_daily = pd.read_csv(os.path.join(cwd, wldir, 'obs_2014_2020', 'measured_WLs_2014to2020_daily_V2.csv')) #hpham: Need to update
-    wl_meas_2014_daily['EVENT'] = pd.to_datetime(wl_meas_2014_daily['EVENT']).dt.normalize()
-    wl_meas_2014_daily.rename(columns={'EVENT':'DATE'}, inplace=True)
-    wl_meas_2014_daily.set_index('DATE', inplace=True)
 
-    #[B] ###MONTHLY 2014-2020 data from 100APT ECF.
-    tmp = wl_meas_2014_daily[["NAME", "VAL"]].copy()
-    tmp.reset_index(inplace=True)
-    print(tmp.head())
-    wls_obs_2014to2020_monthly = resample_to_monthly(wells, tmp)
-    ###NOTE. I want to sample MONTHLY now from beginning, not from daily, but OK.
+        ### Daily obs raw WL data for 2014 to 2020
+        ### [A] extracted from S:\AUS\CHPRC.C003.HANOFF\Rel.044\045_100AreaPT\d01_CY2021_datapack\0_Data\Water_Level_Data\DataPull_020222
+        wl_meas_2014_daily = pd.read_csv(os.path.join(cwd, wldir, 'obs_2014_2020', 'measured_WLs_2014to2020_daily_V2.csv'))
+        wl_meas_2014_daily['EVENT'] = pd.to_datetime(wl_meas_2014_daily['EVENT']).dt.normalize()
+        wl_meas_2014_daily.rename(columns={'EVENT':'DATE'}, inplace=True)
+        wl_meas_2014_daily.set_index('DATE', inplace=True)
 
-    ### MORE DATA (OBSERVATIONS)
-    #[1] ###CY2022
-    # [A] MONTHLY RUM-2022 data
-    rum_2022 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'data', 'water_levels', 'WaterLevel_CY2022', 'AllData_RUM_2022.csv')) #monthly OBS for CY2022 from HPham
-    rum_2022 = rum_2022.loc[rum_2022.TYPE != "CP"]
-    rum_2022.rename(columns = {"NAME": "ID", "VAL":"Water Level (m)"}, inplace=True)
-    rum_2022["Datestring"] = "2022-" + rum_2022["EVENT"].astype(str) + "-01"
-    rum_2022["DATE"] = pd.to_datetime(rum_2022["Datestring"])
-    rum_2022.sort_values(by="DATE", inplace=True)
-    rum_2022_monthly = rum_2022[["ID", "Water Level (m)", "DATE"]].copy()
-    rum_2022_monthly.set_index('DATE', inplace=True) ###MONTHLY RUM-2022 data
+        #[B] ###MONTHLY 2014-2020 data from 100APT ECF.
+        tmp = wl_meas_2014_daily[["NAME", "VAL"]].copy()
+        tmp.reset_index(inplace=True)
+        wls_obs_2014to2020_monthly = resample_to_monthly(wells, tmp)
+        ###NOTE. I want to sample MONTHLY now from beginning, not from daily, but OK.
 
-    # [B] MONTHLY AWLN-2022 data
-    awln_2022 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'data', 'water_levels', 'WaterLevel_CY2022', 'awln_wl_cy2022.csv'))
-    awln_2022_monthly = resample_to_monthly(wells, awln_2022)
+        ### MORE DATA (OBSERVATIONS)
+        #[1] ###CY2022
+        # [A] MONTHLY RUM-2022 data
+        rum_2022 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'data', 'water_levels', 'WaterLevel_CY2022', 'AllData_RUM_2022.csv')) #monthly OBS for CY2022 from HPham
+        rum_2022 = rum_2022.loc[rum_2022.TYPE != "CP"]
+        rum_2022.rename(columns = {"NAME": "ID", "VAL":"Water Level (m)"}, inplace=True)
+        rum_2022["Datestring"] = "2022-" + rum_2022["EVENT"].astype(str) + "-01"
+        rum_2022["DATE"] = pd.to_datetime(rum_2022["Datestring"])
+        rum_2022.sort_values(by="DATE", inplace=True)
+        rum_2022_monthly = rum_2022[["ID", "Water Level (m)", "DATE"]].copy()
+        rum_2022_monthly.set_index('DATE', inplace=True) ###MONTHLY RUM-2022 data
 
-    # [C] MONTHLY MANUAL-2022 data
-    man_2022 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'data', 'water_levels', 'WaterLevel_CY2022', 'manual_wl_cy2022.csv'))
-    man_2022_monthly = resample_to_monthly(wells, man_2022)
+        # [B] MONTHLY AWLN-2022 data
+        awln_2022 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'data', 'water_levels', 'WaterLevel_CY2022', 'awln_wl_cy2022.csv'))
+        awln_2022_monthly = resample_to_monthly(wells, awln_2022)
 
-    #[2] MERGE ALL 2022 OBSERVATIONS INTO ONE DATAFRAME
-    wls_obs_2022 = pd.concat([rum_2022_monthly, awln_2022_monthly, man_2022_monthly], axis=0)
-    wls_obs_2022 = wls_obs_2022.reset_index().drop_duplicates()
-    wls_obs_2022.sort_values(by="DATE", inplace=True)
-    wls_obs_2022.dropna(subset=["Water Level (m)"], inplace=True)
-    wls_obs_2022.set_index('DATE', inplace=True)
+        # [C] MONTHLY MANUAL-2022 data
+        man_2022 = pd.read_csv(os.path.join(os.path.dirname(cwd), 'data', 'water_levels', 'WaterLevel_CY2022', 'manual_wl_cy2022.csv'))
+        man_2022_monthly = resample_to_monthly(wells, man_2022)
 
-    ###Will add Kirsten's data + Jose's manual data LATER...
-    #S:\PSC\CPCCO.M001.MASTER\TO - 017\data\water_levels\fromJose
+        #[2] MERGE ALL 2022 OBSERVATIONS INTO ONE DATAFRAME
+        wls_obs_2022 = pd.concat([rum_2022_monthly, awln_2022_monthly, man_2022_monthly], axis=0)
+        wls_obs_2022 = wls_obs_2022.reset_index().drop_duplicates()
+        wls_obs_2022.sort_values(by="DATE", inplace=True)
+        wls_obs_2022.dropna(subset=["Water Level (m)"], inplace=True)
+        wls_obs_2022.set_index('DATE', inplace=True)
+    else:
+        ### Kirsten's AWLN data + Jose's manual data + Sylvana's data - RESAMPLED TO MONTHLY
+        ### Script used: py21c_processWL_fromJose.py
+        monthly_WLs_obs_ALL = pd.read_csv(os.path.join(wldir, 'obs_2014_Oct2023', 'measured_WLs_monthly.csv'), index_col='DATE', parse_dates=True)
 
     ## MOD2OBS simulated WL monthly (extended model):
     simulated_heads_mode = "mod2obs"
     mode = "monthly"
-
+#%%
     if (simulated_heads_mode == 'mod2obs') and (mode == "monthly"):
-        wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'simulated_heads_monthly_100D.dat'), #this is renamed bore_sample_output.dat for flow. HPham updated 12/07/23. 
+        wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'simulated_heads_monthly.dat'), #this is renamed bore_sample_output.dat for flow #check
                                  delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
         wls_sim_SP["NAME"] = "199-" + wls_sim_SP["ID"].str.strip().str[:-3]  # monitoring wells
         wls_sim_SP["Layer"] = wls_sim_SP["ID"].str.strip().str[-1].astype(int)
@@ -779,11 +787,26 @@ if __name__ == "__main__":
         wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'simulated_heads_monthly_flopy.csv'))
         wls_sim_SP['DATE'] = pd.to_datetime("2013-12-01") + pd.to_timedelta(wls_sim_SP.Time, unit="days") #subtracted one month to match how we resample OBS to monthly using MS, which is first day of the month.
 
+    if (mode == "monthly") and old_WL_sources:
+        rebound_WLdata = new_wl_meas_monthly #averaged by SP = monthly, client rebound data (+ post-calib)
+        calib_WLdata = wls_obs_2014to2020_monthly #wl_meas_2014 (resampled to monthly)
+        WLsim = wls_sim_SP
+        WLsim_2014 = wl_sim_2014 #incase we want to plot SSPA calib model 2014-2020
+    elif (mode == "monthly") and (old_WL_sources == False):
+        WLsim = wls_sim_SP
+        WLsim_2014 = wl_sim_2014 #incase we want to plot SSPA calib model 2014-2020
+    elif (mode == "daily") and old_WL_sources:
+        rebound_WLdata = new_wl_meas_daily
+        calib_WLdata = wl_meas_2014_daily
+        WLsim = wls_sim_daily
+    else:
+        sys.exit()
+
 
     ### CONCENTRATIONS ###
     ## Simulated CONC, 2014 to 2023 extended model:
     crvi_ifile = os.path.join(mdir, f'{sce}', f'tran_2014_2023', 'post_process',
-                              'mod2obs_monitoring_wells_100D', 'simulated_conc_mod2obs.csv')
+                              'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv')
     crvi_sim = pd.read_csv(crvi_ifile)
     crvi_sim.rename(columns={'SAMP_SITE_NAME':'NAME','SAMP_DATE':'DATE'}, inplace = True)
 
@@ -791,16 +814,6 @@ if __name__ == "__main__":
     crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
     crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs_v2.csv'), index_col = 'DATE', parse_dates = True) #NEEDS UPDATING UNTIL OCT 2023
 
-    if mode == "monthly":
-        wls_obs = wl_meas_monthly #averaged by SP = monthly, client data
-        wls_obs2 = wls_obs_2014to2020_monthly #wl_meas_2014 resampled to monthly
-        wls_sim = wls_sim_SP
-        wls_sim2 = wl_sim_2014
-    if mode == "daily":
-        wls_obs = wl_meas_daily
-        wls_obs2 = wl_meas_2014_daily
-        wls_sim = wls_sim_daily
-        # wls_sim2 = wl_sim_2014
 
     ## If we want to use average WL or max concentration of layers, group here:
     group = True
@@ -808,44 +821,50 @@ if __name__ == "__main__":
     rum2 = True
     if group:
         if rum2:
-            temp = wls_sim[wls_sim['Layer'] <= 4]
+            temp = WLsim[WLsim['Layer'] <= 4]
             mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
             mywell_sim['Layer'] = 'Unconfined'
-            mywell_sim2 = wls_sim[wls_sim['Layer'] == 9]
+            mywell_sim2 = WLsim[WLsim['Layer'] == 9]
             mywell_sim2['Layer'] = 'RUM-2'
-            wls_sim = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
+            WLsim = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
 
             if mode == "monthly":
-                temp = wls_sim2[wls_sim2['Layer'] <= 4] ###FloPy 2014-2020 model
+                temp = WLsim_2014[WLsim_2014['Layer'] <= 4] ###FloPy 2014-2020 model
                 mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
                 mywell_sim['Layer'] = 'Unconfined'
-                mywell_sim2 = wls_sim2[wls_sim2['Layer'] == 6] #2014-2020 model is 6-layered
+                mywell_sim2 = WLsim_2014[WLsim_2014['Layer'] == 6] #2014-2020 model is 6-layered
                 mywell_sim2['Layer'] = 'RUM-2'
-                wls_sim2 = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
+                WLsim_2014 = pd.concat([mywell_sim, mywell_sim2])[['DATE', 'NAME', 'Head', 'Layer']]
         else:
-            temp = wls_sim[wls_sim['Layer'] <= 4]
+            temp = WLsim[WLsim['Layer'] <= 4]
             mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
             mywell_sim['Layer'] = 'Unconfined'
-            wls_sim = mywell_sim
+            WLsim = mywell_sim
             if mode == "monthly":
-                temp = wls_sim2[wls_sim2['Layer'] <= 4] ###FloPy 2014-2020 model
+                temp = WLsim_2014[WLsim_2014['Layer'] <= 4] ###FloPy 2014-2020 model
                 mywell_sim = temp.groupby(['DATE', 'NAME']).agg({'Head': 'mean'}).reset_index()
                 mywell_sim['Layer'] = 'Unconfined'
-                wls_sim2 = mywell_sim
+                WLsim_2014 = mywell_sim
     else:
         pass
 
-    wls_sim.set_index('DATE', inplace=True)
-    wls_sim2.set_index('DATE', inplace=True)
+    WLsim.set_index('DATE', inplace=True)
+    WLsim_2014.set_index('DATE', inplace=True)
 
     #%% ### PLOTTING
 
     ## Plot WLs and CONCs:
-    plot_WL_vs_conc(wls_obs, wls_obs2, wls_obs_2022, crvi_meas_2014, crvi_meas_2021, wls_sim, wls_sim2, crvi_sim, plot_calib_model=False) #rum flag don't work for this one.
+    if old_WL_sources:
+        plot_WL_vs_conc(rebound_WLdata, calib_WLdata, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim, plot_calib_model=False)
+        residualplots_WL_individual(rebound_WLdata, calib_WLdata, WLsim)
+    else:
+        plot_WL_vs_conc(monthly_WLs_obs_ALL, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim)
+        # residualplots_WL_individual(monthly_WLs_obs_ALL, monthly_WLs_obs_ALL, WLsim)
+
     # plot_WL(wls_obs, wls_obs2, wls_obs_2022, wls_sim, wls_sim2, plot_calib_model=True) #plot_calib_model flag should be FALSE if simulated_heads_mode == "mod2obs"
 
     ## Plot deviations
-    residualplots_WL_individual(wls_obs, wls_obs2, wls_sim)
+
     # residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim)
 
     ### Plot WLs scatterplots:
