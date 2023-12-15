@@ -20,15 +20,52 @@ def import_WL_data():
 
     all_data = {}
     for file in data_files:
-        if not file.endswith("Water Level Detail for Selections9-28-2023.xlsx"):
+        if not file.endswith("Water Level Detail for Selections9-28-2023.xlsx"): # hpham, skip this file
             print(file.split("\\")[-1].split('.')[0]) ## extract filename directoy and use as dict key
             k = file.split("\\")[-1].split('.')[0]
             all_data[k] = pd.read_excel(file, sheet_name = None, engine='openpyxl') #, index_col = 0, parse_dates=True)
 
     strings = [data_files[i].split("\\")[-1].split('.')[0] for i, e in enumerate(data_files)] ## isolate file names without .xlsx extension
-    dict1, dict2, dict3 = all_data[strings[0]].copy(), all_data[strings[1]].copy(), all_data[strings[2]].copy() ## separate data from nested dict into simple dict. create copy to avoid edits to original data.
-    dict4, dict5 = all_data[strings[3]].copy(), all_data[strings[4]].copy()
-    ## manipulations on individual dictionaries. Create consistent Date, ID, and water level columns to later combine all dicts into 1 df
+    
+    ## separate data from nested dict into simple dict. create copy to avoid edits to original data.
+    dict1, dict2 = all_data[strings[0]].copy(), all_data[strings[1]].copy()
+    #dict4, dict5 = all_data[strings[3]].copy(), all_data[strings[4]].copy()
+    
+    #print(dict1)
+    
+
+    ## manipulations on individual dictionaries. Create consistent Date, ID, 
+    # and water level columns to later combine all dicts into 1 df
+    for k in dict1: # AWLN Water Level Tracking D-South v2.xlsx. k is a well name
+        dict1[k].set_index('Date/Time', inplace=True)
+        dict1[k].index = pd.to_datetime(dict1[k].index)
+        dict1[k].index.name = 'Date'
+        dict1[k].insert(0, 'ID', k)
+        dict1[k].rename(columns={'Elevation (m)': 'Water Level (m)'}, inplace=True)
+        dict1[k].rename(columns={'Data Type': 'TYPE'}, inplace=True)
+        #print(f'k={k}\n')
+        #print(f'dict1[k] = {dict1[k].head(2)}\n')
+
+    for k in dict2: #P&T Water Level Tracking D-South v2.xlsx
+        #print(f'k2={k}\n')
+        #print(f'dict2[k] = {dict2[k]}\n')
+        dict2[k] = dict2[k].iloc[9:,:4]
+        #print(f'dict2[k] = {dict2[k]}\n')
+
+        dict2[k].columns = dict2[k].iloc[0]
+        dict2[k].drop(dict2[k].index[0], inplace=True)
+        dict2[k].set_index('Date and Time', inplace=True)
+        dict2[k].index = pd.to_datetime(dict2[k].index)
+        dict2[k].index.name = 'Date'
+        dict2[k].insert(0, 'ID', k)
+        dict2[k].rename(columns={'Elevation of the water level in the well (m)': 'Water Level (m)'}, inplace=True)
+        dict2[k]['TYPE'] = 'XD'
+
+    
+
+    '''
+
+    
     for k in dict1: #100-H_North_ P&T Sensor Data.xlsx
         dict1[k] = dict1[k].iloc[9:]
         dict1[k].columns = dict1[k].iloc[0]
@@ -54,46 +91,53 @@ def import_WL_data():
         dict3[k].insert(0, 'ID', k)
         dict3[k].rename(columns={'HYD_HEAD_METERS_NAVD88': 'Water Level (m)'}, inplace=True)
 
-    for k in dict4: #AWLN Water Level Tracking v2.xlsx
-        dict4[k].set_index('Date/Time', inplace=True)
-        dict4[k].index = pd.to_datetime(dict4[k].index)
-        dict4[k].index.name = 'Date'
-        dict4[k].insert(0, 'ID', k)
-        dict4[k].rename(columns={'Elevation (m)': 'Water Level (m)'}, inplace=True)
 
-    for k in dict5: #P&T Water Level Tracking v2.xlsx
-        print(k)
-        dict5[k] = dict5[k].iloc[9:,:4]
-        dict5[k].columns = dict5[k].iloc[0]
-        dict5[k].drop(dict5[k].index[0], inplace=True)
-        dict5[k].set_index('Date and Time', inplace=True)
-        dict5[k].index = pd.to_datetime(dict5[k].index)
-        dict5[k].index.name = 'Date'
-        dict5[k].insert(0, 'ID', k)
-        dict5[k].rename(columns={'Elevation of the water level in the well (m)': 'Water Level (m)'}, inplace=True)
+    '''
 
-    masterdict = {**dict1, **dict2, **dict3, **dict4, **dict5}  ## combine dicts into one master dict
-    df = pd.concat([v for k, v in masterdict.items()])[['ID', 'Water Level (m)']] ## concatenate all into dataframe
+    outputDir = os.path.join(cwd, 'output', 'water_level_data', f"{sce}")
+    masterdict = {**dict1, **dict2}  ## combine dicts into one master dict
+    
+    ## concatenate all into dataframe
+    df = pd.concat([v for k, v in masterdict.items()])[['ID', 'Water Level (m)', 'TYPE']] 
     df['Water Level (m)'] = pd.to_numeric(df['Water Level (m)'])
+    df['TYPE'] = df['TYPE'].replace('Manual', 'MAN')
     df.drop_duplicates(inplace=True) #size 101474 -> 52954 #duplicates removed
+    df = df.reset_index(drop=False)
+    col = ['ID','Date','Water Level (m)','TYPE']
+    df[col].to_csv(os.path.join(outputDir, 'measured_WLs_hourly_100D.csv'), index=False)
+
+    # Reformat for outlier analysis
+    #df2 = df.reset_index(drop=False)
+    #print(df2)
+    #df2 = df.rename(columns={'Date':'EVENT', 'ID':'NAME', 'Water Level (m)':'VAL'})
+    #df2.to_csv(os.path.join(outputDir, 'measured_WLs_hourly_for_outlier_test_100D.csv'))
+
+    #
+    df.drop_duplicates(inplace=True) #size 101474 -> 52954 #duplicates removed
+    #print(f'df={df}\n')
 
     df_sp = df.reset_index() #resample monthly
     df_sp.set_index(['ID', 'Date'], inplace = True)
     df_sp = df_sp.groupby([pd.Grouper(level = 'ID'),
                        pd.Grouper(freq = 'MS', level=-1)]).mean()
+    #print(f'df={df_sp}\n')
+    
 
+    
+    #
     df_daily = df.reset_index() #resample daily
     df_daily.set_index(['ID', 'Date'], inplace=True)
     df_daily = df_daily.groupby([pd.Grouper(level='ID'),
                            pd.Grouper(freq='D', level=-1)]).mean()
-
-    outputDir = os.path.join(cwd, 'output', 'water_level_data', f"{sce}")
+    #print(f'df={df_daily.head(2)}\n')
+    
+    
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
-    df.to_csv(os.path.join(outputDir, 'measured_WLs_all.csv'))
-    df_sp.to_csv(os.path.join(outputDir, 'measured_WLs_monthly.csv'))
-    df_daily.to_csv(os.path.join(outputDir, 'measured_WLs_daily.csv'))
+    df.to_csv(os.path.join(outputDir, 'measured_WLs_all_100D.csv'))
+    df_sp.to_csv(os.path.join(outputDir, 'measured_WLs_monthly_100D.csv'))
+    df_daily.to_csv(os.path.join(outputDir, 'measured_WLs_daily_100D.csv'))
 
     ## resample to monthly to match model SPs. Possibly integrate this directly into plotting function.
     # mydict, mydict_sp = {}, {}
@@ -108,6 +152,8 @@ def import_WL_data():
     #     mydict_sp[k] = dict3[k].iloc[:,0].apply(pd.to_numeric).resample('MS').mean()
 
     return df, df_sp, df_daily
+    
+
 
 def read_head(ifile_hds, df, all_lays=False):
     """
@@ -218,7 +264,8 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     sce = 'obs_2021_Oct2023'
     df, df_sp, df_daily = import_WL_data() ## run once at beginning of workflow
-
+    
+    '''
     coordscsv = os.path.join(os.path.dirname(cwd), 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
     mywells = get_wells_ij(df, coordscsv)
 
@@ -227,3 +274,4 @@ if __name__ == "__main__":
         hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
         myHds = read_head(hds_file, mywells)
         generate_plots(df) ## provide column label to be plotted
+    '''
