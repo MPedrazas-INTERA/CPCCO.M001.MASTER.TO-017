@@ -19,6 +19,7 @@ model_files/flow_2023_2125/100hr3_2023to2125.rch
 scripts/output/boundary_conditions/
 /model_packages/pred_2023_2125/rch/output/100hr3_2023to2125.rch
 /mruns
+/refs
 scripts/del_download_river_stage/
 sico/
 layer_top_bot_ele*
