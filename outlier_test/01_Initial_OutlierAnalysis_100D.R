@@ -60,21 +60,27 @@ library(sspaHanfordMonthly)
 
 
 # hpham: read the processed data from py08a_plot_water_levels_100D.py
-WL <- fread('scripts/output/water_level_data/obs_2021_Oct2023/measured_WLs_hourly_100D.csv')
+WL <- fread('scripts/output/water_level_data/obs_2021_Oct2023/measured_WLs_hourly_100D_reformatted.csv')
 
 setnames(WL,'Date','EVENT')
 setnames(WL,'ID','NAME')
 setnames(WL,'Water Level (m)','VAL')
 
 WL$VAL <- as.numeric(WL$VAL)
-WL$EVENT <- as.Date(WL$EVENT)
+
+# REMOVE ENTRIES WITH NO VALUES
+WL <- subset(WL,!is.na(WL$VAL))
+WL$EVENT <- sub('EDT ', '', WL$EVENT)
+WL$EVENT <- sub('EST ', '', WL$EVENT)
+
+#WL$EVENT2 <- as.POSIXct(WL$EVENT, format = "%Y-%m-%d %H:%M:%S") 
+EFORM='%m/%d/%Y %H:%M:%S'
+WL$EVENT <- as.POSIXct(WL$EVENT, format=EFORM, tz='GMT')
 
 #
 #WL$TYPE <- 'XD'
-WL$Source <- 'HEIS'
+WL$Source <- 'CPCCo'
 
-# Remove row with empty data
-WL <- WL
 
 
 #--------------------------------------------------------------------------------------------------------------#
@@ -99,12 +105,12 @@ setnames(ADJ_SCREEN,names(ADJ_SCREEN),c('NAME','TOP','BOT'))
 SCREEN <- SCREEN[!NAME %in% ADJ_SCREEN$WELL_NAME]
 SCREEN <- rbind(SCREEN,ADJ_SCREEN)
 
-row1 <- which(SCREEN$NAME == '199-K-32A')
-row2 <- which(SCREEN$NAME == '199-K-36')
-
-SCREEN$BOT[row1] <- 115.75
-SCREEN$TOP[row2] <- 123.48
-SCREEN$BOT[row2] <- 117.38
+# row1 <- which(SCREEN$NAME == '199-K-32A')
+# row2 <- which(SCREEN$NAME == '199-K-36')
+# 
+# SCREEN$BOT[row1] <- 115.75
+# SCREEN$TOP[row2] <- 123.48
+# SCREEN$BOT[row2] <- 117.38
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
@@ -128,28 +134,6 @@ OUT$ADJ <- as.numeric(OUT$ADJ)
 #--Extract Coordinates--#
 COORDS <- writeWell(WELL, SCREEN, ELEV, RK, OUT=paste0(DIR,'outlier_test/output'))
 #--------------------------------------------------------------------------------------------------------------#
-WL <- WL[NAME==c('199-D2-11', '199-D5-106')]
-
-# 199-D2-11
-# 199-D5-106
-
-# 199-D5-133 # issue
-# 199-D5-17 # issue
-
-# 199-D5-33
-# 199-D5-36
-# 199-D5-37
-# 199-D5-38
-# 199-D5-41
-# 199-D5-43
-# 199-D5-103
-# 199-D5-104
-# 199-D5-146
-# 199-D5-151
-# 199-D5-160
-# 199-D5-34
-# 199-D5-39
-# 199-D5-128
 
 
 
@@ -536,4 +520,18 @@ comb_WL_sorted <- setorderv(comb_WL, keycol)
 #plot(comb_WL_sorted$VAL_ORG)
 #plot(comb_WL_sorted$SSPAVAL)
 # Save to file
-write.csv(comb_WL_sorted, file='outlier_test/output/WL_outlier_v121523.csv', row.names=FALSE)
+write.csv(comb_WL_sorted, file='outlier_test/output/WL_outlier_v121623.csv', row.names=FALSE)
+
+# Write WL without outliers
+comb_WL_sorted2  <- comb_WL_sorted[MAPUSE==TRUE]
+comb_WL_sorted2 <- subset(comb_WL_sorted2, select= c('NAME', 'EVENT', 'SSPAVAL'))
+
+#Change col names
+setnames(comb_WL_sorted2,'EVENT','Date')
+setnames(comb_WL_sorted2,'NAME','ID')
+setnames(comb_WL_sorted2,'SSPAVAL','Water Level (m)')
+
+write.csv(comb_WL_sorted2, file='outlier_test/output/WL_no_outlier_v121723.csv', row.names=FALSE)
+
+
+
