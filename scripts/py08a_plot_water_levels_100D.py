@@ -98,13 +98,17 @@ def import_WL_data():
     masterdict = {**dict1, **dict2}  ## combine dicts into one master dict
     
     ## concatenate all into dataframe
+    
     df = pd.concat([v for k, v in masterdict.items()])[['ID', 'Water Level (m)', 'TYPE']] 
     df['Water Level (m)'] = pd.to_numeric(df['Water Level (m)'])
     df['TYPE'] = df['TYPE'].replace('Manual', 'MAN')
+    df.to_csv(os.path.join(outputDir, 'measured_WLs_hourly_100D.csv'), index=True)
+    
+    
     df.drop_duplicates(inplace=True) #size 101474 -> 52954 #duplicates removed
     df = df.reset_index(drop=False)
     col = ['ID','Date','Water Level (m)','TYPE']
-    df[col].to_csv(os.path.join(outputDir, 'measured_WLs_hourly_100D.csv'), index=False)
+    df[col].to_csv(os.path.join(outputDir, 'measured_WLs_hourly_100D_drop_duplicates.csv'), index=False)
 
     # Reformat for outlier analysis
     #df2 = df.reset_index(drop=False)
