@@ -78,7 +78,7 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
     Common errors: double check column names (e.g. "NAME" vs "ID", "time" vs "Date", etc.)
         rename columns outside of function for consistency.
     """
-    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', f'{sce}')
+    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots_100D', f'{sce}')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -138,7 +138,7 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
         if plot_calib_model:
             ax.plot(toplot_wl2.index, toplot_wl2['Head'], label='2014-2020 Model', color="orange", ls='--', zorder=5, alpha=0.25)
 
-        ax.set_ylim([112.8,118])
+        ax.set_ylim([112.8,121])
 
         ###CONCENTRATION
         ax2.scatter(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], c='crimson', s=20, zorder=5,
@@ -306,8 +306,8 @@ def crossplots_WL_individual(wls_obs, wls_obs2, wls_sim, mode):
 
         ax.set_ylabel('Simulated Head 2021-2023 (m)', fontweight='bold', fontsize=14)
         ax.set_xlabel('Observed Head 2021-2023 (m)', fontweight='bold', fontsize=14)
-        ax.set_xlim([112.8, 118])
-        ax.set_ylim([112.8, 118])
+        ax.set_xlim([112.8, 121])
+        ax.set_ylim([112.8, 121])
 
         ax.minorticks_on()
         ax.grid(which='major', linestyle='-',
@@ -435,8 +435,8 @@ def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
             ax.set_ylabel('Simulated (m)', fontsize=14)
             ax.set_xlabel('Observed (m)', fontsize=14)
             ax.label_outer()
-            ax.set_xlim([112.8, 118])
-            ax.set_ylim([112.8, 118])
+            ax.set_xlim([112.8, 121])
+            ax.set_ylim([112.8, 121])
 
             ax.minorticks_on()
             ax.grid(which='major', linestyle='-',
@@ -533,7 +533,7 @@ def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
 
         ax.set_ylabel('Observed - Simulated (m)', fontweight='bold', fontsize=14)
         ax.set_xlabel('Observed Head (m)', fontweight='bold', fontsize=14)
-        ax.set_xlim([112.8, 118])
+        ax.set_xlim([112.8, 121])
         ax.set_ylim([-3,3])
 
         ax.minorticks_on()
@@ -635,7 +635,7 @@ def residualplots_WL_subplots(wls_obs, wls_obs2, wls_sim):
             ax.set_ylabel('Observed - Simulated (m)', fontsize=14)
             ax.set_xlabel('Observed (m)', fontsize=14)
             ax.label_outer()
-            ax.set_xlim([112.8, 118])
+            ax.set_xlim([112.8, 121])
             ax.set_ylim(-3,3)
 
             ax.minorticks_on()
@@ -689,15 +689,46 @@ if __name__ == "__main__":
     chemdir = os.path.join(cwd, 'output', 'concentration_data')
 
     times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
-    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_100D.csv')) # hpham updated
+    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_100D_v2.csv')) # hpham updated
     calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv')) # hpham? 
 
     ### SET WELL NAME ASSOCIATIONS ###
-    wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
-     '199-H4-15A': "North Manual", '199-H4-17': "North PT Sensor Data", '199-H4-18': "North Manual", '199-H4-4': "North PT Sensor Data", '199-H4-5': "North AWLN",
-     '199-H4-64': "North Manual", '199-H4-65': "North Manual", '199-H4-8': "North AWLN", '199-H4-84': "North AWLN", '199-H4-85': "North Manual",
-     '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual",
-     '199-H3-10': "RUM-2", '199-H3-12': "RUM-2", '199-H3-13': "RUM-2", '199-H3-30': "RUM-2", '199-H3-32': "RUM-2", '199-H4-90': "RUM-2"}
+    #wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
+    # '199-H4-15A': "North Manual", '199-H4-17': "North PT Sensor Data", '199-H4-18': "North Manual", '199-H4-4': "North PT Sensor Data", '199-H4-5': "North AWLN",
+    # '199-H4-64': "North Manual", '199-H4-65': "North Manual", '199-H4-8': "North AWLN", '199-H4-84': "North AWLN", '199-H4-85': "North Manual",
+    # '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual",
+    # '199-H3-10': "RUM-2", '199-H3-12': "RUM-2", '199-H3-13': "RUM-2", '199-H3-30': "RUM-2", '199-H3-32': "RUM-2", '199-H4-90': "RUM-2"}
+    
+    wellDict = {'199-D1-1':'Test',
+                '199-D2-11':'Test',
+                '199-D2-14':'Test',
+                '199-D5-15':'Test',
+                '199-D5-17':'Test',
+                '199-D5-33':'Test',
+                '199-D5-34':'Test',
+                '199-D5-37':'Test',
+                '199-D5-39':'Test',
+                '199-D5-41':'Test',
+                '199-D5-43':'Test',
+                '199-D5-44':'Test',
+                '199-D5-103':'Test',
+                '199-D5-104':'Test',
+                '199-D5-106':'Test',
+                '199-D5-123':'Test',
+                '199-D5-128':'Test',
+                '199-D5-133':'Test',
+                '199-D5-142':'Test',
+                '199-D5-145':'Test',
+                '199-D5-146':'Test',
+                '199-D5-149':'Test',
+                '199-D5-150':'Test',
+                '199-D5-151':'Test',
+                '199-D5-152':'Test',
+                '199-D5-160':'Test',
+                'C6272':'Test',
+                'AT-D-1-M':'Test',
+                '35-S':'Test'}
+
 
     #%%   ### IMPORT FILES ###
 
@@ -706,20 +737,20 @@ if __name__ == "__main__":
 
     ### Monthly WL (obs and sim) for 2014 to 2020, from original calibration model:
     wl_2014 = pd.read_csv(
-        os.path.join(wldir, "calib_2014_2020", "calib_2014to2020_obs_sim.csv"))  ###monthly/SP-averaged
+        os.path.join(wldir, "calib_2014_2020", "calib_2014to2020_obs_sim.csv"))  ###monthly/SP-averaged hpham: no need to change
     wl_meas_2014 = wl_2014[["Well", "Time", "Observed"]]
-    wl_sim_2014 = pd.read_csv(os.path.join(wldir, 'calib_2014_2020', 'simulated_heads_monthly_flopy.csv'))
+    wl_sim_2014 = pd.read_csv(os.path.join(wldir, 'calib_2014_2020', 'simulated_heads_monthly_flopy.csv')) # hpham: No wells in 100-D, need to update? Do we need this? 
     wl_sim_2014['DATE'] = pd.to_datetime("2013-12-01") + pd.to_timedelta(wl_sim_2014.Time,
                                                                          unit="days")  # subtracted one month to match how we resample to monthly using MS, which is first day of the month.
-    if old_WL_sources:
+    if old_WL_sources: # hpham: This is no longer used. 
         ### Observed WL for 2021 to Oct 2023: #This comes from script py08a_plot_water_levels.py
-        new_wl_meas_monthly = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_monthly.csv'), index_col='Date', parse_dates=True)
-        new_wl_meas_daily = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_daily.csv'), index_col='Date', parse_dates=True)
+        new_wl_meas_monthly = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_monthly_100D.csv'), index_col='Date', parse_dates=True) #hpham: Need to rm outlier
+        new_wl_meas_daily = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_daily_100D.csv'), index_col='Date', parse_dates=True)  #hpham: Need to rm outlier
 
 
         ### Daily obs raw WL data for 2014 to 2020
         ### [A] extracted from S:\AUS\CHPRC.C003.HANOFF\Rel.044\045_100AreaPT\d01_CY2021_datapack\0_Data\Water_Level_Data\DataPull_020222
-        wl_meas_2014_daily = pd.read_csv(os.path.join(cwd, wldir, 'obs_2014_2020', 'measured_WLs_2014to2020_daily_V2.csv'))
+        wl_meas_2014_daily = pd.read_csv(os.path.join(cwd, wldir, 'obs_2014_2020', 'measured_WLs_2014to2020_daily_V2.csv')) # Need to update
         wl_meas_2014_daily['EVENT'] = pd.to_datetime(wl_meas_2014_daily['EVENT']).dt.normalize()
         wl_meas_2014_daily.rename(columns={'EVENT':'DATE'}, inplace=True)
         wl_meas_2014_daily.set_index('DATE', inplace=True)
@@ -759,14 +790,14 @@ if __name__ == "__main__":
     else:
         ### Kirsten's AWLN data + Jose's manual data + Sylvana's data - RESAMPLED TO MONTHLY
         ### Script used: py21c_processWL_fromJose.py
-        monthly_WLs_obs_ALL = pd.read_csv(os.path.join(wldir, 'obs_2014_Oct2023', 'measured_WLs_monthly.csv'), index_col='DATE', parse_dates=True)
+        monthly_WLs_obs_ALL = pd.read_csv(os.path.join(wldir, 'obs_2014_Oct2023', 'measured_WLs_monthly_100D.csv'), index_col='DATE', parse_dates=True) # hpham: Updated
 
     ## MOD2OBS simulated WL monthly (extended model):
     simulated_heads_mode = "mod2obs"
     mode = "monthly"
 #%%
     if (simulated_heads_mode == 'mod2obs') and (mode == "monthly"):
-        wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'simulated_heads_monthly.dat'), #this is renamed bore_sample_output.dat for flow #check
+        wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'simulated_heads_monthly_100D.dat'), #this is renamed bore_sample_output.dat for flow #check
                                  delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
         wls_sim_SP["NAME"] = "199-" + wls_sim_SP["ID"].str.strip().str[:-3]  # monitoring wells
         wls_sim_SP["Layer"] = wls_sim_SP["ID"].str.strip().str[-1].astype(int)
@@ -806,11 +837,12 @@ if __name__ == "__main__":
     ### CONCENTRATIONS ###
     ## Simulated CONC, 2014 to 2023 extended model:
     crvi_ifile = os.path.join(mdir, f'{sce}', f'tran_2014_2023', 'post_process',
-                              'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv')
+                              'mod2obs_monitoring_wells_100D', 'simulated_conc_mod2obs_100D.csv') # hpham: updated
     crvi_sim = pd.read_csv(crvi_ifile)
     crvi_sim.rename(columns={'SAMP_SITE_NAME':'NAME','SAMP_DATE':'DATE'}, inplace = True)
 
     ### Observed CONC for 2014 to 2021, and 2021 - 2023:
+    # hpham: Need update (Robin)
     crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
     crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs_v2.csv'), index_col = 'DATE', parse_dates = True) #NEEDS UPDATING UNTIL OCT 2023
 
