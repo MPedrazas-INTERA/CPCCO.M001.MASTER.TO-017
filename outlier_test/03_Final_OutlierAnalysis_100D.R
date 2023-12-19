@@ -6,7 +6,9 @@
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Set working directory--#
-DIR <- 'c:/Users/hpham/OneDrive - INTERA Inc/projects/045_100AreaPT/t100areaPT/'
+#DIR <- 'c:/Users/hpham/OneDrive - INTERA Inc/projects/045_100AreaPT/t100areaPT/'
+DIR <- 'd:/projects/CPCCO.M001.MASTER.TO-017/'
+
 setwd(DIR)
 #--------------------------------------------------------------------------------------------------------------#
 
@@ -18,35 +20,36 @@ library(rgdal)
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Import Raw Outlier Results--#
-load('1a_AWLN_Outlier_Analysis/Output/DataPull_020222/Raw_OutlierTests.Rdata')
+load('outlier_test/output//Raw_OutlierTests.Rdata')
 #--------------------------------------------------------------------------------------------------------------#
 
 
 
 #--Import Well Location and Screen Data--#
-load('0_Data/Well_Data/DataPull_020222/WELL.RData')
+load('outlier_test/output/DATA_OUT.RData')
+
 #--Import Well List--#
-WELLS <- AREA[OU %like% '100']
-WELLS <- WELLS[!OU == '1100-EM-1']
+#WELLS <- AREA[OU %like% '100']
+#WELLS <- WELLS[!OU == '1100-EM-1']
 
 #--Combine AWLN Water-Levels with OU--#
-setkey(AWLN,'NAME')
-setkey(AREA,'NAME')
-AWLN2 <- AREA[AWLN]
+#setkey(AWLN,'NAME')
+#setkey(AREA,'NAME')
+#AWLN2 <- AREA[AWLN]
 
 #-----------------------------------------------------------------------------#
 #--Remove Data not in River Corridor--#
-AWLN <- AWLN2[NAME %in% WELLS$NAME]
+#AWLN <- AWLN2[NAME %in% WELLS$NAME]
 #-----------------------------------------------------------------------------#
 
 #--Combine Mannual Water-Levels with OU--#
-setkey(MAN,'NAME')
-setkey(AREA,'NAME')
-MAN2 <- AREA[MAN]
+#setkey(MAN,'NAME')
+#setkey(AREA,'NAME')
+#MAN2 <- AREA[MAN]
 
 #-----------------------------------------------------------------------------#
 #--Remove Data not in River Corridor--#
-MAN <- MAN2[NAME %in% WELLS$NAME]
+#MAN <- MAN2[NAME %in% WELLS$NAME]
 #-----------------------------------------------------------------------------#
 
 
@@ -55,7 +58,7 @@ MAN <- MAN2[NAME %in% WELLS$NAME]
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Import Manual Adjustments from 2006 to 2021--# hpham
-OUT <- fread('0_Data/Water_Level_Data/Manual Adjustments and Outliers - 2006-2021.csv')
+OUT <- fread('outlier_test/input/ManualAdjustmentsandOutliers_2006_2021.csv')
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
@@ -177,18 +180,6 @@ t_end <- Sys.time()
 #--------------------------------------------------------------------------------------------------------------#
 
 
-#--------------------------------------------------------------------------------------------------------------#
-#--Edits to 199-K-157 by hpham  on 2/13/22 --#
-SUB <- AWLN[NAME == '199-K-157']
-AWLN <- AWLN[!NAME == '199-K-157']
-
-SUB$CONFIDENCE_ADJ <- ifelse(SUB$SSPAVAL > 121 & SUB$EVENT>ISOdatetime(2021,10,01,00,00,00),'NONE',SUB$CONFIDENCE_ADJ)
-SUB$MAPUSE <- ifelse(SUB$SSPAVAL > 121& SUB$EVENT>ISOdatetime(2021,10,01,00,00,00),FALSE,SUB$MAPUSE)
-SUB$VALID <- ifelse(SUB$SSPAVAL > 121& SUB$EVENT>ISOdatetime(2021,10,01,00,00,00),FALSE,SUB$VALID)
-AWLN <- rbind(AWLN,SUB)
-#--------------------------------------------------------------------------------------------------------------#
-
-
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Add Drift for 199-D2-11--#
@@ -307,32 +298,6 @@ AWLN <- rbind(AWLN,sub)
 
 
 
-#--------------------------------------------------------------------------------------------------------------#
-#--Add Drift for 199-H3-2B--#
-start <- ISOdatetime(2016,02,24,14,00,00)
-
-sub <- subset(AWLN,AWLN$NAME == '199-H3-2B')
-sub_man <- subset(MAN,MAN$NAME == '199-H3-2B' & MAN$EVENT > start)
-AWLN <- AWLN[!NAME == '199-H3-2B']
-
-sub$ADJ <- ifelse(sub$EVENT > ISOdatetime(2017,04,21,07,00,00) & sub$EVENT < ISOdatetime(2017,12,28,00,00,00),-0.3083,0)
-sub$SSPAVAL <- sub$VAL_ORG + sub$ADJ
-
-row1 <- which(abs(sub_man$EVENT[1] - sub$EVENT) == min(abs(sub_man$EVENT[1] - sub$EVENT)))
-row2 <- which(abs(sub_man$EVENT[6] - sub$EVENT) == min(abs(sub_man$EVENT[6] - sub$EVENT)))
-
-x1 <- sub_man$SSPAVAL[1] - 114.8323
-x2 <- sub_man$SSPAVAL[6] - sub$SSPAVAL[row2]
-
-fit <- lm(c(x1,x2) ~ as.numeric(c(sub_man$EVENT[1],sub_man$EVENT[6])))
-
-slope <- as.numeric(fit$coefficients[2])
-int <- as.numeric(fit$coefficients[1])
-
-sub$ADJ <- ifelse(sub$EVENT >= start & sub$EVENT <= ISOdatetime(2017,12,28,00,00,00), (as.numeric(sub$EVENT) * slope) + int,0)
-sub$ADJ_TYPE <- ifelse(sub$EVENT >= start & sub$EVENT <= ISOdatetime(2017,12,28,00,00,00),'Drift',sub$ADJ_TYPE)
-sub$SSPAVAL <- sub$SSPAVAL + sub$ADJ
-
 #--hpham added for testing
 #sub_test <- subset(sub, sub$EVENT > ISOdatetime(2017,04,01,07,00,00)) # temp
 #sub_test <- subset(sub, sub$EVENT > ISOdatetime(2019,1,1,07,00,00)) # temp
@@ -383,7 +348,7 @@ DATA <- list(AWLN=AWLN,
 #--------------------------------------------------------------------------------------------------------------#
 #--Save Dataset--#
 t_start_save <- Sys.time()
-save(DATA,file='1a_AWLN_Outlier_Analysis/Output/DataPull_020222/DATA_FINAL.RData')
+save(DATA,file='outlier_test/output/DATA_FINAL.RData')
 t_end_save <- Sys.time()
 #--------------------------------------------------------------------------------------------------------------#
 
@@ -399,48 +364,49 @@ t_end_save - t_start_save
 # -- Extract data for 100-A ----
 # -- hpham added these lines 3/9/2022 -----------------------------------------#
 #--Import Water-Level Data from HEIS and AWLN Databases--#
-load('1a_AWLN_Outlier_Analysis/Output/DataPull_020222/DATA_FINAL.RData')
+load('outlier_test/output/DATA_FINAL.RData')
 
 #--Import Well Location and Screen Data--#
-load('0_Data/Well_Data/DataPull_020222/WELL.RData')
+load('outlier_test/output/WELL.RData')
+
 #--Import Well List--#
-WELLS <- AREA[OU %like% '100']
-WELLS <- WELLS[!OU == '1100-EM-1']
+#WELLS <- AREA[OU %like% '100']
+#WELLS <- WELLS[!OU == '1100-EM-1']
 
 #--Combine AWLN Water-Levels with OU--#
-AWLN <- DATA$AWLN
-setkey(AWLN,'NAME')
-setkey(AREA,'NAME')
-AWLN2 <- AREA[AWLN]
+#AWLN <- DATA$AWLN
+#setkey(AWLN,'NAME')
+##setkey(AREA,'NAME')
+#AWLN2 <- AREA[AWLN]
 
 #-----------------------------------------------------------------------------#
 #--Remove Data not in River Corridor--#
-AWLN <- AWLN2[NAME %in% WELLS$NAME]
+#AWLN <- AWLN2[NAME %in% WELLS$NAME]
 #-----------------------------------------------------------------------------#
 
 #--Combine Mannual Water-Levels with OU--#
-MAN <- DATA$MAN
-setkey(MAN,'NAME')
-setkey(AREA,'NAME')
-MAN2 <- AREA[MAN]
+#MAN <- DATA$MAN
+#setkey(MAN,'NAME')
+#setkey(AREA,'NAME')
+#MAN2 <- AREA[MAN]
 
 #-----------------------------------------------------------------------------#
 #--Remove Data not in River Corridor--#
-MAN <- MAN2[NAME %in% WELLS$NAME]
+#MAN <- MAN2[NAME %in% WELLS$NAME]
 
 #-----------------------------------------------------------------------------#
-OUs <- c('100-HR-3-D', '100-HR-3-H','100-KR-4')
-AWLN <- AWLN[OU %in% OUs]
-MAN <- MAN[OU %in% OUs]
+#OUs <- c('100-HR-3-D', '100-HR-3-H','100-KR-4')
+#AWLN <- AWLN[OU %in% OUs]
+#MAN <- MAN[OU %in% OUs]
 
 #--Combine Data--#
 DATA <- list(AWLN=AWLN,
              MAN=MAN)
 #--Save Dataset--#
-save(DATA,file='1a_AWLN_Outlier_Analysis/Output/DataPull_020222/DATA_FINAL_100Area.RData')
+#save(DATA,file='1a_AWLN_Outlier_Analysis/Output/DataPull_020222/DATA_FINAL_100Area.RData')
 
-AWLN <- AWLN[EVENT >= ISOdatetime(2021,1,1,00,00,00)]
-MAN <- MAN[EVENT >= ISOdatetime(2021,1,1,00,00,00)]
+AWLN <- AWLN[EVENT >= ISOdatetime(2023,1,1,00,00,00)]
+MAN <- MAN[EVENT >= ISOdatetime(2023,1,1,00,00,00)]
 
 
 
@@ -450,23 +416,23 @@ MAN <- MAN[EVENT >= ISOdatetime(2021,1,1,00,00,00)]
 
 #load('1a_AWLN_Outlier_Analysis/Output/DataPull_020222/DATA_FINAL_100Area.RData')
 Data_all <- rbind(AWLN,MAN)
-Data_all <- Data_all[OU %in% OUs]
-data_offset <- Data_all[ADJ_TYPE=="Offset",list(NAME,OU,EVENT,TYPE,SSPAVAL)]
+#Data_all <- Data_all[OU %in% OUs]
+data_offset <- Data_all[ADJ_TYPE=="Offset",list(NAME,EVENT,TYPE,SSPAVAL)]
 #unique(Data_all$ADJ_TYPE)
-unique(Data_all$OU)
+#unique(Data_all$OU)
 
 #AWLN <- DATA$AWLN[MAPUSE == TRUE, list(NAME,EVENT,TYPE,SSPAVAL)]
 
 
 # -- Table B-4. AWLN Data Excluded Based on Outlier Tests ---------------------
-AWLN_excluded <- AWLN[MAPUSE == FALSE,list(NAME,OU,EVENT,TYPE,SSPAVAL)]
+AWLN_excluded <- AWLN[MAPUSE == FALSE,list(NAME,EVENT,TYPE,SSPAVAL)]
 
 # -- Table B-5. Manual Water Level Data Excluded Based on Outlier Tests -------
-MAN_excluded <- MAN[MAPUSE == FALSE,list(NAME,OU,EVENT,TYPE,SSPAVAL)]
+MAN_excluded <- MAN[MAPUSE == FALSE,list(NAME,EVENT,TYPE,SSPAVAL)]
 
 # -- Write table to csv files -------------------------------------------------
-run_ver <- 'v021722'
-OUT <- paste("1_Water_Level_Mapping/Output/", run_ver,"/", sep="")
+#run_ver <- 'v121923'
+OUT <- paste("outlier_test/output/csv/", sep="")
 write.table(data_offset,file=paste0(OUT,'offset_corrections.csv'),sep=',',row.names=FALSE)
 write.table(AWLN_excluded,file=paste0(OUT,'AWLN_excluded.csv'),sep=',',row.names=FALSE)
 write.table(MAN_excluded,file=paste0(OUT,'MAN_excluded.csv'),sep=',',row.names=FALSE)

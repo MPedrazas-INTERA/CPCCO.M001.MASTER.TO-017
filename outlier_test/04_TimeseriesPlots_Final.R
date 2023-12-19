@@ -6,7 +6,9 @@
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Set working directory--#
-DIR <- 'c:/Users/hpham/OneDrive - INTERA Inc/projects/045_100AreaPT/t100areaPT/'
+#DIR <- 'c:/Users/hpham/OneDrive - INTERA Inc/projects/045_100AreaPT/t100areaPT/'
+DIR <- 'd:/projects/CPCCO.M001.MASTER.TO-017/'
+
 setwd(DIR)
 #--------------------------------------------------------------------------------------------------------------#
 
@@ -18,26 +20,27 @@ library(sspaplottools)
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Import Data--#
-load('1a_AWLN_Outlier_Analysis/Output/DataPull_020222/DATA_FINAL.RData')
-load('0_Data/Well_Data/DataPull_020222/WELL.RData')
+load('outlier_test/output/DATA_FINAL.RData')
+load('outlier_test/output/WELL.RData')
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Load User-Defined functions--#
-source('1a_AWLN_Outlier_Analysis/RFunctions/pltAWLNTS.R')
+source('outlier_test/RFunctions/pltAWLNTS.R')
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Extract AWLN Wells--#
 WELLS <- data.table(NAME=sort(unique(c(DATA$AWLN$NAME))))
+WELLS$OU <- '100-HR-3'
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Designate OU for Each Well--#
-setkey(WELLS,'NAME')
-setkey(AREA,'NAME')
-WELLS <- AREA[WELLS]
-WELLS <- WELLS[!is.na(OU)]
+#setkey(WELLS,'NAME')
+#setkey(AREA,'NAME')
+#WELLS <- AREA[WELLS]
+#WELLS <- WELLS[!is.na(OU)]
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
@@ -60,9 +63,9 @@ for (i in 1:length(OUs)){
     
     #--------------------------------------------------------------------------------------------------------------#
     #--Subset dataset by analyte--#
-    AWLN_SUB <- subset(DATA$AWLN,DATA$AWLN$NAME==well_sub[n] & year(DATA$AWLN$EVENT) >= 2018)
-    MAN_SUB <- subset(DATA$MAN,DATA$MAN$NAME==well_sub[n] & year(DATA$MAN$EVENT) >= 2018)
-    ELEVBOT_SUB <- subset(ELEVBOT,NAME==well_sub[n])
+    AWLN_SUB <- subset(DATA$AWLN,DATA$AWLN$NAME==well_sub[n] & year(DATA$AWLN$EVENT) >= 2023)
+    MAN_SUB <- subset(DATA$MAN,DATA$MAN$NAME==well_sub[n] & year(DATA$MAN$EVENT) >= 2023)
+    ELEVBOT_SUB <- subset(ELEV,NAME==well_sub[n])
     ELEVTOP_SUB <- subset(COORDS,NAME==well_sub[n])
     SCREEN_SUB <- subset(SCREEN,NAME==well_sub[n])
     #--------------------------------------------------------------------------------------------------------------#
@@ -82,14 +85,14 @@ for (i in 1:length(OUs)){
     
     #--------------------------------------------------------------------------------------------------------------#
     #--Designate File Name--#
-    fn <- paste0('1a_AWLN_Outlier_Analysis/Output/DataPull_020222/Final Evaluation/',OUs[i],'/',well_sub[n],'.png')
+    fn <- paste0('outlier_test/output/png/Final_Evaluation/','/',well_sub[n],'.png')
     #--------------------------------------------------------------------------------------------------------------#
     
     #--------------------------------------------------------------------------------------------------------------#
     #--Plot Timeseries--#
     if(nrow(AWLN_SUB) > 0){
       png(fn,height=8.5,width=11,units='in',res=600)
-      pltAWLNTS(AWLN_SUB,MAN_SUB,BOT,TOP,BOS,TOS,mindate=ISOdate(2019,01,01),maxdate=ISOdate(2021,12,31),ts='Yearly')
+      pltAWLNTS(AWLN_SUB,MAN_SUB,BOT,TOP,BOS,TOS,mindate=ISOdate(2023,01,01),maxdate=ISOdate(2023,12,31),ts='Yearly')
       dev.off()
     }
     #--------------------------------------------------------------------------------------------------------------#
