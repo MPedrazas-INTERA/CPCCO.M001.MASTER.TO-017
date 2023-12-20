@@ -120,7 +120,7 @@ RK <- readOGR('outlier_test/input', 'rivKrigeHigh')
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Import Manual Adjustments from 2015-2017--#
-OUT <- fread('outlier_test/input/ManualAdjustmentsandOutliers_2006_2021.csv')
+OUT <- fread('outlier_test/input/ManualAdjustmentsandOutliers.csv')
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
@@ -544,7 +544,7 @@ setnames(comb_WL_sorted2,'EVENT','Date')
 setnames(comb_WL_sorted2,'NAME','ID')
 setnames(comb_WL_sorted2,'SSPAVAL','Water Level (m)')
 
-write.csv(comb_WL_sorted2, file='outlier_test/output/WL_no_outlier_v121723.csv', row.names=FALSE)
+write.csv(comb_WL_sorted2, file='outlier_test/output/WL_no_outlier_v121723_draft.csv', row.names=FALSE)
 
 
 

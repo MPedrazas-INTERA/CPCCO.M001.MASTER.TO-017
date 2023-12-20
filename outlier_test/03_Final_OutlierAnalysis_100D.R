@@ -58,7 +58,7 @@ load('outlier_test/output/DATA_OUT.RData')
 
 #--------------------------------------------------------------------------------------------------------------#
 #--Import Manual Adjustments from 2006 to 2021--# hpham
-OUT <- fread('outlier_test/input/ManualAdjustmentsandOutliers_2006_2021.csv')
+OUT <- fread('outlier_test/input/ManualAdjustmentsandOutliers.csv')
 #--------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------------------#
@@ -438,5 +438,28 @@ write.table(AWLN_excluded,file=paste0(OUT,'AWLN_excluded.csv'),sep=',',row.names
 write.table(MAN_excluded,file=paste0(OUT,'MAN_excluded.csv'),sep=',',row.names=FALSE)
 
 
+# Final WL dataset
+comb_WL <- rbind(AWLN, MAN)
 
+# sort columns  
+keycol <- c("NAME","EVENT")
+#comb_WL_sorted <- comb_WL[order(match(names(comb_WL), column_order))]
+#setorder(comb_WL, match(names(comb_WL), column_order))
+comb_WL_sorted <- setorderv(comb_WL, keycol)
+
+#plot(comb_WL_sorted$VAL_ORG)
+#plot(comb_WL_sorted$SSPAVAL)
+# Save to file
+write.csv(comb_WL_sorted, file='outlier_test/output/WL_outlier_v121623.csv', row.names=FALSE)
+
+# Write WL without outliers
+comb_WL_sorted2  <- comb_WL_sorted[MAPUSE==TRUE]
+comb_WL_sorted2 <- subset(comb_WL_sorted2, select= c('NAME', 'EVENT', 'SSPAVAL'))
+
+#Change col names
+setnames(comb_WL_sorted2,'EVENT','Date')
+setnames(comb_WL_sorted2,'NAME','ID')
+setnames(comb_WL_sorted2,'SSPAVAL','Water Level (m)')
+
+write.csv(comb_WL_sorted2, file='outlier_test/output/WL_no_outlier_v121923.csv', row.names=FALSE)
 
