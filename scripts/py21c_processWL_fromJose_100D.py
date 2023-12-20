@@ -33,6 +33,7 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     sce = "calib_2014_Oct2023"
     #inputDir =  r"C:\GH_Repos\100HR3-Rebound\data\water_levels\fromJose"
+    rootDir = f'D:/projects/CPCCO.M001.MASTER.TO-017/'
     inputDir =  f'D:/projects/CPCCO.M001.MASTER.TO-017/data/water_levels/fromJose/'
     wldir = os.path.join(cwd, 'output', 'water_level_data')
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_list_100D.csv'))
@@ -47,7 +48,8 @@ if __name__ == "__main__":
     ManAWLN = ManAWLN[ManAWLN['NAME'].isin(wells.NAME.unique())]
     ManHEIS = ManHEIS[ManHEIS['NAME'].isin(wells.NAME.unique())]
 
-    Rebound = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_all_100D.csv')) # hpham updated
+    #Rebound = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_all_100D.csv')) # 
+    Rebound = pd.read_csv(os.path.join(rootDir, 'outlier_test', 'output', 'WL_no_outlier_v122023.csv')) # WLs without outliers
     Rebound.rename(columns={"ID":"NAME", "Water Level (m)":"VAL_FINAL", "Date": "EVENT"}, inplace=True)
 
     AWLN = AWLN[["NAME", "EVENT", "VAL_FINAL"]]
