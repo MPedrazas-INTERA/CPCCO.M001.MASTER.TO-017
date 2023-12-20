@@ -812,8 +812,7 @@ if __name__ == "__main__":
 
     ### Observed CONC for 2014 to 2021, and 2021 - 2023:
     crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
-    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs_v2.csv'), index_col = 'DATE', parse_dates = True) #NEEDS UPDATING UNTIL OCT 2023
-
+    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs_v2.csv'), index_col = 'DATE', parse_dates = True)
 
     ## If we want to use average WL or max concentration of layers, group here:
     group = True
