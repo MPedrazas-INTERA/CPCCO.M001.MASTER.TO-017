@@ -90,29 +90,34 @@ if __name__ == "__main__":
         df_wells = pd.read_csv(os.path.join('output', 'water_level_data', 'obs_2021_Oct2023', 'measured_WLs_monthly.csv'),
                                parse_dates=['Date'])
         df_wells = df_wells.loc[df_wells['ID'].isin(['199-H4-84', '199-H4-86'])]
-        # source = pd.read_csv(
-        #     os.path.join('output', 'water_level_data', 'calib_2014_2023', 'sim_hds_flopy_100H_sources.csv'),
-        #     parse_dates=['Date'])
-        # source_sub = source[source['NAME'].isin(['183-H-SEB_2', '100-H-46-WS_0'])]
+        source = pd.read_csv(
+            os.path.join('output', 'water_level_data', 'calib_2014_2023', 'sim_hds_flopy_100H_sources.csv'),
+            parse_dates=['Date'])
+        source_sub = source[source['NAME'].isin(['183-H-SEB_2', '100-H-46-WS_0'])]
     elif zone == '100D':
-        df_wells = pd.read_csv(os.path.join('output', 'water_level_data', 'obs_2021_Oct2023', 'measured_WLs_monthly_100D.csv')) #,
-                            #   index_col = 1, parse_dates=True)
+        df_wells = pd.read_csv(os.path.join('output', 'water_level_data', 'obs_2014_Oct2023', 'measured_WLs_all_100D.csv'),
+                               parse_dates=True)
+        # df_wells_daily = df_wells.resample()
+        # df_wells = pd.read_csv(os.path.join(os.path.dirname(cwd), 'outlier_test', 'output', 'WL_no_outlier_hourly_v121723.csv'),
+        #                        parse_dates = True) #,
         # df_wells = df_wells[df_wells['MAPUSE'] == True]
 
     else:
         print('zone not defined')
 
-    violin_plots_individual_well(timeframe='All')  ## 'Oct 2022 - Oct 2023' #'2021 - Oct 2022'
+    # violin_plots_individual_well(timeframe='All')  ## 'Oct 2022 - Oct 2023' #'2021 - Oct 2022'
     #
     # violin_plots_individual_cell(timeframe='2021 - Oct 2022')
 
     #%%  QA
-    #
-    # for well in df_wells['ID'].unique():
+    # #
+    # for well in ['199-D5-17']: #df_wells['ID'].unique():
     #     fig, ax = plt.subplots()
     #     toplot = df_wells[df_wells['ID'] == well]
-    #     ax.scatter(toplot.index, toplot['Water Level (m)'])
-
+    #     ax.scatter(toplot['DATE'], toplot['Water Level (m)'])
+    #     plt.title(f'{well}')
+    #     plt.savefig(os.path.join(cwd, 'output', 'qa', f'scatterplot_{well}_WLs.png'), dpi = 300)
+    #     plt.close()
 
 
 ### xtras ###

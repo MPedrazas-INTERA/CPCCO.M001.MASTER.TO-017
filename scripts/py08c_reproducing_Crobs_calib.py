@@ -23,7 +23,7 @@ def filter_Cr_data(database, input_wells, output_dir):
     df_Cr = df_Cr.loc[(df_Cr['SAMP_DATE_TIME'] >= datetime(2014, 1, 1))]
 
     # [3] Filter out flagged data:
-    flags = ['R','P', 'R','Y','PQ' ,'QP','AP','APQ','PA', 'QR'] #flag H is no longer a filter 09/13/2021
+    flags = ['R','P', 'R','Y','PQ' ,'QP','AP','APQ','PA','QR'] #flag H is no longer a filter 09/13/2021
     flagged_data = df_Cr.loc[(df_Cr['REVIEW_QUALIFIER'].isin(flags))] #drop datapoints with any flag
     for f in flags:
         df_Cr = df_Cr.loc[(df_Cr['REVIEW_QUALIFIER'] != f)] #drop datapoints with any flag
@@ -135,7 +135,9 @@ if __name__ == "__main__":
     model_time = '2014_2020'
 
     input_wells = pd.read_csv(os.path.join(cwd, 'output', 'well_info', 'monitoring_wells_coords_ij.csv'), delimiter=",")
-    EDA_conc_database = pd.read_excel(os.path.join(cwd,'input', 'concentration_data','EDA_Pull_2021.xlsx'), skiprows=0, engine='openpyxl')
+    # EDA_conc_database = pd.read_excel(os.path.join(cwd,'input', 'concentration_data','EDA_Pull_2021.xlsx'), skiprows=0, engine='openpyxl')
+    EDA_conc_database = pd.read_excel(os.path.join(os.path.dirname(cwd), 'data', 'hydrochemistry', 'EDA_Pull_2021.xlsx'),
+                                      skiprows=0, engine='openpyxl')
     df_Cr = filter_Cr_data(EDA_conc_database, input_wells, output_dir)
 
     average_bySPs(input_dir, output_dir, model_time)
