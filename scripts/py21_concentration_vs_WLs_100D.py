@@ -116,10 +116,12 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
         ## conditional title color
         is_in_calibwells = well in calibwells['Well_ID'].values
         if is_in_calibwells:
-            ax.set_title(f'{well} ({wellDict[well]})', color = 'navy', fontsize=16)
+            #ax.set_title(f'{well} ({wellDict[well]})', color = 'navy', fontsize=16)
+            ax.set_title(f'{well}', color = 'navy', fontsize=16)
         else:
-            ax.set_title(f'{well} ({wellDict[well]})', color = 'black', fontsize=16)
-        ax.set_ylabel('Water Level (m)', fontsize=14)
+            #ax.set_title(f'{well} ({wellDict[well]})', color = 'black', fontsize=16)
+            ax.set_title(f'{well}', color = 'black', fontsize=16)
+        ax.set_ylabel('Water Level Elevation, m NAVD88', fontsize=14)
         ax2 = ax.twinx() ## create secondary axis
         ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
@@ -156,7 +158,7 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
 
         # Add vertical lines at specified dates
         ax.axvline(pd.to_datetime('2021-01-01'), color='gray', linestyle='-', linewidth=1, zorder=2)
-        ax.axvline(pd.to_datetime('2022-10-04'), color='gray', linestyle='-', linewidth=1, zorder=2)
+        ax.axvline(pd.to_datetime('2023-04-12'), color='gray', linestyle='-', linewidth=1, zorder=2)
 
         # Add horizontal lines at specified dates
         ax2.axhline(10, color='gray', alpha = 1, linestyle='-.', linewidth=1, label='10 μg/L', zorder=1)
@@ -173,18 +175,19 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
         ax2.legend(lines + reordered_lines2, labels + reordered_labels2, bbox_to_anchor=(1.2, 1), framealpha=1)
 
         text_y = ax2.get_ylim()[1] - 0.035 * (ax2.get_ylim()[1] - ax2.get_ylim()[0]) # for text annotations
+        
         if date_range == "full": #set x-limit
             ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
             ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
             ax2.text(pd.to_datetime('2021-02-01'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
-            ax2.text(pd.to_datetime('2022-09-20'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
+            ax2.text(pd.to_datetime('2023-06-12'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             ax2.text(pd.to_datetime('2020-12-01'), text_y, 'Calibration Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2014to2023.png'), bbox_inches='tight')
         elif date_range == "short":
             ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-10-31"))
             ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-10-31"))
             ax2.text(pd.to_datetime('2022-09-15'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
-            ax2.text(pd.to_datetime('2022-10-25'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
+            ax2.text(pd.to_datetime('2023-06-12'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2021to2023.png'), bbox_inches='tight')
 
         plt.close()
@@ -699,35 +702,35 @@ if __name__ == "__main__":
     # '199-H4-86': "North PT Sensor Data", '199-H4-88': "North AWLN", '199-H4-89': "North Manual",
     # '199-H3-10': "RUM-2", '199-H3-12': "RUM-2", '199-H3-13': "RUM-2", '199-H3-30': "RUM-2", '199-H3-32': "RUM-2", '199-H4-90': "RUM-2"}
     
-    wellDict = {'199-D1-1':'Test',
-                '199-D2-11':'Test',
-                '199-D2-14':'Test',
-                '199-D5-15':'Test',
-                '199-D5-17':'Test',
-                '199-D5-33':'Test',
-                '199-D5-34':'Test',
-                '199-D5-37':'Test',
-                '199-D5-39':'Test',
-                '199-D5-41':'Test',
-                '199-D5-43':'Test',
-                '199-D5-44':'Test',
-                '199-D5-103':'Test',
-                '199-D5-104':'Test',
-                '199-D5-106':'Test',
-                '199-D5-123':'Test',
-                '199-D5-128':'Test',
-                '199-D5-133':'Test',
-                '199-D5-142':'Test',
-                '199-D5-145':'Test',
-                '199-D5-146':'Test',
-                '199-D5-149':'Test',
-                '199-D5-150':'Test',
-                '199-D5-151':'Test',
-                '199-D5-152':'Test',
-                '199-D5-160':'Test',
-                'C6272':'Test',
-                'AT-D-1-M':'Test',
-                '35-S':'Test'}
+    wellDict = {'199-D1-1':'',
+                '199-D2-11':'',
+                '199-D2-14':'',
+                '199-D5-15':'',
+                '199-D5-17':'',
+                '199-D5-33':'',
+                '199-D5-34':'',
+                '199-D5-37':'',
+                '199-D5-39':'',
+                '199-D5-41':'',
+                '199-D5-43':'',
+                '199-D5-44':'',
+                '199-D5-103':'',
+                '199-D5-104':'',
+                '199-D5-106':'',
+                '199-D5-123':'',
+                '199-D5-128':'',
+                '199-D5-133':'',
+                '199-D5-142':'',
+                '199-D5-145':'',
+                '199-D5-146':'',
+                '199-D5-149':'',
+                '199-D5-150':'',
+                '199-D5-151':'',
+                '199-D5-152':'',
+                '199-D5-160':'',
+                'C6272':'',
+                'AT-D-1-M':'',
+                '35-S':''}
 
 
     #%%   ### IMPORT FILES ###
@@ -844,7 +847,7 @@ if __name__ == "__main__":
     ### Observed CONC for 2014 to 2021, and 2021 - 2023:
     # hpham: Need update (Robin)
     crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
-    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2021to2023', 'Cr_obs_v2.csv'), index_col = 'DATE', parse_dates = True) #NEEDS UPDATING UNTIL OCT 2023
+    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2014to2023', '100D', 'Cr_obs_2014_2023_100D_hp.csv'), index_col = 'DATE', parse_dates = True) # RW created this file on 12/18/2023
 
 
     ## If we want to use average WL or max concentration of layers, group here:
