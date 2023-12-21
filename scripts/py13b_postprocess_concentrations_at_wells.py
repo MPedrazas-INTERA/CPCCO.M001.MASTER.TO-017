@@ -158,9 +158,11 @@ def plot_concentrations_ALL(myDict):
 if __name__ == "__main__":
 
     cwd = os.getcwd()
+    site = '100D'
 
-    wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
-    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
+    if site == '100D':
+        wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
+        calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv'))
 
     sces = ['calib_2014_2023', 'calib_2014_2020']
     myDict = {}

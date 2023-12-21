@@ -14,7 +14,7 @@ matplotlib.use('Qt5Agg')
 cwd = os.getcwd()
 wdir = os.path.dirname(cwd)
 
-## Read in observation data
+## Read in rebound-period observation data provided by cpcco
 def read_chemdata():
 
     zone = '100D'
@@ -25,7 +25,8 @@ def read_chemdata():
         chemdata_raw = pd.concat(all_files)
         chemdata = chemdata_raw[chemdata_raw['NAME'].isin(list(wells['NAME']))]
     if zone == '100D':
-        chemdata = pd.read_excel(os.path.join(wdir, 'data', 'hydrochemistry', 'D-South Rebound Study Sampling_contaminantdatathru_10172023.xlsx'))
+        chemdata = pd.read_excel(os.path.join(wdir, 'data', 'hydrochemistry',
+                                              'D-South Rebound Study Sampling_contaminantdatathru_10172023.xlsx'))
 
     chemdata.insert(0, 'NAME', chemdata['SAMP_SITE_NAME_ID'].str.split('(', expand=True)[0])
     chemdata['NAME'] = chemdata['NAME'].str.strip()  ## remove hidden spaces
@@ -43,6 +44,90 @@ def read_chemdata():
 
     return chemdata, crvi_filt
 
+def compare_data():
+
+    """
+    Use this function to compare data from different sources, e.g. data provided from client vs data downloaded
+    internally vs data stored on S: for previous work
+    """
+#%%
+    ## CrVI data from EDA downloaded from H.Pham 12/20/2023
+    eda_data = pd.read_excel(os.path.join(wdir, 'data', 'hydrochemistry', 'EDA_CrVI_v122023.xlsx'),
+                                  parse_dates=True)
+    eda_data.insert(0, 'NAME', eda_data['SAMP_SITE_NAME_ID'].str.split('(', expand=True)[0])
+    eda_data['NAME'] = eda_data['NAME'].str.strip()  ## remove hidden spaces
+
+    ## CrVI data from EDA downloaded from M.Pedrazas Oct 2023
+    eda_data2 = pd.read_excel(os.path.join(wdir, 'data', 'hydrochemistry', 'EDA_Pull_2021.xlsx'),
+                                  parse_dates=True)
+    eda_data2.insert(0, 'NAME', eda_data2['SAMP_SITE_NAME_ID'].str.split('(', expand=True)[0])
+    eda_data2['NAME'] = eda_data2['NAME'].str.strip()  ## remove hidden spaces
+
+    flags = ['R', 'P', 'Y', 'PQ', 'QP', 'AP', 'APQ', 'PA', 'QR']
+    eda_data = eda_data[~eda_data['REVIEW_QUALIFIER'].isin(flags)]
+    eda_data.insert(1, 'DATE', pd.to_datetime(eda_data['SAMP_DATE_TIME']).dt.date)
+    eda_data.drop_duplicates(subset = ['NAME', 'DATE', 'STD_VALUE_RPTD'], inplace=True)
+    eda_data['DATE'] = pd.to_datetime(eda_data['DATE'])
+    eda_data.sort_values(by=['NAME', 'DATE'], inplace=True)
+
+    eda_data2 = eda_data2[~eda_data2['REVIEW_QUALIFIER'].isin(flags)]
+    eda_data2.insert(1, 'DATE', pd.to_datetime(eda_data2['SAMP_DATE_TIME']).dt.date)
+    eda_data2.drop_duplicates(subset = ['NAME', 'DATE', 'STD_VALUE_RPTD'], inplace=True)
+    eda_data2['DATE'] = pd.to_datetime(eda_data2['DATE'])
+    eda_data2.sort_values(by=['NAME', 'DATE'], inplace=True)
+
+    new = pd.concat([crvi_filt, eda_data, eda_data2])
+    new.drop_duplicates(inplace=True)
+
+    for well in crvi_filt['NAME'].unique():
+    # for well in all:
+        # toplot = crvi_filt[crvi_filt['NAME'] == '199-D2-11']
+        # toplotx = eda_data[eda_data['NAME'] == '199-D2-11']
+        fig,ax = plt.subplots()
+        toplot = crvi_filt[crvi_filt['NAME'] == well]
+        toplotx = eda_data[eda_data['NAME'] == well]
+        toplotx2 = eda_data2[eda_data2['NAME'] == well]
+        toplot_new = new[new['NAME'] == well]
+        # toplotold = old[old['NAME'] == well]
+        ax.scatter(toplotx['SAMP_DATE_TIME'], toplotx['STD_VALUE_RPTD'], label='EDA v1', s = 100)
+        ax.scatter(toplotx2['SAMP_DATE_TIME'], toplotx2['STD_VALUE_RPTD'], label='EDA v2', s = 50)
+        ax.scatter(toplot['SAMP_DATE_TIME'], toplot['STD_VALUE_RPTD'], label='cpcco provided', s = 40)
+        ax.scatter(toplot_new['SAMP_DATE_TIME'], toplot_new['STD_VALUE_RPTD'], label='combined', s = 30)
+        # ax.scatter(toplotold['SAMP_DATE_TIME'], toplotold['STD_VALUE_RPTD'], label='old data')
+        plt.title(f'{well}')
+        plt.legend()
+        # plt.savefig(os.path.join('output', 'qa', 'crvi_data_source_comparison', f'{well}.png'), dpi = 300)
+        plt.close()
+
+    return eda_data, eda_data2
+
+#%%
+    return None
+
+def combine_data():
+
+    new = pd.concat([crvi_filt, eda_data, eda_data2])
+    new.drop_duplicates(inplace=True)
+    new_sub = new[['NAME', 'DATE', 'STD_VALUE_RPTD',
+                      'REVIEW_QUALIFIER','COLLECTION_PURPOSE_DESC', 'LAB_CODE']]
+
+    ## to slice only wells from rebound study dataset...
+    rbd_wells = list(crvi_filt['NAME'].unique())
+
+    new_sub = new_sub[new_sub['NAME'].isin(rbd_wells)]
+    new_sub = new_sub[new_sub['DATE'] >= '2014-01-01']
+
+    plot = False
+    if plot:
+        for well in new_sub['NAME'].unique():
+            toplot = new_sub[new_sub['NAME'] == well]
+            fig, ax = plt.subplots()
+            ax.scatter(toplot['DATE'], toplot['STD_VALUE_RPTD'])
+    else:
+        pass
+
+    return new_sub
+
 if __name__ == "__main__":
 
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij.csv'))
@@ -54,4 +139,11 @@ if __name__ == "__main__":
         os.makedirs(odir)
 
     chemdata, crvi_filt = read_chemdata()
-    crvi_filt[['NAME', 'DATE', 'STD_VALUE_RPTD', 'STD_ANAL_UNITS_RPTD']].to_csv(os.path.join(odir, "Cr_obs_100D.csv"), index=False)
+    # crvi_filt[['NAME', 'DATE', 'STD_VALUE_RPTD', 'STD_ANAL_UNITS_RPTD']].to_csv(os.path.join(odir, "Cr_obs_100D.csv"), index=False)
+    
+    eda_data, eda_data2 = compare_data()
+
+    new_sub = combine_data()
+
+    new_sub.to_csv(os.path.join('output', 'concentration_data', '2014to2023', '100D', 'Cr_obs_2014_2023_100D.csv'),
+                   index = False)
