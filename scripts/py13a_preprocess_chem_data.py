@@ -143,7 +143,7 @@ if __name__ == "__main__":
     
     eda_data, eda_data2 = compare_data()
 
-    new_sub = combine_data()
-
-    new_sub.to_csv(os.path.join('output', 'concentration_data', '2014to2023', '100D', 'Cr_obs_2014_2023_100D.csv'),
-                   index = False)
+    # new_sub = combine_data()
+    #
+    # new_sub.to_csv(os.path.join('output', 'concentration_data', '2014to2023', '100D', 'Cr_obs_2014_2023_100D.csv'),
+    #                index = False)

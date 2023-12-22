@@ -742,10 +742,11 @@ if __name__ == "__main__":
     wl_2014 = pd.read_csv(
         os.path.join(wldir, "calib_2014_2020", "calib_2014to2020_obs_sim.csv"))  ###monthly/SP-averaged hpham: no need to change
     wl_meas_2014 = wl_2014[["Well", "Time", "Observed"]]
-    wl_sim_2014 = pd.read_csv(os.path.join(wldir, 'calib_2014_2020', 'simulated_heads_monthly_flopy.csv')) # hpham: No wells in 100-D, need to update? Do we need this? 
+    #TODO: run flopy to get sim heads at 100D wells as input to the below (if we want):
+    wl_sim_2014 = pd.read_csv(os.path.join(wldir, 'calib_2014_2020', 'simulated_heads_monthly_flopy.csv')) # hpham: No wells in 100-D, need to update? Do we need this? robin: only if we simulate heads with flopy (to compare with obs or with mod2obs)
     wl_sim_2014['DATE'] = pd.to_datetime("2013-12-01") + pd.to_timedelta(wl_sim_2014.Time,
                                                                          unit="days")  # subtracted one month to match how we resample to monthly using MS, which is first day of the month.
-    if old_WL_sources: # hpham: This is no longer used. 
+    if old_WL_sources: # hpham: This is no longer used.
         ### Observed WL for 2021 to Oct 2023: #This comes from script py08a_plot_water_levels.py
         new_wl_meas_monthly = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_monthly_100D.csv'), index_col='Date', parse_dates=True) #hpham: Need to rm outlier
         new_wl_meas_daily = pd.read_csv(os.path.join(wldir, 'obs_2021_Oct2023', 'measured_WLs_daily_100D.csv'), index_col='Date', parse_dates=True)  #hpham: Need to rm outlier
