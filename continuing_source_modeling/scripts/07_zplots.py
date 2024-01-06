@@ -27,11 +27,10 @@ def plot_multiple_years():
         # plt.show()
         # plt.savefig(os.path.join(os.getcwd(), 'output', f'calibration_run_2015_2023_{column}.png'))
 
-
     return None
 
 def plot_one_year():
-#%%
+
 
     for column in columns:
         print(column)
