@@ -10,15 +10,17 @@ matplotlib.use('Qt5Agg')
 ### Violin plots -- individual wells per plot
 def violin_plots_individual_well(timeframe):
 #%%
-    timeframe = 'All' #'Oct 2022 - Oct 2023' #'All'  ##uncomment when testing, comment out when running entire script
+    timeframe = 'All' #'Oct 2022 - Oct 2023' #'All'  ##uncomment when testing, comment out when running entire script!!
 
     for well in h['ID'].unique():
 
         fig, ax = plt.subplots(figsize=(2,3))
 
-        fig.suptitle(f'{well}\n{timeframe} - {timestep}', fontsize = 9)
+        # fig.suptitle(f'{well}\n{timeframe} - {timestep}', fontsize = 9)
         # ax.set_title(f'{well}\n{timeframe}')
 
+        ## eventually, add timeframe corresponding to 100D study period. Note that some wells do not have a
+        ## meaningful number of data points in smaller timeframes
         if timeframe == 'All':
             toplot = h[h['ID'] == well]
         elif timeframe == 'Oct 2022 - Oct 2023':
@@ -27,7 +29,7 @@ def violin_plots_individual_well(timeframe):
             toplot = h[h['ID'] == well][h['Date'] <= '10/01/2021']
         else:
             print('plotting period not defined, toplot empty')
-
+        sample_size = len(toplot)
         sns.violinplot(data = toplot, x = 'ID', y = 'Water Level (m)', inner = None, ax = ax, zorder=10)  ## inner = 'quart',
         ax.grid(axis='y', color='black', zorder=0)
         ax.grid(axis='y', which='minor', zorder=0)
@@ -35,20 +37,21 @@ def violin_plots_individual_well(timeframe):
         if zone == '100H':
             ax.set_ylim(113,117)
         elif zone == '100D':
-            ax.set_ylim(115,121)
+            ax.set_ylim(113.75,144)
         ax.set_xlabel('')
         ax.set_xticks([])
         ax.set_ylabel('Water Level Elevation (m)')
         ax.set_axisbelow(True)
+        ax.set_title(f'{well}\n{timeframe} - {timestep}\nSample Size = {sample_size}\n', fontsize=9)
         plt.tight_layout()
 
-        sample_size = len(toplot)
-        ypos = 121.5 # Adjust the ypos based on your data
-        ax.text(-0.25, ypos, f'Sample Size = {sample_size}',
-                horizontalalignment='center', verticalalignment='center', color='black', fontsize=8)
+        # ypos = 121.5 # Adjust the ypos based on your data
+        ## moved this to title
+        # ax.text(-0.25, ypos, f'Sample Size = {sample_size}',
+        #         horizontalalignment='center', verticalalignment='center', color='black', fontsize=8)
 
-        # plt.savefig(os.path.join(odir, f'violin_{well}_{timeframe}_{timestep}.png'), dpi = 300)
-        # plt.close()
+        plt.savefig(os.path.join(odir, f'violin_{well}_{timeframe}_{timestep}_v02.png'), dpi = 300)
+        plt.close()
     print('violin plots written!')
 
 #%%
@@ -84,13 +87,14 @@ def violin_plots_individual_cell(timeframe):
         # plt.savefig(os.path.join(odir, f'violin_src_{cell}_{timeframe}.png'), dpi = 300)
         # plt.close()
 
+
 if __name__ == "__main__":
 
     cwd = os.getcwd()
 
     zone = '100D'
     timestep = 'monthly'
-    timeframe = 'All'
+    timeframe = 'All' ## 'Oct 2022 - Oct 2023' #'2021 - Oct 2022'
 
     odir = os.path.join(cwd, 'output', 'violin_plots', f'{zone}')
     if not os.path.isdir(odir):
@@ -117,7 +121,7 @@ if __name__ == "__main__":
     else:
         print('zone not defined')
 
-    violin_plots_individual_well(timeframe=timeframe)  ## 'Oct 2022 - Oct 2023' #'2021 - Oct 2022'
+    # violin_plots_individual_well(timeframe=timeframe)
     #
     # violin_plots_individual_cell(timeframe='2021 - Oct 2022')
 

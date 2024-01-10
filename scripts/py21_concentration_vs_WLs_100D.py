@@ -13,6 +13,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import flopy
 import geopandas as gpd
+import sys
 import matplotlib
 import matplotlib.patheffects as pe
 matplotlib.use('Qt5Agg')
@@ -466,7 +467,7 @@ def crossplots_WL_subplots(wls_obs, wls_obs2, wls_sim, wls_sim2):
 
 def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
 
-    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residual_plots', f"{sce}")
+    outputDir = os.path.join(cwd, 'output', 'water_level_plots', 'residual_plots', f"{sce}", f'{area}')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -530,13 +531,13 @@ def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
         ## conditional title color
         is_in_calibwells = well in calibwells['Well_ID'].values
         if is_in_calibwells:
-            ax.set_title(f'{well} ({wellDict[well]})', color='navy', fontweight='bold', fontsize=14)
+            ax.set_title(f'{well}', color='navy', fontweight='bold', fontsize=14)
         else:
-            ax.set_title(f'{well} ({wellDict[well]})', color='black', fontweight='bold', fontsize=14)
+            ax.set_title(f'{well}', color='black', fontweight='bold', fontsize=14)
 
         ax.set_ylabel('Observed - Simulated (m)', fontweight='bold', fontsize=14)
         ax.set_xlabel('Observed Head (m)', fontweight='bold', fontsize=14)
-        ax.set_xlim([112.8, 121])
+        ax.set_xlim([116, 121])
         ax.set_ylim([-3,3])
 
         ax.minorticks_on()
@@ -685,6 +686,8 @@ def resample_to_monthly(wells, df):
 
 if __name__ == "__main__":
 
+    area = '100D'
+
     cwd = os.getcwd()
     sce = "calib_2014_Oct2023"
     mdir = os.path.join(os.path.dirname(cwd), 'mruns')
@@ -693,7 +696,7 @@ if __name__ == "__main__":
 
     times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
     wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_100D_v2.csv')) # hpham updated
-    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv')) # hpham? 
+    calibwells = pd.read_csv(os.path.join(cwd, 'input', 'well_list_v3_for_calibration.csv')) # wells used to calibrate original 2014 - 2020 model
 
     ### SET WELL NAME ASSOCIATIONS ###
     #wellDict = {'199-H3-25': "North PT Sensor Data", '199-H3-26': "North PT Sensor Data", '199-H3-27': "North PT Sensor Data", '199-H3-2A': "North AWLN", '199-H4-12A': "North Manual",
@@ -894,8 +897,8 @@ if __name__ == "__main__":
         plot_WL_vs_conc(rebound_WLdata, calib_WLdata, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim, plot_calib_model=False)
         residualplots_WL_individual(rebound_WLdata, calib_WLdata, WLsim)
     else:
-        plot_WL_vs_conc(monthly_WLs_obs_ALL, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim)
-        # residualplots_WL_individual(monthly_WLs_obs_ALL, monthly_WLs_obs_ALL, WLsim)
+        # plot_WL_vs_conc(monthly_WLs_obs_ALL, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim)
+        residualplots_WL_individual(monthly_WLs_obs_ALL, monthly_WLs_obs_ALL, WLsim)
 
     # plot_WL(wls_obs, wls_obs2, wls_obs_2022, wls_sim, wls_sim2, plot_calib_model=True) #plot_calib_model flag should be FALSE if simulated_heads_mode == "mod2obs"
 
