@@ -17,6 +17,9 @@ worker_*.*
 model_files/flow_2023_2125/100hr3_2023to2125.rch
 scripts/output/boundary_conditions/
 /model_packages/pred_2023_2125/rch/output/100hr3_2023to2125.rch
+model_packages/hist_2014_Oct2023/riv/03_RiverCells.xlsx
+model_packages/hist_2014_Oct2023/riv/RiverCSV/04_River_2014_Oct2023_correctK.csv
+model_packages/hist_2014_Oct2023/riv/RiverCSV/River_sp97to204_2014_2022_for_GWV.csv
 /mruns
 /refs
 scripts/del_download_river_stage/
