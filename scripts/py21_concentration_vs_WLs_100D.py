@@ -850,7 +850,7 @@ if __name__ == "__main__":
 
     ### Observed CONC for 2014 to 2021, and 2021 - 2023:
     # hpham: Need update (Robin)
-    crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True)
+    crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True) #needs to be updated for 100D
     crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2014to2023', '100D', 'Cr_obs_2014_2023_100D_hp.csv'), index_col = 'DATE', parse_dates = True) # RW created this file on 12/18/2023
 
 
