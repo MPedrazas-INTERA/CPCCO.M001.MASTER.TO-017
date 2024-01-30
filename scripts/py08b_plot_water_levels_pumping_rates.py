@@ -165,32 +165,30 @@ def import_prior_data(mywells):   ## wells input can be any list of well names t
 
 def import_pumping_data():
 
-    wellinfo = pd.read_csv(os.path.join(cwd, 'output', 'well_info', 'calib_2014_2023', 'allwells_master.csv'))
-    wellinfo[['Short', 'Function', 'System']] = wellinfo['ID'].str.split('_', 2, expand=True)
-
-    rumwells = wellinfo.loc[wellinfo['Aquifer'] == 'RUM']['Short']
-
-    pumping_data = pd.read_csv(os.path.join(wdir, 'model_packages', 'hist_2014_2023', 'mnw2',
-                                            'wellratesdxhx_cy2014_jul2023_v02.csv'))
+    pumping_data = pd.read_csv(os.path.join(wdir, 'model_packages', 'hist_2014_Oct2023', 'mnw2',
+                                            'wellratesdxhx_cy2014_oct2023.csv'))
     times = pd.read_csv(os.path.join(cwd, 'input', 'sp_2014_2023.csv'))
     cols = ['ID'] + list(times['start_date'])
     pumping_data.columns = cols
     pumping_data[['Short', 'Function', 'System']] = pumping_data['ID'].str.split('_', 2, expand=True)
 
-    subset = 'HX_RUM'  ## name any subset of interest (HX_RUM, HX_UNC, etc...)
-    if subset == 'HX_RUM':
-        hxrum = pumping_data.loc[pumping_data['System'] == 'HX'].loc[pumping_data['Short'].isin(list(rumwells))]
-        hxrum.set_index('ID', inplace=True)
-
-    ## calculate total hx rum pumping rates
-    start_date = '1/1/2014'
-    end_date = '7/1/2023'
-    total = hxrum.loc[:,start_date:end_date].sum()
-    total.index = pd.to_datetime(total.index)
-
-
     total_plot = False
     if total_plot:
+        wellinfo = pd.read_csv(os.path.join(cwd, 'output', 'well_info', 'calib_2014_Oct2023', 'allwells_master.csv')) #missing this file for Oct 2023
+        wellinfo[['Short', 'Function', 'System']] = wellinfo['ID'].str.split('_', 2, expand=True)
+
+        rumwells = wellinfo.loc[wellinfo['Aquifer'] == 'RUM']['Short']
+        subset = 'HX_RUM'  ## name any subset of interest (HX_RUM, HX_UNC, etc...)
+        if subset == 'HX_RUM':
+            hxrum = pumping_data.loc[pumping_data['System'] == 'HX'].loc[pumping_data['Short'].isin(list(rumwells))]
+            hxrum.set_index('ID', inplace=True)
+
+        ## calculate total hx rum pumping rates
+        start_date = '1/1/2014'
+        end_date = '7/1/2023'
+        total = hxrum.loc[:,start_date:end_date].sum()
+        total.index = pd.to_datetime(total.index)
+
         fig, ax = plt.subplots(figsize=(8,3))
         ax.plot(total.index, abs(total))
         plt.title("Total Extraction in 100-H RUM-2 Wells")
@@ -202,23 +200,32 @@ def import_pumping_data():
 
 
     individual_plots = True
+    sdate = '2019-01-01'
     if individual_plots:
-        tran = hxrum.iloc[:,:-3].transpose()  ## clip to timeseries data and transpose
-        tran.index = pd.to_datetime(tran.index)
-        df = tran.loc['2019-01-01':]
-        for well in df.columns:
+        df = pumping_data.iloc[:,:-3].transpose()  ## clip to timeseries data and transpose
+        df.columns = df.iloc[0]
+        df.reset_index(inplace=True)
+        df.drop(0, inplace=True)
+        df.rename(columns={"index":"Date"}, inplace=True)
+        df.Date = pd.to_datetime(df.Date)
+
+        for well in df.columns[1:]:
             print(well)
             toplot = df[well]
             fig, ax = plt.subplots(figsize=(9, 4))
             ax.plot(df.index, abs(toplot))
-            plt.title(f"Extraction in {well}")
+            if "_I_" in well:
+                plt.title(f"Injection Rate in {well}")
+            elif "_E_" in well:
+                plt.title(f"Extraction Rate in {well}")
             plt.grid()
             plt.ylabel('Pumping Rate (m3/d)')
-            plt.savefig(os.path.join(cwd, 'output', 'pumping_plots', f'{well}_rum_pumping_2019_2023.png'), bbox_inches='tight', dpi=400)
+            plt.savefig(os.path.join(cwd, 'output', 'pumping_plots', 'individual_wells', f'{well}_pumping_{sdate[:4]}_2023.png'), bbox_inches='tight', dpi=400)
+            plt.close()
     else:
         pass
 
-    return hxrum
+    return None
 
 def generate_plots(df_sp, myHds):
 
@@ -267,16 +274,16 @@ if __name__ == "__main__":
 
     # coordscsv = os.path.join(wdir, 'data', 'water_levels', "qryWellHWIS.txt") #dataframe with coords for monitoring wells
     # monitoring_wells = get_wells_ij(df, coordscsv)
-    monitoring_wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_v2.csv'))
+    # monitoring_wells = pd.read_csv(os.path.join(cwd, 'input', 'monitoring_wells_coords_ij_100D_v2.csv'))
 
-    prior_data = import_prior_data(monitoring_wells)
-    prior_data.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'obs_2014_2020', 'measured_WLs_2014to2020_daily_V2.csv'), index = False)
+    # prior_data = import_prior_data(monitoring_wells)
+    # prior_data.to_csv(os.path.join(cwd, 'output', 'water_level_data', 'obs_2014_2020', 'measured_WLs_2014to2020_daily_V2.csv'), index = False)
 
-    sce = 'calib_2014_2023'
-    hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
+    # sce = 'calib_2014_Oct2023'
+    # hds_file = os.path.join(os.path.dirname(cwd), 'mruns', f'{sce}', f'flow_{sce[-9:]}', '100hr3.hds')
     # myHds = read_head(hds_file, monitoring_wells)
 
-    hxrum = import_pumping_data()
+    import_pumping_data() #updated to Oct 2023
 
     # generate_plots(df_sp, myHds)
 
