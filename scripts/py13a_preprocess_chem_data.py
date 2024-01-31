@@ -94,7 +94,7 @@ def combine_data(crvi_filt, eda_data, eda_data2):
     new_sub = new_sub[new_sub['NAME'].isin(rbd_wells)]
     # new_sub = new_sub[new_sub['DATE'] >= '2014-01-01']
 
-    figdir = os.path.join('output', 'qa', 'crvi_data_source_comparison', "version2")
+    figdir = os.path.join('output', 'qa', 'crvi_data_source_comparison')
     if not os.path.isdir(figdir):
         os.makedirs(figdir)
 
@@ -135,6 +135,7 @@ if __name__ == "__main__":
     eda_data, eda_data2 = compare_data()
 
     new_sub = combine_data(crvi_filt,eda_data, eda_data2)
+    new_sub = new_sub[new_sub['DATE'] >= '2014-01-01']
 
     new_sub.to_csv(os.path.join('output', 'concentration_data', '2014to2023', '100D', 'Cr_obs_2014_2023_100D_mp.csv'),
                    index = False)

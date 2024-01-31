@@ -75,7 +75,7 @@ if __name__ == "__main__":
     chemdata2_Nov23 = chemdata2.loc[chemdata2.DATE >= pd.to_datetime("11/01/2023")]
     combined_chemdata = pd.concat([chemdata1, chemdata2_Nov23])
     combined_chemdata["VAL"] = combined_chemdata["VAL"].astype(float)
-    combined_chemdata.sort_values(by=["NAME", "DATE"], inplace=True)
+    combined_chemdata.sort_values(by=["DATE"], inplace=True)
 
     # Export as a shapefile: RAW DATA
     gdf = gen_gdf(chemdata = combined_chemdata)
