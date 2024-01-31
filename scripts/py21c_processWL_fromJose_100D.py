@@ -68,11 +68,31 @@ if __name__ == "__main__":
     # Resampled to monthly
     WL_obs_monthly = resample_to_monthly(wells, WL_obs_noDups)
 
+    # Add well coordinates (hpham)
+    ifile_coords = f'input/qryWellHWIS_07202023.txt'
+    dfcoords = pd.read_csv(ifile_coords, delimiter='|')
+    dfcoords['ID'] = dfcoords['NAME']
+    dfcoords = dfcoords[['ID','XCOORDS', 'YCOORDS']]
+
+    # add coordinates to WL_obs_monthly
+    WL_obs_monthly= WL_obs_monthly.reset_index(drop=False)
+    WL_obs_monthly = pd.merge(WL_obs_monthly,dfcoords, how='left', on=['ID'])
+    WL_obs_noDups = WL_obs_noDups.reset_index(drop=False)
+    WL_obs_noDups = pd.merge(WL_obs_noDups,dfcoords, how='left', on=['ID'])
+
+    # add column month and year
+    WL_obs_monthly['Year'] = WL_obs_monthly['DATE'].dt.year
+    WL_obs_monthly['Month'] = WL_obs_monthly['DATE'].dt.month
+
+
+
+
+
     # Save file:
     if not os.path.isdir(os.path.join(wldir, "obs_2014_Oct2023")):
         os.makedirs(os.path.join(wldir, "obs_2014_Oct2023"))
-    WL_obs_noDups.to_csv(os.path.join(wldir, "obs_2014_Oct2023", "measured_WLs_all_100D.csv"), index=True)
-    WL_obs_monthly.to_csv(os.path.join(wldir, "obs_2014_Oct2023", "measured_WLs_monthly_100D.csv"), index=True)
+    WL_obs_noDups.to_csv(os.path.join(wldir, "obs_2014_Oct2023", "measured_WLs_all_100D.csv"), index=False)
+    WL_obs_monthly.to_csv(os.path.join(wldir, "obs_2014_Oct2023", "measured_WLs_monthly_100D.csv"), index=False)
 
 
 
