@@ -38,7 +38,7 @@ dfwellinfo["VAL"] = dfwellinfo["VAL m3/d"]/gpm2m3d    #OR *m3d2gpm
 dfwellinfo["UNITS"] = 'gpm'
 
 dfwellinfo2 = dfwellinfo[["NAME", "OU", "VAL", "UNITS", "EVENT", "TYPE"]]
-dfwellinfo2.to_csv(os.path.join("output", "well_info", "calib_2014_Oct2023", "pumpingrates_2023_from_mnw2_v2.csv"), index=False)
+dfwellinfo2.to_csv(os.path.join("output", "well_info", "calib_2014_Oct2023", "pumpingrates_2023_from_mnw2.csv"), index=False)
 
 ###########TASK 2
 pumping_merged = pd.merge(pumping_rates, pumping_coords[["NAME", "XW", "YW", "Ztop", "Zbot"]], left_on="ID", right_on="NAME")
