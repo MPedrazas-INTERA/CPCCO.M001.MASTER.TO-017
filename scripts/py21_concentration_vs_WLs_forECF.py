@@ -17,6 +17,8 @@ import matplotlib
 import matplotlib.patheffects as pe
 matplotlib.use('Qt5Agg')
 from sklearn.metrics import mean_absolute_error,  mean_squared_error, r2_score
+from datetime import datetime
+
 
 plt.rc('xtick', labelsize=14)
 plt.rc('ytick', labelsize=14)
@@ -78,7 +80,7 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
     Common errors: double check column names (e.g. "NAME" vs "ID", "time" vs "Date", etc.)
         rename columns outside of function for consistency.
     """
-    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots', f'{sce}')
+    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots_100H', f'{sce}')
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -174,6 +176,12 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
                            labels2[index] not in ['10 μg/L', '48 μg/L']] + [lines2[index_10_ug],lines2[index_48_ug]]
         ax2.legend(lines + reordered_lines2, labels + reordered_labels2, bbox_to_anchor=(1.2, 1), framealpha=1)
 
+
+        # watermark
+        text_label = datetime.now()
+        ax.text(0.96, 0.02, text_label, transform=ax.transAxes, horizontalalignment='right', verticalalignment='bottom', alpha=0.1)
+
+
         text_y = ax2.get_ylim()[1] - 0.035 * (ax2.get_ylim()[1] - ax2.get_ylim()[0]) # for text annotations
         if date_range == "full": #set x-limit
             ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
@@ -248,7 +256,7 @@ def plot_WL(sce, wl_meas, wl_meas2, wl_meas_2022, wl_df, wl_df_2014, plot_calib_
 
 
         ax.plot(wl3.index, wl3['Water Level (m)'], c="navy", ls="--")
-        ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=15, label = "Obs WL")
+        ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=15, label = "Observed WL")
 
         ax.scatter(pd.to_datetime(wl2.index), wl2['Water Level (m)'], c="navy", s=15,)
         ax.plot(pd.to_datetime(wl2.index), wl2['Water Level (m)'], c="navy", ls="--")
@@ -548,12 +556,16 @@ def residualplots_WL_individual(wls_obs, wls_obs2, wls_sim):
                 linewidth='0.12', color='black', alpha=0.85)
         ax.grid(which='minor', linestyle='-',
                 linewidth='0.05', color='black', alpha=0.5)
-        ax.legend(loc="lower right")
-
+        ax.legend(loc="upper right")
+        
+        # watermark
+        text_label = datetime.now()
+        ax.text(0.96, 0.02, text_label, transform=ax.transAxes, horizontalalignment='right', verticalalignment='bottom', alpha=0.1)
+        
         if mode == "monthly":
-            plt.savefig(os.path.join(outputDir, f'{well}.png'), bbox_inches='tight', dpi=600)
+            plt.savefig(os.path.join(outputDir, '100H_revised', f'{well}.png'), bbox_inches='tight', dpi=600)
         elif mode == "daily":
-            plt.savefig(os.path.join(outputDir, f'{well}_daily.png'), bbox_inches='tight', dpi=600)
+            plt.savefig(os.path.join(outputDir, '100H_revised', f'{well}_daily.png'), bbox_inches='tight', dpi=600)
         plt.close()
 
     print("Done")
@@ -773,8 +785,11 @@ if __name__ == "__main__":
     mode = "monthly"
 #%%
     if (simulated_heads_mode == 'mod2obs') and (mode == "monthly"):
-        wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'simulated_heads_monthly.dat'), #this is renamed bore_sample_output.dat for flow #check
+        #wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'simulated_heads_monthly.dat'), #this is renamed bore_sample_output.dat for flow #check
+        #                         delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
+        wls_sim_SP = pd.read_csv(os.path.join(wldir, f'{sce}', 'bore_sample_output_100H_fix_RIV_v011224.dat'), # hpham: this is renamed bore_sample_output.dat for flow #check
                                  delimiter=r"\s+", names = ["ID", "Date", "Time", "Head"])
+
         wls_sim_SP["NAME"] = "199-" + wls_sim_SP["ID"].str.strip().str[:-3]  # monitoring wells
         wls_sim_SP["Layer"] = wls_sim_SP["ID"].str.strip().str[-1].astype(int)
         wls_sim_SP['Date'] = pd.to_datetime(wls_sim_SP['Date'])
@@ -813,7 +828,7 @@ if __name__ == "__main__":
     ### CONCENTRATIONS ###
     ## Simulated CONC, 2014 to 2023 extended model:
     crvi_ifile = os.path.join(mdir, f'{sce}', f'tran_2014_2023', 'post_process',
-                              'mod2obs_monitoring_wells', 'simulated_conc_mod2obs.csv')
+                              'mod2obs_monitoring_wells_100H', 'simulated_conc_mod2obs.csv')
     crvi_sim = pd.read_csv(crvi_ifile)
     crvi_sim.rename(columns={'SAMP_SITE_NAME':'NAME','SAMP_DATE':'DATE'}, inplace = True)
 
@@ -865,7 +880,7 @@ if __name__ == "__main__":
         plot_WL_vs_conc(rebound_WLdata, calib_WLdata, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim, plot_calib_model=False)
         residualplots_WL_individual(rebound_WLdata, calib_WLdata, WLsim)
     else:
-        # plot_WL_vs_conc(monthly_WLs_obs_ALL, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim)
+        plot_WL_vs_conc(monthly_WLs_obs_ALL, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim)
         residualplots_WL_individual(monthly_WLs_obs_ALL, monthly_WLs_obs_ALL, WLsim)
 
     # plot_WL(wls_obs, wls_obs2, wls_obs_2022, wls_sim, wls_sim2, plot_calib_model=True) #plot_calib_model flag should be FALSE if simulated_heads_mode == "mod2obs"

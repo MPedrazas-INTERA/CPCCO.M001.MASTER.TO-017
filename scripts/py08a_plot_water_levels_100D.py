@@ -11,6 +11,7 @@ cwd = os.getcwd()
 wdir = os.path.dirname(cwd)
 
 "Author: RWeatherl, modified by MPedrazas"
+# Not using this one anymore. Using the data pulled by Jose. hp 1/25/24
 
 ### --- 1. Import and structure all data --- ###
 def import_WL_data():
