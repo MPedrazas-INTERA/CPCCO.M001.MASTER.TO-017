@@ -200,6 +200,10 @@ if __name__ == "__main__":
         os.makedirs(obsdir)
     WL_obs2_noDups.to_csv(os.path.join(obsdir, "measured_WLs_all_wells.csv"), index=False)
 
+    ###Only 100-D wells now:
+    WL_obs2_noDups_100D = WL_obs2_noDups[WL_obs2_noDups['NAME'].isin(wells.NAME.unique())]
+    WL_obs2_noDups_100D.to_csv(os.path.join(obsdir, "measured_WLs_100D_wells.csv"), index=False)
+
     # Resampled to monthly
     WL_obs2_noDups.reset_index(drop=True, inplace=True)
     WL_obs2_monthly = resample_to_monthly(WL_obs2_noDups)
@@ -213,18 +217,20 @@ if __name__ == "__main__":
     dfcoords = dfcoords[['NAME','XCOORDS', 'YCOORDS']]
 
     # add coordinates to WL_obs_monthly
-    #WL_obs_monthly= WL_obs_monthly.reset_index(drop=False)
     WL_obs2_monthly = pd.merge(WL_obs2_monthly,dfcoords, how='left', on=['NAME'])
-#    WL_obs_noDups = WL_obs_noDups.reset_index(drop=False)
-#    WL_obs_noDups = pd.merge(WL_obs_noDups,dfcoords, how='left', on=['NAME'])
 
     # add column month and year
     WL_obs2_monthly['Year'] = WL_obs2_monthly['EVENT'].dt.year
     WL_obs2_monthly['Month'] = WL_obs2_monthly['EVENT'].dt.month
 
     WL_obs2_monthly.to_csv(os.path.join(obsdir, "measured_WLs_monthly_all_wells.csv"), index=False)
+
+    ###Only 100-D wells now:
+    WL_obs2_monthly_100D = WL_obs2_monthly[WL_obs2_monthly['NAME'].isin(wells.NAME.unique())]
+    WL_obs2_monthly_100D.to_csv(os.path.join(obsdir, "measured_WLs_monthly_100D_wells.csv"), index=False)
+
+
     # Save to the format for water level mapping using the R-script
-    #col_rename = {''}
     WL_obs2_monthly_22 = WL_obs2_monthly.copy()
     WL_obs2_monthly_22 = WL_obs2_monthly_22[WL_obs2_monthly_22['Year'] == 2023] # Get CY 2023 data only
 
