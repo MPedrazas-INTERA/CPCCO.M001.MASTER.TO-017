@@ -126,14 +126,16 @@ if __name__ == "__main__":
 
     zone = '100D'
 
+    ### Rebound Data
     odir = os.path.join(cwd, 'output', 'concentration_data', '2021to2023', f'{zone}')
     if not os.path.isdir(odir):
         os.makedirs(odir)
 
     chemdata, crvi_filt = read_chemdata()
     crvi_filt[['NAME', 'DATE', 'STD_VALUE_RPTD', 'STD_ANAL_UNITS_RPTD']].to_csv(os.path.join(odir, "Cr_obs_100D_mp.csv"), index=False)
-    eda_data, eda_data2 = compare_data()
 
+    ### Add historic data
+    eda_data, eda_data2 = compare_data()
     new_sub = combine_data(crvi_filt,eda_data, eda_data2)
     new_sub = new_sub[new_sub['DATE'] >= '2014-01-01']
 

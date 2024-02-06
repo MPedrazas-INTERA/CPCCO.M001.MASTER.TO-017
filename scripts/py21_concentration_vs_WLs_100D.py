@@ -70,7 +70,7 @@ def compare_flopy_mod2obs():
         plt.savefig(os.path.join(cwd, 'output', 'water_level_plots', 'flopy_vs_mod2obs', f'{well}_lyr1.png'), bbox_inches='tight', dpi=600)
     return None
 
-def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, conc_df, plot_calib_model = False):
+def plot_WL_vs_conc(wl_meas, crvi_meas, wl_df, wl_df_2014, conc_df, plot_calib_model = False):
 
     """
     Plot concentration data of interest against water levels in one graph.
@@ -80,7 +80,7 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
     Common errors: double check column names (e.g. "NAME" vs "ID", "time" vs "Date", etc.)
         rename columns outside of function for consistency.
     """
-    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots_100D', f'{sce}')
+    outputDir = os.path.join(cwd, 'output', 'concentration_vs_WL_plots_100D', f'{sce}', "untilJan2024")
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
 
@@ -96,13 +96,16 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
 
         toplot_crvi = conc_df[conc_df['NAME'] == well] ## match to the correct input when function is called
 
-        cr1 = crvi_meas_2014.loc[crvi_meas_2014['SAMP_SITE_NAME'] == well]  ## match to the correct input when function is called
         try:
-            cr2 = crvi_meas_2021.loc[crvi_meas_2021['NAME'] == well] ## match to the correct input when function is called
+            cr1 = crvi_meas.loc[crvi_meas['SAMP_SITE_NAME'] == well]  ## match to the correct input when function is called
         except:
-            pass
+            cr1 = crvi_meas.loc[crvi_meas['NAME'] == well]
 
-        wl1 = wl_meas[wl_meas['ID'] == well]
+        try:
+            wl1 = wl_meas[wl_meas['ID'] == well]
+        except:
+            wl1 = wl_meas[wl_meas['NAME'] == well]
+
         if old_WL_sources:
             wl2 = calib_WLdata[calib_WLdata['ID'] == well]
             wl3 = wls_obs_2022[wls_obs_2022['ID'] == well]
@@ -118,18 +121,20 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
         ## conditional title color
         is_in_calibwells = well in calibwells['Well_ID'].values
         if is_in_calibwells:
-            #ax.set_title(f'{well} ({wellDict[well]})', color = 'navy', fontsize=16)
             ax.set_title(f'{well}', color = 'navy', fontsize=16)
         else:
-            #ax.set_title(f'{well} ({wellDict[well]})', color = 'black', fontsize=16)
             ax.set_title(f'{well}', color = 'black', fontsize=16)
         ax.set_ylabel('Water Level Elevation, m NAVD88', fontsize=14)
         ax2 = ax.twinx() ## create secondary axis
         ax2.set_ylabel('Cr(VI) (μg/L)', fontsize=14)
 
         ###HEADS
-        ax.scatter(wl1.index, wl1['Water Level (m)'], label='Obs WL', c="navy", s=20, zorder=5)
-        ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
+        try:
+            ax.scatter(wl1.index, wl1['Water Level (m)'], label='Obs WL', c="navy", s=20, zorder=5)
+            ax.plot(wl1.index, wl1['Water Level (m)'], c="navy", ls="--", alpha=0.25, zorder=5)
+        except:
+            ax.scatter(wl1.index, wl1['VAL_FINAL'], label='Obs WL', c="navy", s=20, zorder=5)
+            ax.plot(wl1.index, wl1['VAL_FINAL'], c="navy", ls="--", alpha=0.25, zorder=5)
 
         if old_WL_sources:
             ax.scatter(wl3.index, wl3['Water Level (m)'], c="navy", s=20, zorder=5)
@@ -149,11 +154,6 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
                     label='Obs Cr(VI)')  #
         ax2.plot(pd.to_datetime(cr1.index), cr1['STD_VALUE_RPTD'], zorder=10, c="crimson",
                  ls="--", alpha=0.25)
-        try:
-            ax2.scatter(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], c='crimson', s=20, zorder=5) #label='New Obs Cr(VI)')  #
-            ax2.plot(pd.to_datetime(cr2.index), cr2['STD_VALUE_RPTD'], zorder=5, c="crimson", ls="--", alpha=0.25)
-        except:
-            pass
 
         ax2.plot(pd.to_datetime(toplot_crvi['DATE']), toplot_crvi['WeightedConc'], zorder=4,
                  c="darkred", alpha = 0.75,  label='Simulated Cr(VI)')
@@ -182,18 +182,18 @@ def plot_WL_vs_conc(wl_meas, crvi_meas_2014, crvi_meas_2021, wl_df, wl_df_2014, 
         text_y = ax2.get_ylim()[1] - 0.035 * (ax2.get_ylim()[1] - ax2.get_ylim()[0]) # for text annotations
         
         if date_range == "full": #set x-limit
-            ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
-            ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2023-10-31"))
+            ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2024-01-01"))
+            ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2024-01-01"))
             ax2.text(pd.to_datetime('2021-02-01'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             ax2.text(pd.to_datetime('2023-06-12'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             ax2.text(pd.to_datetime('2020-12-01'), text_y, 'Calibration Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
-            plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2014to2023.png'), bbox_inches='tight')
+            plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2014to2024.png'), bbox_inches='tight')
         elif date_range == "short":
-            ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-10-31"))
-            ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2023-10-31"))
+            ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2024-01-01"))
+            ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2024-01-01"))
             ax2.text(pd.to_datetime('2022-09-15'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             ax2.text(pd.to_datetime('2023-06-12'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
-            plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2021to2023.png'), bbox_inches='tight')
+            plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2021to2024.png'), bbox_inches='tight')
 
         plt.close()
     print("Done")
@@ -803,9 +803,9 @@ if __name__ == "__main__":
         wls_obs_2022.dropna(subset=["Water Level (m)"], inplace=True)
         wls_obs_2022.set_index('DATE', inplace=True)
     else:
-        ### Kirsten's AWLN data + Jose's manual data + Sylvana's data - RESAMPLED TO MONTHLY
-        ### Script used: py21c_processWL_fromJose.py
-        monthly_WLs_obs_ALL = pd.read_csv(os.path.join(wldir, 'obs_2014_Oct2023', 'measured_WLs_monthly_100D.csv'), index_col='DATE', parse_dates=True) # hpham: Updated
+        ### Kirsten's AWLN data + Jose's manual data + Sylvana's data (until Jan 2024) - RESAMPLED TO MONTHLY
+        ### Script used: py21d_processWL_keep_all_wells.py (NOW) - py21c_processWL_fromJose.py (OLD)
+        monthly_WLs_obs_ALL = pd.read_csv(os.path.join(wldir, 'obs_2014_Jan2024', 'measured_WLs_monthly_100D_wells.csv'), index_col='EVENT', parse_dates=True) # mpedrazas updated
 
     ## MOD2OBS simulated WL monthly (extended model):
     simulated_heads_mode = "mod2obs"
@@ -856,11 +856,13 @@ if __name__ == "__main__":
     crvi_sim = pd.read_csv(crvi_ifile)
     crvi_sim.rename(columns={'SAMP_SITE_NAME':'NAME','SAMP_DATE':'DATE'}, inplace = True)
 
-    ### Observed CONC for 2014 to 2021, and 2021 - 2023:
-    # hpham: Need update (Robin)
-    crvi_meas_2014 = pd.read_csv(os.path.join(chemdir, '2014to2020', 'Cr_obs_avg_bySPs.csv'), index_col = 'SAMP_DATE', parse_dates = True) #needs to be updated for 100D
-    crvi_meas_2021 = pd.read_csv(os.path.join(chemdir, '2014to2023', '100D', 'Cr_obs_2014_2023_100D_hp.csv'), index_col = 'DATE', parse_dates = True) # RW created this file on 12/18/2023
-
+    ### Observed CONC for 2014 to Oct 2023
+    crvi_meas_2023 = pd.read_csv(os.path.join(chemdir, '2014to2023', '100D', 'Cr_obs_2014_2023_100D_mp.csv'), index_col = 'DATE', parse_dates = True)
+    crvi_meas_2024 = pd.read_csv(os.path.join(chemdir, '2023to2024', '100D', 'Cr_obs_100D.csv'), index_col = 'DATE', parse_dates=True)
+    crvi_meas_2024 = crvi_meas_2024.loc[crvi_meas_2024.index > pd.to_datetime(max(crvi_meas_2023.index))]
+    crvi_meas_2024.rename(columns={"VAL": "STD_VALUE_RPTD"}, inplace=True)
+    crvi_meas_ALL = pd.concat([crvi_meas_2023, crvi_meas_2024])
+    crvi_meas_ALL.sort_index(inplace=True)
 
     ## If we want to use average WL or max concentration of layers, group here:
     group = True
@@ -902,10 +904,10 @@ if __name__ == "__main__":
 
     ## Plot WLs and CONCs:
     if old_WL_sources:
-        plot_WL_vs_conc(rebound_WLdata, calib_WLdata, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim, plot_calib_model=False)
+        plot_WL_vs_conc(rebound_WLdata, calib_WLdata, crvi_meas_ALL, WLsim, WLsim_2014, crvi_sim, plot_calib_model=False)
         residualplots_WL_individual(rebound_WLdata, calib_WLdata, WLsim)
     else:
-        plot_WL_vs_conc(monthly_WLs_obs_ALL, crvi_meas_2014, crvi_meas_2021, WLsim, WLsim_2014, crvi_sim)
+        plot_WL_vs_conc(monthly_WLs_obs_ALL, crvi_meas_ALL, WLsim, WLsim_2014, crvi_sim)
         residualplots_WL_individual(monthly_WLs_obs_ALL, monthly_WLs_obs_ALL, WLsim)
 
     # plot_WL(wls_obs, wls_obs2, wls_obs_2022, wls_sim, wls_sim2, plot_calib_model=True) #plot_calib_model flag should be FALSE if simulated_heads_mode == "mod2obs"
