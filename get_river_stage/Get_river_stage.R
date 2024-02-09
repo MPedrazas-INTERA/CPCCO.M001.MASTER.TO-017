@@ -49,7 +49,7 @@ INTERP <- fread('input/interpfactor.csv') #hpham?
 #STAGE <- calcRiverStage(daily=TRUE) # Do not use, RS at D is 0.6 m higher. 
 STAGE <- calcRiverStage0(daily=TRUE) # hpham modified
 #write.csv(STAGE, file='0_Data/River_Stage/RiverStage_v051722.csv', row.names=FALSE)
-write.csv(STAGE, file='output/RiverStage_v121923.csv', row.names=FALSE)
+write.csv(STAGE, file='output/RiverStage_v020624.csv', row.names=FALSE)
 
 ofile <- paste('output/RiverStage_CY', yr ,'_v121923.Rdata',sep="")
 save(STAGE,file=paste0(DIR,ofile))
