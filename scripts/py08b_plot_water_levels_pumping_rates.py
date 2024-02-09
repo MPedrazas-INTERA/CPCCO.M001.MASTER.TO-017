@@ -213,13 +213,14 @@ def import_pumping_data():
             print(well)
             toplot = df[well]
             fig, ax = plt.subplots(figsize=(9, 4))
-            ax.plot(df.index, abs(toplot))
+            ax.plot(df.Date, abs(toplot))
             if "_I_" in well:
                 plt.title(f"Injection Rate in {well}")
             elif "_E_" in well:
                 plt.title(f"Extraction Rate in {well}")
             plt.grid()
             plt.ylabel('Pumping Rate (m3/d)')
+            plt.xlim([pd.to_datetime(sdate), max(df.Date)])
             plt.savefig(os.path.join(cwd, 'output', 'pumping_plots', 'individual_wells', f'{well}_pumping_{sdate[:4]}_2023.png'), bbox_inches='tight', dpi=400)
             plt.close()
     else:

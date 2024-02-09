@@ -182,15 +182,15 @@ def plot_WL_vs_conc(wl_meas, crvi_meas, wl_df, wl_df_2014, conc_df, plot_calib_m
         text_y = ax2.get_ylim()[1] - 0.035 * (ax2.get_ylim()[1] - ax2.get_ylim()[0]) # for text annotations
         
         if date_range == "full": #set x-limit
-            ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2024-01-01"))
-            ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2024-01-01"))
+            ax.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2024-02-01"))
+            ax2.set_xlim(pd.to_datetime("2014-01-01"), pd.to_datetime("2024-02-01"))
             ax2.text(pd.to_datetime('2021-02-01'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             ax2.text(pd.to_datetime('2023-06-12'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             ax2.text(pd.to_datetime('2020-12-01'), text_y, 'Calibration Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2014to2024.png'), bbox_inches='tight')
         elif date_range == "short":
-            ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2024-01-01"))
-            ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2024-01-01"))
+            ax.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2024-02-01"))
+            ax2.set_xlim(pd.to_datetime("2021-01-01"), pd.to_datetime("2024-02-01"))
             ax2.text(pd.to_datetime('2022-09-15'), text_y, 'Post-Calibration Period', ha='left', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             ax2.text(pd.to_datetime('2023-06-12'), text_y, 'Rebound Period', ha='right', va='top', rotation=90, color='k', alpha=0.75, path_effects=[pe.withStroke(linewidth=4, foreground='white')], zorder=10)
             plt.savefig(os.path.join(outputDir, f'{well}_mod2obs_2021to2024.png'), bbox_inches='tight')
@@ -859,10 +859,27 @@ if __name__ == "__main__":
     ### Observed CONC for 2014 to Oct 2023
     crvi_meas_2023 = pd.read_csv(os.path.join(chemdir, '2014to2023', '100D', 'Cr_obs_2014_2023_100D_mp.csv'), index_col = 'DATE', parse_dates = True)
     crvi_meas_2024 = pd.read_csv(os.path.join(chemdir, '2023to2024', '100D', 'Cr_obs_100D.csv'), index_col = 'DATE', parse_dates=True)
-    crvi_meas_2024 = crvi_meas_2024.loc[crvi_meas_2024.index > pd.to_datetime(max(crvi_meas_2023.index))]
+    crvi_meas_2024 = crvi_meas_2024.loc[crvi_meas_2024.index > max(crvi_meas_2023.index)]
     crvi_meas_2024.rename(columns={"VAL": "STD_VALUE_RPTD"}, inplace=True)
     crvi_meas_ALL = pd.concat([crvi_meas_2023, crvi_meas_2024])
     crvi_meas_ALL.sort_index(inplace=True)
+
+    ### Check to make sure everything in crvi_meas_2024 is the same as crvi_meas_2023:
+    test_2023 = crvi_meas_2023[["NAME", "STD_VALUE_RPTD"]].loc[crvi_meas_2023.index > min(crvi_meas_2024.index)]
+    test_2024 = crvi_meas_2024[["NAME", "STD_VALUE_RPTD"]].loc[crvi_meas_2024.index > min(crvi_meas_2024.index)]
+    test_2023.sort_values(by=["NAME"], inplace=True)
+    test_2024.sort_values(by=["NAME"], inplace=True)
+    test_2023['YEAR'] = test_2023.index.year
+    test_2023['MONTH'] = test_2023.index.month
+    test_2024['YEAR'] = test_2024.index.year
+    test_2024['MONTH'] = test_2024.index.month
+    test_2023.reset_index(inplace=True, drop = True)
+    test_2024.reset_index(inplace=True, drop=True)
+    test_2023.sort_values(by=["STD_VALUE_RPTD"])
+    test_2024.sort_values(by=["STD_VALUE_RPTD"])
+    merged_df = pd.merge(test_2023, test_2024, on=['NAME', 'YEAR', 'MONTH'],
+                         suffixes=('_2023', '_2024'), how='outer')
+    different_rows = merged_df[merged_df['STD_VALUE_RPTD_2023'] != merged_df['STD_VALUE_RPTD_2024']]
 
     ## If we want to use average WL or max concentration of layers, group here:
     group = True
